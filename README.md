@@ -1,4 +1,4 @@
-# ts-vscode-boilerplate
+# walkers 
 
 1) Install Node.js and gulp
 $ npm -g install gulp
