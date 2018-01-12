@@ -28,16 +28,15 @@ export class World {
 	}
 
 	public addPath(path:Path) {
-		if(!this.paths.has(path.woldObjectId))
+		if(!this.hasPath(path.startJunction,path.endJunctin))
 		{
 			console.log("world.addPath:before::this.paths.keys.length="+this.paths.size);	
 			console.log("wolrd.addPath:adding:"+path.woldObjectId);
-			this.paths.set(path.woldObjectId,path);
+			this.paths.set(path.getPathId(),path);
 			this.addJunction(path.startJunction);
 			this.addJunction(path.endJunctin);
 			console.log("world.addPath:after::this.paths.keys.length="+this.paths.size);	
 			this.walkerEngine.addPath(this,path);
-			
 		}
 	}
 
@@ -45,8 +44,33 @@ export class World {
 		
 	}
 
+	public getJunction(woldObjectId:string) : Junction{
+		return( this.junctions.get(woldObjectId) );
+	}
+
+	public getWalker(woldObjectId:string):Walker{
+		return( this.walkers.get(woldObjectId) );
+	}
+
+	public getPath(startJunction:Junction,endJunction:Junction):Path{
+		return( this.paths.get(Path.getPathId(startJunction,startJunction)) );
+	}
+
+	public hasJunction(woldObjectId:string):boolean{
+		return( this.junctions.has(woldObjectId) );
+	}
+
+	public hasWalker(woldObjectId:string):boolean{
+		return( this.walkers.has(woldObjectId) );
+	}
+
+	public hasPath(startJunction:Junction,endJunction:Junction):boolean{
+		return( this.paths.has(Path.getPathId(startJunction,startJunction)) );
+	}
+
+
 	public addJunction(junction:Junction) {
-		if(!this.junctions.has(junction.woldObjectId))
+		if(!this.hasJunction(junction.woldObjectId))
 		{
 			this.junctions.set(junction.woldObjectId,junction);
 			this.walkerEngine.addJunction(this,junction);
@@ -56,6 +80,14 @@ export class World {
 
 	
 	public processWorldUpdate(worldUpdate:WorldUpdate) {
+		let junction:Junction = worldUpdate.getJunction(this);
+		let walker:Walker = worldUpdate.getWalker(this,junction);
+		if(walker.currentJunction.woldObjectId!==junction.woldObjectId)
+		{
+			let startingJunction = walker.currentJunction;
+			let path:Path = worldUpdate.getPath(this,startingJunction,junction);
+			walker.currentJunction = path.endJunctin;	
+		}
 
 	}
 

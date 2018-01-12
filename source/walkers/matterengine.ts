@@ -30,25 +30,25 @@ export class MatterEngine extends WalkerEngine {
     }
 
     public addPath(world:World,path:Path):void {
-		if(!this.paths.has(path.woldObjectId))
-		{
-            this.addJunction(world,path.startJunction);
-            this.addJunction(world,path.endJunctin);
+      if(!this.paths.has(path.woldObjectId))
+      {
+              this.addJunction(world,path.startJunction);
+              this.addJunction(world,path.endJunctin);
 
-            let matterStartJunction = this.junctions.get(path.startJunction.woldObjectId);
-            let matterEndJunction = this.junctions.get(path.endJunctin.woldObjectId);
-            
-            let matterPath = Matter.Constraint.create({
-                bodyA: matterStartJunction,
-                bodyB: matterEndJunction,  
-                pointA: { x: -10, y: -10 },
-                pointB: { x: -10, y: -10 },
-                stiffness:0.0001,
-              });
-            this.paths.set(path.woldObjectId,matterPath);
+              let matterStartJunction = this.junctions.get(path.startJunction.woldObjectId);
+              let matterEndJunction = this.junctions.get(path.endJunctin.woldObjectId);
+              
+              let matterPath = Matter.Constraint.create({
+                  bodyA: matterStartJunction,
+                  bodyB: matterEndJunction,  
+                  pointA: { x: -0, y: -0 },
+                  pointB: { x: -0, y: -0 },
+                  stiffness:0.0001,
+                });
+              this.paths.set(path.woldObjectId,matterPath);
 
-            Matter.World.add(this.engine.world,[matterPath]);            
-		}
+              Matter.World.add(this.engine.world,[matterPath]);            
+      }
     }
 
     public initMouse(render:Matter.Render):void {
