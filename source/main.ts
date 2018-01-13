@@ -1,8 +1,7 @@
 import { World } from "./walkers/world";
-import { Junction } from "./walkers/junction";
-import { Path } from "./walkers/path";
 import { MatterEngine } from "./walkers/matterengine";
 import * as Matter from "matter-js";
+import { WorldUpdate } from "./walkers/worldupdate";
 // import * as $ from "jquery";
 // import Greeter from "./entities/greeter";
 // let merge = require("merge2");
@@ -36,12 +35,19 @@ matterEngine.initMouse(render);
 Matter.Engine.run(engine);
 Matter.Render.run(render);
 
-let j1 = new Junction("1");
-let j2 = new Junction("2");
-let p1to2 = new Path("1to2",j1,j2);
+let worldUpdate1:WorldUpdate = new WorldUpdate("junction1","walker",new Date(),{},{},{});
+let worldUpdate2:WorldUpdate = new WorldUpdate("junction2","walker",new Date(),{},{},{});
+let worldUpdate3:WorldUpdate = new WorldUpdate("junction3","walker",new Date(),{},{},{});
+let worldUpdate4:WorldUpdate = new WorldUpdate("junction4","walker",new Date(),{},{},{});
+let worldUpdate5:WorldUpdate = new WorldUpdate("junction5","walker",new Date(),{},{},{});
 
-world.addJunction(j1);
-world.addJunction(j2);
-world.addPath(p1to2);
 
-console.log("main:world.junctions.keys.length="+world.junctions.size);
+world.addWorldUpdate(worldUpdate1);
+world.addWorldUpdate(worldUpdate2);
+world.addWorldUpdate(worldUpdate3);
+world.addWorldUpdate(worldUpdate4);
+world.addWorldUpdate(worldUpdate5);
+
+
+world.processWorldUpdates();
+console.log("yy main:world.junctions.keys.length="+world.junctions.size);

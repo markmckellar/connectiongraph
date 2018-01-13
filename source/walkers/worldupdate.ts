@@ -38,6 +38,7 @@ export class WorldUpdate {
 			walker = new Walker(this.walkerName,junction);
 			world.addWalker(walker);
 		} 
+		walker = world.getWalker(this.walkerName);
 		return(walker);
 	}
 
@@ -51,8 +52,8 @@ export class WorldUpdate {
 		return(path);
 	}
 
-    public isReadyToBeProcessed():boolean {
-        return( this.processDate.getTime()>=(new Date().getTime()) );
+    public isReadyToBeProcessed(checkDate:Date):boolean {
+        return( this.processDate.getTime()>=(checkDate.getTime()) );
     }
 
 	public get junctionName(): string {

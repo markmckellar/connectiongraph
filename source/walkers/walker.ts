@@ -6,7 +6,7 @@ export class Walker extends WorldObject {
 
     public constructor(woldObjectId:string,junction:Junction) {
         super(woldObjectId);
-		this.currentJunction =junction;
+		this.currentJunction = junction;
     }
 
     public get currentJunction(): Junction {

@@ -30,13 +30,17 @@ export class MatterEngine extends WalkerEngine {
     }
 
     public addPath(world:World,path:Path):void {
+      console.log("MatterEngine.addPath:woldObjectId="+JSON.stringify(path.woldObjectId));
+      
       if(!this.paths.has(path.woldObjectId))
       {
               this.addJunction(world,path.startJunction);
-              this.addJunction(world,path.endJunctin);
+              this.addJunction(world,path.endJunction);
 
-              let matterStartJunction = this.junctions.get(path.startJunction.woldObjectId);
-              let matterEndJunction = this.junctions.get(path.endJunctin.woldObjectId);
+              let matterStartJunction:Matter.Body = this.junctions.get(path.startJunction.woldObjectId);
+              let matterEndJunction:Matter.Body = this.junctions.get(path.endJunction.woldObjectId);
+              //console.log("MatterEngine.addPath:matterStartJunction="+JSON.stringify(matterStartJunction));
+              //console.log("MatterEngine.addPath:matterEndJunction="+JSON.stringify(matterEndJunction));
               
               let matterPath = Matter.Constraint.create({
                   bodyA: matterStartJunction,
@@ -50,6 +54,20 @@ export class MatterEngine extends WalkerEngine {
               Matter.World.add(this.engine.world,[matterPath]);            
       }
     }
+
+    public addWalker(world:World,walker:Walker):void { 
+    }
+
+    public addJunction(world:World,junction:Junction):void {
+      if(!this.junctions.has(junction.woldObjectId))
+      {
+              let matterJunction = Matter.Bodies.circle(350,50,40,{},8);      
+              this.junctions.set(junction.woldObjectId,matterJunction);
+              Matter.World.add(this.engine.world,[matterJunction]);
+              
+      }
+    }
+
 
     public initMouse(render:Matter.Render):void {
         let mouse = Matter.Mouse.create(render.canvas);
@@ -84,21 +102,6 @@ export class MatterEngine extends WalkerEngine {
         Matter.World.add(this.engine.world, [boundsBottom,boundsTop,boundsLeft,boundsRight]);
    
     }
-
-    public addWalker(world:World,walker:Walker):void { 
-    }
-
-    public addJunction(world:World,junction:Junction):void {
-        if(!this.junctions.has(junction.woldObjectId))
-		{
-            let matterJunction = Matter.Bodies.circle(350,50,40,{},8);      
-            this.junctions.set(junction.woldObjectId,matterJunction);
-            Matter.World.add(this.engine.world,[matterJunction]);
-            
-		}
-    }
-
-   
 
     public get junctions(): Map<string,Matter.Body> {
 		return this._junctions;
