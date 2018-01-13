@@ -22,6 +22,8 @@ export class MatterEngine extends WalkerEngine {
         super();
         this.junctions = new Map<string,Matter.Body>();
         this.paths = new Map<string,Matter.Constraint>();    
+        this.walkers = new Map<string,Matter.Body>();    
+        
         //this.engine = engine; 
         this.engine = Matter.Engine.create(); 
         
@@ -56,6 +58,13 @@ export class MatterEngine extends WalkerEngine {
     }
 
     public addWalker(world:World,walker:Walker):void { 
+      if(!this.walkers.has(walker.woldObjectId))
+      {
+              let matterWalker = Matter.Bodies.circle(350,50,10,{},8);      
+              this.walkers.set(walker.woldObjectId,matterWalker);
+              Matter.World.add(this.engine.world,[matterWalker]);
+              
+      }
     }
 
     public addJunction(world:World,junction:Junction):void {
