@@ -1,17 +1,22 @@
+import { WorldId } from "./worldid";
+
 
 export class WorldObject {
 	
-    private _woldObjectId : string;   
+    private _worldId : WorldId;   
     
-    public constructor(woldObjectId:string) {
-        this.woldObjectId = woldObjectId;          
+    public constructor(worldId:WorldId) {
+        this.worldId = worldId;          
+        console.log("WorldObject:"+this.worldId.id);
     }
 
-    public get woldObjectId(): string {
-        return this._woldObjectId;
-    }
+
+	public get worldId(): WorldId {
+		return this._worldId;
+	}
+
+	public set worldId(value: WorldId) {
+		this._worldId = value;
+	}
     
-    public set woldObjectId(value: string) {
-        this._woldObjectId = value;
-    }
 }

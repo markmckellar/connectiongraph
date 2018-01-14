@@ -1,8 +1,6 @@
 import { World } from "../../../source/walkers/world";
 import { WorldUpdate } from "../../../source/walkers/worldupdate";
 
-import { Junction } from "../../../source/walkers/junction";
-import { Path } from "../../../source/walkers/path";
 import { MatterEngine } from "../../../source/walkers/matterengine";
 import * as Matter from "matter-js";
 // import * as $ from "jquery";

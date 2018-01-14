@@ -1,5 +1,6 @@
 import { Junction } from "./junction";
 import { WorldObject } from "./worldobject";
+import { WorldId } from "./worldid";
 
 
 export class Path extends WorldObject {
@@ -7,8 +8,8 @@ export class Path extends WorldObject {
     private _startJunction: Junction;    
 	private _endJunction: Junction;
 	
-	public static getPathId(startJunction:Junction,endJunction:Junction):string{
-		return(startJunction.woldObjectId+":"+endJunction.woldObjectId);
+	public static getPathId(startJunction:Junction,endJunction:Junction):WorldId{
+		return(new WorldId(startJunction.worldId.id+":"+endJunction.worldId.id));
 	}
     
     public constructor(startJunction:Junction,endJunction:Junction) {
@@ -17,7 +18,7 @@ export class Path extends WorldObject {
          this.endJunction = endJunction;
 	}
 	
-	public getPathId():string{
+	public getPathId():WorldId{
 		return(Path.getPathId(this.startJunction,this.endJunction));
 	}
 

@@ -35,11 +35,18 @@ matterEngine.initMouse(render);
 Matter.Engine.run(engine);
 Matter.Render.run(render);
 
-let worldUpdate1:WorldUpdate = new WorldUpdate("junction1","walker",new Date(),{},{},{});
-let worldUpdate2:WorldUpdate = new WorldUpdate("junction2","walker",new Date(),{},{},{});
-let worldUpdate3:WorldUpdate = new WorldUpdate("junction3","walker",new Date(),{},{},{});
-let worldUpdate4:WorldUpdate = new WorldUpdate("junction4","walker",new Date(),{},{},{});
-let worldUpdate5:WorldUpdate = new WorldUpdate("junction5","walker",new Date(),{},{},{});
+let worldUpdate1:WorldUpdate = new WorldUpdate("junction1","walker",WorldUpdate.datePlus(1*1000),{},{},{});
+let worldUpdate2:WorldUpdate = new WorldUpdate("junction2","walker",WorldUpdate.datePlus(2*1000),{},{},{});
+let worldUpdate3:WorldUpdate = new WorldUpdate("junction3","walker",WorldUpdate.datePlus(3*1000),{},{},{});
+let worldUpdate4:WorldUpdate = new WorldUpdate("junction4","walker",WorldUpdate.datePlus(4*1000),{},{},{});
+let worldUpdate5:WorldUpdate = new WorldUpdate("junction5","walker",WorldUpdate.datePlus(5*1000),{},{},{});
+let worldUpdate6:WorldUpdate = new WorldUpdate("junction6","walker",WorldUpdate.datePlus(6*1000),{},{},{});
+
+
+let worldUpdate3b:WorldUpdate = new WorldUpdate("junction3","walker2",WorldUpdate.datePlus(16*1000),{},{},{});
+let worldUpdate4b:WorldUpdate = new WorldUpdate("junction4b","walker2",WorldUpdate.datePlus(17*1000),{},{},{});
+let worldUpdate5b:WorldUpdate = new WorldUpdate("junction5b","walker2",WorldUpdate.datePlus(18*1000),{},{},{});
+let worldUpdate6b:WorldUpdate = new WorldUpdate("junction6b","walker2",WorldUpdate.datePlus(19*1000),{},{},{});
 
 
 world.addWorldUpdate(worldUpdate1);
@@ -47,6 +54,26 @@ world.addWorldUpdate(worldUpdate2);
 world.addWorldUpdate(worldUpdate3);
 world.addWorldUpdate(worldUpdate4);
 world.addWorldUpdate(worldUpdate5);
+world.addWorldUpdate(worldUpdate6);
+
+world.addWorldUpdate(worldUpdate3b);
+world.addWorldUpdate(worldUpdate4b);
+world.addWorldUpdate(worldUpdate5b);
+world.addWorldUpdate(worldUpdate6b);
+
+
+
+let bbm:number = 240;
+let bbs:number = bbm/60.0;
+let interval:number = 1000/bbs; //one millisecond over beat per second
+console.log("drawing every : "+interval+"ms");
+setInterval(doDraw,interval);
+
+function doDraw()
+{
+  //console.log(".");
+	world.processWorldUpdates();
+}
 
 
 world.processWorldUpdates();

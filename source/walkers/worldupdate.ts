@@ -1,5 +1,7 @@
 import { World } from "./world";
+import { WorldId } from "./worldid";
 import { Junction } from "./junction";
+import { DefaultJunction } from "./defaultjunction";
 import { Walker } from "./walker";
 import { Path } from "./path";
 
@@ -10,35 +12,47 @@ export class WorldUpdate {
     private _junctionName: string;
     private _walkerInfo: Object;
     private _junctionInfo: Object;
-    private _pathInfo: Object;
-    
-
-    public constructor(junctionName:string,walkerName:string,processDate:Date,junctionInfo:Object,walkerInfo:Object,pathInfo:Object){
+	private _pathInfo: Object;
+	private _walkerWorldId:WorldId;
+	private _junctionWorldId:WorldId;
+	
+	public constructor(junctionName:string,walkerName:string,processDate:Date,
+		junctionInfo:Object,walkerInfo:Object,pathInfo:Object){
         this.junctionName = junctionName;
         this.walkerName = walkerName;
         this.processDate = processDate;
         this.walkerInfo = walkerInfo;
         this.junctionInfo = junctionInfo;
-        this.pathInfo = pathInfo;
+		this.pathInfo = pathInfo;
+		
+		this._junctionWorldId = new WorldId(this._junctionName);
+		this._walkerWorldId = new WorldId(this._walkerName);
+	}
+
+	public static datePlus(milliseconds:number):Date {
+		let date:Date = new Date();
+		date.setMilliseconds(date.getMilliseconds()+milliseconds);
+		console.log("WorldUpdate:datePlus="+date)
+		return(date);
 	}
 	
 	public getJunction(world:World):Junction {
 		let junction:Junction = null;
-		if(!world.hasJunction(this.junctionName)) {
-			junction = new Junction(this.junctionName);
+		if(!world.hasJunction(this.junctionWorldId)) {
+			junction = new DefaultJunction(this.junctionWorldId);
 			world.addJunction(junction);
 		} 
-		junction = world.getJunction(this.junctionName);
+		junction = world.getJunction(this.junctionWorldId);
 		return(junction);
 	}
 
 	public getWalker(world:World,junction:Junction):Walker {
 		let walker:Walker = null;
-		if(!world.hasWalker(this.walkerName)) {
-			walker = new Walker(this.walkerName,junction);
+		if(!world.hasWalker(this.walkerWorldId)) {
+			walker = new Walker(this.walkerWorldId,junction);
 			world.addWalker(walker);
 		} 
-		walker = world.getWalker(this.walkerName);
+		walker = world.getWalker(this.walkerWorldId);
 		return(walker);
 	}
 
@@ -53,7 +67,7 @@ export class WorldUpdate {
 	}
 
     public isReadyToBeProcessed(checkDate:Date):boolean {
-        return( this.processDate.getTime()>=(checkDate.getTime()) );
+        return( this.processDate.getTime()<=(checkDate.getTime()) );
     }
 
 	public get junctionName(): string {
@@ -68,6 +82,14 @@ export class WorldUpdate {
 		return this._walkerName;
 	}
 
+
+	public get junctionWorldId(): WorldId {
+		return this._junctionWorldId;
+	}
+
+	public set junctionWorldId(value: WorldId) {
+		this._junctionWorldId = value;
+	}
 	public set walkerName(value: string) {
 		this._walkerName = value;
 	}
@@ -104,5 +126,15 @@ export class WorldUpdate {
 	public set pathInfo(value: Object) {
 		this._pathInfo = value;
 	}
+
+
+	public get walkerWorldId(): WorldId {
+		return this._walkerWorldId;
+	}
+
+	public set walkerWorldId(value: WorldId) {
+		this._walkerWorldId = value;
+	}
+	
     
 }
