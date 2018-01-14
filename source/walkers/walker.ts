@@ -24,15 +24,24 @@ export class Walker extends WorldObject {
 		return(this.currentDestination.getJunction(world).worldId.id===junction.worldId.id)	
 	}
 
-	public getCurrentJunction(world:World,): Junction {
+	public setCurrentDestination(world:World,destination:Destination):void {
+		this.currentDestination = destination;
+		world.walkerEngine.changeWalkerDestination(world,this,this.currentDestination);
+	}
+
+	public getCurrentJunction(world:World): Junction {
 		return this._currentDestination.getJunction(world);
 	}
 
-    public get currentDestination(): Destination {
+	public getCurrentDestination(): Destination {
+		return this.currentDestination;
+	}
+
+    private get currentDestination(): Destination {
 		return this._currentDestination;
 	}
 
-	public set currentDestination(value: Destination) {
+	private set currentDestination(value: Destination) {
 		this._currentDestination = value;
 	}
 }

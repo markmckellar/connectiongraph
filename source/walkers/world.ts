@@ -129,7 +129,7 @@ export class World {
 		let walker:Walker = worldUpdate.getWalker(this,junction);
 		console.log("processOneWorldUpdate:junction.woldObjectId="+JSON.stringify(junction.worldId.id));
 		console.log("processOneWorldUpdate:walker.currentJunction.woldObjectId="+
-			JSON.stringify(walker.currentDestination.getJunction(this).worldId.id));
+			JSON.stringify(walker.getCurrentDestination().getJunction(this).worldId.id));
 		
 		if(!walker.isCurrentJunction(this,junction))
 		{
@@ -139,8 +139,8 @@ export class World {
 			let path:Path = worldUpdate.getPath(this,startingJunction,junction);
 			console.log("processOneWorldUpdate.path="+JSON.stringify(path))
 			
-			walker.currentDestination = path.endJunction.getWalkerDestination(walker);
-			console.log("processOneWorldUpdate.walker.currentDestination="+JSON.stringify(walker.currentDestination))
+			walker.setCurrentDestination(this,path.endJunction.getWalkerDestination(walker));
+			console.log("processOneWorldUpdate.walker.currentDestination="+JSON.stringify(walker.getCurrentDestination()))
 			
 		}
 
