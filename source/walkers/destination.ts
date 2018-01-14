@@ -1,6 +1,7 @@
 import { Junction } from "./junction";
 import { Walker } from "./walker";
 import { WorldObject } from "./worldobject";
+import { World } from "./world";
 import { WorldId } from "./worldid";
 
 export abstract class Destination extends WorldObject {
@@ -8,20 +9,27 @@ export abstract class Destination extends WorldObject {
     //private _outPathList: Array<Path>;
     //private _walkerList: Array<Walker>;
 
-    private  _junction:Junction;
+    private  _junctionWorldId:WorldId;
 
     public constructor(worldId:WorldId,junction:Junction) {
         super(worldId);
-        this._junction=junction;
+        this.junctionWorldId=junction.worldId;
     }
 
     public abstract isDestination(walker:Walker):boolean;
 
-    public getJunction(): Junction {
-		return this._junction;
+    public getJunction(world:World): Junction {
+        console.log("Destination.getJunction.this.junctionWorldId="+this.junctionWorldId.id);
+		return world.getJunction(this.junctionWorldId);
 	}
 
-	public setJunction(value: Junction) {
-		this._junction = value;
+
+	public get junctionWorldId(): WorldId {
+		return this._junctionWorldId;
 	}
+
+	public set junctionWorldId(value: WorldId) {
+		this._junctionWorldId = value;
+	}
+    
 }

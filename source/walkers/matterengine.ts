@@ -4,7 +4,6 @@ import { Destination } from "./destination";
 import { Path } from "./path";
 import { WalkerEngine } from "./walkerengine";
 import { World } from "./world";
-import { WorldId } from "./worldid";
 
 import * as Matter from "matter-js";
 
@@ -14,20 +13,20 @@ export class MatterEngine extends WalkerEngine {
 
 
 	
-    private _junctions : Map<WorldId,Matter.Body>;
-    private _destinations : Map<WorldId,Matter.Body>;
-    private _walkers : Map<WorldId,Matter.Body>;
-    private _paths : Map<WorldId,Matter.Constraint>;
+    private _junctions : Map<string,Matter.Body>;
+    private _destinations : Map<string,Matter.Body>;
+    private _walkers : Map<string,Matter.Body>;
+    private _paths : Map<string,Matter.Constraint>;
 
     private _engine : Matter.Engine;
     
 
     public constructor() {
         super();
-        this.junctions = new Map<WorldId,Matter.Body>();
-        this.destinations = new Map<WorldId,Matter.Body>();
-        this.paths = new Map<WorldId,Matter.Constraint>();    
-        this.walkers = new Map<WorldId,Matter.Body>();    
+        this.junctions = new Map<string,Matter.Body>();
+        this.destinations = new Map<string,Matter.Body>();
+        this.paths = new Map<string,Matter.Constraint>();    
+        this.walkers = new Map<string,Matter.Body>();    
         
         //this.engine = engine; 
         this.engine = Matter.Engine.create(); 
@@ -39,13 +38,13 @@ export class MatterEngine extends WalkerEngine {
     public addPath(world:World,path:Path):void {
       console.log("MatterEngine.addPath:woldObjectId="+JSON.stringify(path.worldId.id));
       
-      if(!this.paths.has(path.worldId))
+      if(!this.paths.has(path.worldId.id))
       {
               this.addJunction(world,path.startJunction);
               this.addJunction(world,path.endJunction);
 
-              let matterStartJunction:Matter.Body = this.junctions.get(path.startJunction.worldId);
-              let matterEndJunction:Matter.Body = this.junctions.get(path.endJunction.worldId);
+              let matterStartJunction:Matter.Body = this.junctions.get(path.startJunction.worldId.id);
+              let matterEndJunction:Matter.Body = this.junctions.get(path.endJunction.worldId.id);
               //console.log("MatterEngine.addPath:matterStartJunction="+JSON.stringify(matterStartJunction));
               //console.log("MatterEngine.addPath:matterEndJunction="+JSON.stringify(matterEndJunction));
               
@@ -57,37 +56,37 @@ export class MatterEngine extends WalkerEngine {
                   length:150,
                   stiffness:0.0001,
                 });
-              this.paths.set(path.worldId,matterPath);
+              this.paths.set(path.worldId.id,matterPath);
 
               Matter.World.add(this.engine.world,[matterPath]);            
       }
     }
 
     public addDestination(world:World,destination:Destination):void { 
-      if(!this._destinations.has(destination.worldId))
+      if(!this._destinations.has(destination.worldId.id))
       {
               let matterDestination = Matter.Bodies.circle(350,50,10,{},8);      
-              this.walkers.set(destination.worldId,matterDestination);
+              this.walkers.set(destination.worldId.id,matterDestination);
               //Matter.World.add(this.engine.world,[matterWalker]);
               
       }
     }
 
     public addWalker(world:World,walker:Walker):void { 
-      if(!this.walkers.has(walker.worldId))
+      if(!this.walkers.has(walker.worldId.id))
       {
               let matterWalker = Matter.Bodies.circle(350,50,10,{},8);      
-              this.walkers.set(walker.worldId,matterWalker);
+              this.walkers.set(walker.worldId.id,matterWalker);
               Matter.World.add(this.engine.world,[matterWalker]);
               
       }
     }
 
     public addJunction(world:World,junction:Junction):void {
-      if(!this.junctions.has(junction.worldId))
+      if(!this.junctions.has(junction.worldId.id))
       {
               let matterJunction = Matter.Bodies.circle(350,50,40,{},8);      
-              this.junctions.set(junction.worldId,matterJunction);
+              this.junctions.set(junction.worldId.id,matterJunction);
               Matter.World.add(this.engine.world,[matterJunction]);
               
       }
@@ -128,36 +127,36 @@ export class MatterEngine extends WalkerEngine {
    
     }
 
-    public get junctions(): Map<WorldId,Matter.Body> {
+    public get junctions(): Map<string,Matter.Body> {
 		return this._junctions;
 	}
 
-	public set junctions(value: Map<WorldId,Matter.Body>) {
+	public set junctions(value: Map<string,Matter.Body>) {
 		this._junctions = value;
     }
     
-    public get paths(): Map<WorldId,Matter.Constraint> {
+    public get paths(): Map<string,Matter.Constraint> {
 		return this._paths;
 	}
 
-	public set paths(value: Map<WorldId,Matter.Constraint>) {
+	public set paths(value: Map<string,Matter.Constraint>) {
 		this._paths = value;
     }
 
-    public get walkers(): Map<WorldId,Matter.Body> {
+    public get walkers(): Map<string,Matter.Body> {
 		return this._walkers;
 	}
 
-	public set walkers(value: Map<WorldId,Matter.Body>) {
+	public set walkers(value: Map<string,Matter.Body>) {
 		this._walkers = value;
   }
   
 
-	public get destinations(): Map<WorldId,Matter.Body> {
+	public get destinations(): Map<string,Matter.Body> {
 		return this._destinations;
 	}
 
-	public set destinations(value: Map<WorldId,Matter.Body>) {
+	public set destinations(value: Map<string,Matter.Body>) {
 		this._destinations = value;
 	}
   

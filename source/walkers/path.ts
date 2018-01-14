@@ -18,10 +18,11 @@ export class Path extends WorldObject {
          this.endJunction = endJunction;
 	}
 	
+	/*
 	public getPathId():WorldId{
 		return(Path.getPathId(this.startJunction,this.endJunction));
 	}
-
+*/
 	public get startJunction(): Junction {
 		return this._startJunction;
 	}

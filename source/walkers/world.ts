@@ -12,34 +12,36 @@ import { WorldId } from "./worldid";
 export class World {
 
 	private _walkerEngine:WalkerEngine;
-	private _junctions : Map<WorldId,Junction>;
+	private _junctions : Map<string,Junction>;
 	private _destinations : Map<WorldId,Destination>;
 	
-	private _walkers : Map<WorldId,Walker>;
-	private _paths : Map<WorldId,Path>;
+	private _walkers : Map<string,Walker>;
+	private _paths : Map<string,Path>;
 	private _worldUpdateQueue: WorldUpdateQueue;
 	
 	
 
     public constructor(walkerEngine:WalkerEngine) {
-		this.walkers = new Map<WorldId,Walker>();
-		this.junctions = new Map<WorldId,Junction>();	
-		this.paths = new Map<WorldId,Path>();		
+		this.walkers = new Map<string,Walker>();
+		this.junctions = new Map<string,Junction>();	
+		this.paths = new Map<string,Path>();		
 		this.worldUpdateQueue = new WorldUpdateQueue();
 		this.walkerEngine =  walkerEngine;
 	}
 
-	public addPath(path:Path) {
+	public addPath(path:Path):void {
 		console.log("world.addPath:path="+JSON.stringify(path));	
 		
 		if(!this.hasPath(path.startJunction,path.endJunction))
 		{
 			console.log("world.addPath:before::this.paths.keys.length="+this.paths.size);	
 			console.log("wolrd.addPath:adding:"+path.worldId.id);
-			this.paths.set(path.getPathId(),path);
+			this.paths.set(path.worldId.id,path);
 			this.addJunction(path.startJunction);
 			this.addJunction(path.endJunction);
 			console.log("world.addPath:after::this.paths.keys.length="+this.paths.size);	
+			console.log("world.addPath:after::hasPath="+this.hasPath(path.startJunction,path.endJunction));	
+			
 			this.walkerEngine.addPath(this,path);
 		}
 	}
@@ -47,7 +49,7 @@ export class World {
 	public addJunction(junction:Junction):void {
 		if(!this.hasJunction(junction.worldId))
 		{
-			this.junctions.set(junction.worldId,junction);
+			this.junctions.set(junction.worldId.id,junction);
 			this.walkerEngine.addJunction(this,junction);
 		}
 	}
@@ -64,25 +66,25 @@ export class World {
 	public addWalker(walker:Walker):void {
 		if(!this.hasWalker(walker.worldId))
 		{
-			this.walkers.set(walker.worldId,walker);
+			this.walkers.set(walker.worldId.id,walker);
 			this.walkerEngine.addWalker(this,walker);
 		}
 	}
 
 	public getJunction(worldId:WorldId) : Junction{
-		return( this.junctions.get(worldId) );
+		return( this.junctions.get(worldId.id) );
 	}
 
 	public getWalker(worldId:WorldId):Walker{
-		return( this.walkers.get(worldId) );
+		return( this.walkers.get(worldId.id) );
 	}
 
 	public getPath(startJunction:Junction,endJunction:Junction):Path{
-		return( this.paths.get(Path.getPathId(startJunction,endJunction)) );
+		return( this.paths.get(Path.getPathId(startJunction,endJunction).id) );
 	}
 
 	public hasJunction(worldId:WorldId):boolean{
-		return( this.junctions.has(worldId) );
+		return( this.junctions.has(worldId.id) );
 	}
 
 	public hasDestination(worldId:WorldId):boolean{
@@ -90,13 +92,13 @@ export class World {
 	}
 
 	public hasWalker(worldId:WorldId):boolean{
-		return( this.walkers.has(worldId) );
+		return( this.walkers.has(worldId.id) );
 	}
 
 	public hasPath(startJunction:Junction,endJunction:Junction):boolean{
 		console.log("world.hasPath:Path.getPathId="+JSON.stringify(Path.getPathId(startJunction,endJunction)));	
-		
-		return( this.paths.has(Path.getPathId(startJunction,endJunction)) );
+		console.log("world.hasPath="+( this.paths.has(Path.getPathId(startJunction,endJunction).id) ));
+		return( this.paths.has(Path.getPathId(startJunction,endJunction).id) );
 	}
 
 	public addWorldUpdate(worldUpdate:WorldUpdate):void {
@@ -125,17 +127,21 @@ export class World {
 	private processOneWorldUpdate(worldUpdate:WorldUpdate):void {
 		let junction:Junction = worldUpdate.getJunction(this);
 		let walker:Walker = worldUpdate.getWalker(this,junction);
-		console.log("processOneWorldUpdate:junction.woldObjectId"+JSON.stringify(junction.worldId));
-		console.log("processOneWorldUpdate:walker.currentJunction.woldObjectId"+
-			JSON.stringify(walker.currentDestination.getJunction().worldId));
+		console.log("processOneWorldUpdate:junction.woldObjectId="+JSON.stringify(junction.worldId.id));
+		console.log("processOneWorldUpdate:walker.currentJunction.woldObjectId="+
+			JSON.stringify(walker.currentDestination.getJunction(this).worldId.id));
 		
-		if(!walker.isCurrentJunction(junction))
+		if(!walker.isCurrentJunction(this,junction))
 		{
-			let startingJunction = walker.getCurrentJunction();
+			let startingJunction = walker.getCurrentJunction(this);
+			console.log("processOneWorldUpdate:startingJunction="+startingJunction.worldId.id);
+			console.log("processOneWorldUpdate:junction="+junction.worldId.id);
 			let path:Path = worldUpdate.getPath(this,startingJunction,junction);
-			console.log("processOneWorldUpdate:"+JSON.stringify(path))
+			console.log("processOneWorldUpdate.path="+JSON.stringify(path))
 			
-			walker.currentDestination = path.endJunction.getWalkerDestination(walker);	
+			walker.currentDestination = path.endJunction.getWalkerDestination(walker);
+			console.log("processOneWorldUpdate.walker.currentDestination="+JSON.stringify(walker.currentDestination))
+			
 		}
 
 	}
@@ -148,27 +154,27 @@ export class World {
 		this._walkerEngine = value;
 	}
 
-	public get walkers(): Map<WorldId,Walker> {
+	public get walkers(): Map<string,Walker> {
 		return this._walkers;
 	}
 
-	public set walkers(value: Map<WorldId,Walker>) {
+	public set walkers(value: Map<string,Walker>) {
 		this._walkers = value;
 	}
 
-	public get junctions(): Map<WorldId,Junction> {
+	public get junctions(): Map<string,Junction> {
 		return this._junctions;
 	}
 
-	public set junctions(value: Map<WorldId,Junction>) {
+	public set junctions(value: Map<string,Junction>) {
 		this._junctions = value;
 	}
 
-	public get paths(): Map<WorldId,Path> {
+	public get paths(): Map<string,Path> {
 		return this._paths;
 	}
 
-	public set paths(value: Map<WorldId,Path>) {
+	public set paths(value: Map<string,Path>) {
 		this._paths = value;
 	}
 

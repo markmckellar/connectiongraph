@@ -2,6 +2,8 @@ import { Destination } from "./destination";
 import { WorldObject } from "./worldobject";
 import { Junction } from "./junction";
 import { WorldId } from "./worldid";
+import { World } from "./world";
+
 
 
 export class Walker extends WorldObject {
@@ -12,12 +14,18 @@ export class Walker extends WorldObject {
 		this.currentDestination = junction.getWalkerDestination(this);
 	}
 
-	public isCurrentJunction(junction:Junction):boolean {
-		return(this.currentDestination.getJunction().worldId.id!==junction.worldId.id)	
+	public isCurrentJunction(world:World,junction:Junction):boolean {
+		console.log("Walker:isCurrentJunction.junction="+junction.worldId.id);
+		console.log("Walker:isCurrentJunction.current.junction.tDestination="+
+			this.currentDestination.getJunction(world).worldId.id);
+		console.log("Walker:isCurrentJunction="+
+			(this.currentDestination.getJunction(world).worldId.id!==junction.worldId.id));
+
+		return(this.currentDestination.getJunction(world).worldId.id===junction.worldId.id)	
 	}
 
-	public getCurrentJunction(): Junction {
-		return this._currentDestination.getJunction();
+	public getCurrentJunction(world:World,): Junction {
+		return this._currentDestination.getJunction(world);
 	}
 
     public get currentDestination(): Destination {

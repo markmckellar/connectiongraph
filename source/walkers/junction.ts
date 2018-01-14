@@ -9,13 +9,13 @@ import { WorldId } from "./worldid";
 
 export abstract class Junction extends WorldObject {
    
-    private _destinations: Map<WorldId,Destination>;
+    private _destinations: Map<string,Destination>;
     private _destinationList: Array<Destination>;
     private _defaultDestination: Destination;
 
     public constructor(worldId:WorldId) {
         super(worldId);
-        this.destinations = new Map<WorldId,Destination>();
+        this.destinations = new Map<string,Destination>();
         this.destinationList = Array<Destination>();
         this._defaultDestination = this.getNewDefaultDestination();
         this.addDestination(this.getNewDefaultDestination());
@@ -49,20 +49,20 @@ export abstract class Junction extends WorldObject {
     public addDestination(destination:Destination):void{
         if(!this.hasDestination)
         {
-            this.destinations.set(destination.worldId,destination);
+            this.destinations.set(destination.worldId.id,destination);
             this.destinationList.push(destination);
         }
 	}
 
     public hasDestination(worldId:WorldId):boolean{
-		return( this.destinations.has(worldId) );
+		return( this.destinations.has(worldId.id) );
 	}
 
-    private get destinations(): Map<WorldId,Destination> {
+    private get destinations(): Map<string,Destination> {
 		return this._destinations;
 	}
 
-	private set destinations(value: Map<WorldId,Destination>) {
+	private set destinations(value: Map<string,Destination>) {
 		this._destinations = value;
     }
     
