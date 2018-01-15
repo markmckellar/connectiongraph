@@ -1,10 +1,12 @@
-import { Walker } from "./walker";
-import { Junction } from "./junction";
-import { Destination } from "./destination";
-import { Path } from "./path";
-import { WalkerEngine } from "./walkerengine";
-import { World } from "./world";
-
+import { Walker } from "../walker";
+import { Junction } from "../junction";
+import { Destination } from "../destination";
+import { Path } from "../path";
+import { WalkerEngine } from "../walkerengine";
+import { World } from "../world";
+import { MatterJunction } from "./matterjunction";
+import { MatterDestination } from "./matterdestination";
+import { MatterWalker } from "./matterwalker";
 import * as Matter from "matter-js";
 
 
@@ -13,26 +15,30 @@ export class MatterEngine extends WalkerEngine {
 
 
 	
-    private _junctions : Map<string,Matter.Body>;
-    private _destinations : Map<string,Matter.Body>;
-    private _walkers : Map<string,Matter.Body>;
+    private _junctions : Map<string,MatterJunction>;
+    private _destinations : Map<string,MatterDestination>;
+    private _walkers : Map<string,MatterWalker>;
     private _paths : Map<string,Matter.Constraint>;
-    private _walkerDestinations : Map<string,Matter.Constraint>;
+    //private _walkerDestinations : Map<string,Matter.Constraint>;
 
     private _engine : Matter.Engine;
 
-    public static boundsFilter:number = 0x0001;
-    public static walkerFilter:number = 0x0002;
-    public static junctionFilter:number = 0x0004;
+    public static boundsFilter:number = 1;//0x0001;
+    public static walkerFilter:number = 2;
+    public static junctionSpacerFilter:number = 4;
+    public static junctionFilter:number = 8;
+    public static boundryContainerFilter:number = 16;
+    public static boundrySpatialFilter:number = 32;
+    
     
 
     public constructor() {
         super();
-        this.junctions = new Map<string,Matter.Body>();
-        this.destinations = new Map<string,Matter.Body>();
+        this.junctions = new Map<string,MatterJunction>();
+        this.destinations = new Map<string,MatterDestination>();
         this.paths = new Map<string,Matter.Constraint>();    
-        this.walkers = new Map<string,Matter.Body>(); 
-        this.walkerDestinations = new Map<string,Matter.Constraint>();    
+        this.walkers = new Map<string,MatterWalker>(); 
+        //this.walkerDestinations = new Map<string,Matter.Constraint>();    
         
         //this.engine = engine; 
         this.engine = Matter.Engine.create(); 
@@ -42,7 +48,7 @@ export class MatterEngine extends WalkerEngine {
     }
 
     public addPath(world:World,path:Path):void {
-      console.log("MatterEngine.addPath:woldObjectId="+JSON.stringify(path.worldId.id));
+      //console.log("MatterEngine.addPath:woldObjectId="+JSON.stringify(path.worldId.id));
       
       if(!this.paths.has(path.worldId.id))
       {
@@ -53,13 +59,13 @@ export class MatterEngine extends WalkerEngine {
         }
         else
         {
-          console.log("MatterEngine.addPath:adding="+path.worldId.id);
+         // console.log("MatterEngine.addPath:adding="+path.worldId.id);
         
           this.addJunction(world,path.startJunction);
           this.addJunction(world,path.endJunction);
 
-          let matterStartJunction:Matter.Body = this.junctions.get(path.startJunction.worldId.id);
-          let matterEndJunction:Matter.Body = this.junctions.get(path.endJunction.worldId.id);
+          let matterStartJunction:Matter.Body = this.junctions.get(path.startJunction.worldId.id).getAreaJunction();
+          let matterEndJunction:Matter.Body = this.junctions.get(path.endJunction.worldId.id).getAreaJunction();
           //console.log("MatterEngine.addPath:matterStartJunction="+JSON.stringify(matterStartJunction));
           //console.log("MatterEngine.addPath:matterEndJunction="+JSON.stringify(matterEndJunction));
           
@@ -79,28 +85,30 @@ export class MatterEngine extends WalkerEngine {
     }
 
     public changeWalkerDestination(world:World,walker:Walker,destination:Destination):void{
-      this.walkerDestinations.get(walker.worldId.id).bodyB = 
-        this.junctions.get(walker.getCurrentJunction(world).worldId.id);
+      this.walkers.get(walker.worldId.id).getWalker2DestinationSpring().bodyB = 
+        this.junctions.get(walker.getCurrentJunction(world).worldId.id).getAreaJunction();
     }       
     
     public addWalker(world:World,walker:Walker):void { 
       if(!this.walkers.has(walker.worldId.id))
       {
-        let junctionDensity = this.junctions.get(walker.getCurrentJunction(world).worldId.id).density;
-        console.log("MatterEngine:addWalker:junctionDensity="+junctionDensity);
+        //let junctionDensity = this.junctions.get(walker.getCurrentJunction(world).worldId.id).getAreaJunction().density;
+        //console.log("MatterEngine:addWalker:junctionDensity="+junctionDensity);
 
-        let matterWalker = Matter.Bodies.circle(350,50,10,{density:junctionDensity/1000},8);
-        matterWalker.collisionFilter.category = MatterEngine.walkerFilter;
-        matterWalker.collisionFilter.mask = MatterEngine.walkerFilter|MatterEngine.boundsFilter;
+        //let matterWalker = Matter.Bodies.circle(350,50,10,{density:junctionDensity/1000},8);
+        //matterWalker.collisionFilter.category = MatterEngine.walkerFilter;
+        //matterWalker.collisionFilter.mask = MatterEngine.walkerFilter|MatterEngine.boundsFilter;
         
+        let matterWalker:MatterWalker = new MatterWalker(world,this,walker);
         this.walkers.set(walker.worldId.id,matterWalker);
-        Matter.World.add(this.engine.world,[matterWalker]); 
-          
+        matterWalker.addToEngine(world,this);
+        //Matter.World.add(this.engine.world,[matterWalker]); 
+          /*
       
 
         let matterDestination = Matter.Constraint.create({
             bodyA: this.walkers.get(walker.worldId.id),
-            bodyB: this.junctions.get(walker.getCurrentJunction(world).worldId.id),  
+            bodyB: this.junctions.get(walker.getCurrentJunction(world).worldId.id).getAreaJunction(),  
             pointA: { x: -0, y: -0 },
             pointB: { x: -0, y: -0 },
             length:0,
@@ -108,17 +116,17 @@ export class MatterEngine extends WalkerEngine {
           });
         this.walkerDestinations.set(walker.worldId.id,matterDestination);
       
-        Matter.World.add(this.engine.world,[matterDestination]); 
+        Matter.World.add(this.engine.world,[matterDestination]);
+        */ 
       }
     }
 
     public addDestination(world:World,destination:Destination):void { 
       if(!this._destinations.has(destination.worldId.id))
       {
-              let matterDestination = Matter.Bodies.circle(350,50,10,{},8);      
-              this.destinations.set(destination.worldId.id,matterDestination);
-              //Matter.World.add(this.engine.world,[matterWalker]);
-              
+        let matterDestination = new MatterDestination(world,this,destination);
+        this.destinations.set(destination.worldId.id,matterDestination);
+        matterDestination.addToEngine(world,this);         
       }
     }
 
@@ -127,12 +135,9 @@ export class MatterEngine extends WalkerEngine {
     public addJunction(world:World,junction:Junction):void {
       if(!this.junctions.has(junction.worldId.id))
       {
-              let matterJunction = Matter.Bodies.circle(350,50,40,{},8);      
+              let matterJunction = new MatterJunction(world,this,junction);      
               this.junctions.set(junction.worldId.id,matterJunction);
-              Matter.World.add(this.engine.world,[matterJunction]);
-              matterJunction.collisionFilter.category = MatterEngine.junctionFilter;
-              matterJunction.collisionFilter.mask = MatterEngine.junctionFilter|MatterEngine.boundsFilter;
-              
+              matterJunction.addToEngine(world,this);                       
       }
     }
 
@@ -162,6 +167,19 @@ export class MatterEngine extends WalkerEngine {
         newVeritices.push(Matter.Vector.create(v.x,v.y));
       }
       return(newVeritices);
+    }
+
+    public isWalkerAtDestination(world:World,walker:Walker):void {
+      //let matterDestination = this.destinations.get(walker.getCurrentDestination().worldId.id);      
+    }       
+    
+    public pin(bodyA:Matter.Body,bodyB:Matter.Body):void {
+      let pin = Matter.Constraint.create({
+              bodyA: bodyA,
+              bodyB: bodyB,  
+            });
+  
+      Matter.World.add(this.engine.world,[pin]);
     }
 
     public createBoundObject(body:Matter.Body,scaleInner:number,scaleOuter:number):Matter.Body {     
@@ -198,30 +216,6 @@ export class MatterEngine extends WalkerEngine {
   }
     
     public createBounds(width:number,height:number):void {
-        //let thickness = 10;
-        //let width = render.canvas.width;
-        //let height = render.canvas.height;
-        /*
-        let boundsBottom = Matter.Bodies.rectangle(width/2,height-thickness,width,thickness,{ isStatic: true });
-        let boundsTop = Matter.Bodies.rectangle(width/2,0,width,thickness,{ isStatic: true });
-        let boundsLeft = Matter.Bodies.rectangle(0,height/2,thickness,height, { isStatic: true });
-        let boundsRight = Matter.Bodies.rectangle(width-thickness,height/2, thickness,height, { isStatic: true });
-
-        boundsBottom.collisionFilter.category = MatterEngine.boundsFilter;
-        boundsTop.collisionFilter.category = MatterEngine.boundsFilter;
-        boundsLeft.collisionFilter.category = MatterEngine.boundsFilter;
-        boundsRight.collisionFilter.category = MatterEngine.boundsFilter;
-        
-
-        
-        //boxA.restitution = 1.0;
-        //boxB.restitution = 1.0;
-        boundsBottom.restitution = 1.0;
-        boundsTop.restitution = 1.0;
-        boundsLeft.restitution = 1.0;
-        boundsRight.restitution = 1.0;
-        Matter.World.add(this.engine.world, [boundsBottom,boundsTop,boundsLeft,boundsRight]);
-   */
       let wallBoundsRect = Matter.Bodies.rectangle(width/2,height/2,width,height,{});
       let walls:Matter.Body = this.createBoundObject(wallBoundsRect,1,10);
       walls.collisionFilter.category = MatterEngine.boundsFilter;
@@ -233,11 +227,11 @@ export class MatterEngine extends WalkerEngine {
   
     }
 
-    public get junctions(): Map<string,Matter.Body> {
+    public get junctions(): Map<string,MatterJunction> {
 		return this._junctions;
 	}
 
-	public set junctions(value: Map<string,Matter.Body>) {
+	public set junctions(value: Map<string,MatterJunction>) {
 		this._junctions = value;
     }
     
@@ -249,20 +243,20 @@ export class MatterEngine extends WalkerEngine {
 		this._paths = value;
     }
 
-    public get walkers(): Map<string,Matter.Body> {
+    public get walkers(): Map<string,MatterWalker> {
 		return this._walkers;
 	}
 
-	public set walkers(value: Map<string,Matter.Body>) {
+	public set walkers(value: Map<string,MatterWalker>) {
 		this._walkers = value;
   }
   
 
-	public get destinations(): Map<string,Matter.Body> {
+	public get destinations(): Map<string,MatterDestination> {
 		return this._destinations;
 	}
 
-	public set destinations(value: Map<string,Matter.Body>) {
+	public set destinations(value: Map<string,MatterDestination>) {
 		this._destinations = value;
 	}
   
@@ -274,7 +268,7 @@ export class MatterEngine extends WalkerEngine {
 	public set engine(value: Matter.Engine) {
 		this._engine = value;
   }
-  
+  /*
 
 	public get walkerDestinations(): Map<string,Matter.Constraint> {
 		return this._walkerDestinations;
@@ -283,7 +277,7 @@ export class MatterEngine extends WalkerEngine {
 	public set walkerDestinations(value: Map<string,Matter.Constraint>) {
 		this._walkerDestinations = value;
 	}
-
+*/
   
     
 }

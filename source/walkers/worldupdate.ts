@@ -32,7 +32,7 @@ export class WorldUpdate {
 	public static datePlus(milliseconds:number):Date {
 		let date:Date = new Date();
 		date.setMilliseconds(date.getMilliseconds()+milliseconds);
-		console.log("WorldUpdate:datePlus="+date)
+		//console.log("WorldUpdate:datePlus="+date)
 		return(date);
 	}
 	
@@ -63,9 +63,9 @@ export class WorldUpdate {
 			world.addPath(path);
 		} 
 		path = world.getPath(startJunction,endJunction);
-		console.log("WorldUpdate:haspath="+world.hasPath(startJunction,endJunction));
-		console.log("WorldUpdate:path="+path);
-		console.log("WorldUpdate:pathjson="+JSON.stringify(path));
+		//console.log("WorldUpdate:haspath="+world.hasPath(startJunction,endJunction));
+		//console.log("WorldUpdate:path="+path);
+		//console.log("WorldUpdate:pathjson="+JSON.stringify(path));
 		return(path);
 	}
 

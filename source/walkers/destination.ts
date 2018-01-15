@@ -19,7 +19,7 @@ export abstract class Destination extends WorldObject {
     public abstract isDestination(walker:Walker):boolean;
 
     public getJunction(world:World): Junction {
-        console.log("Destination.getJunction.this.junctionWorldId="+this.junctionWorldId.id);
+        //console.log("Destination.getJunction.this.junctionWorldId="+this.junctionWorldId.id);
 		return world.getJunction(this.junctionWorldId);
 	}
 

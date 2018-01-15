@@ -11,7 +11,7 @@ export class DefaultJunction extends Junction {
     }
 
     public getNewDefaultDestination() : Destination{
-        console.log("DefaultJunction:"+this.worldId);
+        //console.log("DefaultJunction:"+this.worldId);
         return(new DefaultDestination(new WorldId(this.worldId.id+":defaultDestination"),this));
     }
     

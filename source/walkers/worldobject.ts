@@ -7,7 +7,7 @@ export class WorldObject {
     
     public constructor(worldId:WorldId) {
         this.worldId = worldId;          
-        console.log("WorldObject:"+this.worldId.id);
+        //console.log("WorldObject:"+this.worldId.id);
     }
 
 

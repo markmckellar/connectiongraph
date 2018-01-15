@@ -1,5 +1,5 @@
 import { World } from "./walkers/world";
-import { MatterEngine } from "./walkers/matterengine";
+import { MatterEngine } from "./walkers/matter/matterengine";
 import * as Matter from "matter-js";
 import { WorldUpdate } from "./walkers/worldupdate";
 //import decomp from 'poly-decomp';
@@ -60,6 +60,8 @@ let worldUpdate4b:WorldUpdate = new WorldUpdate("junction4b","walker2",WorldUpda
 let worldUpdate5b:WorldUpdate = new WorldUpdate("junction5b","walker2",WorldUpdate.datePlus(18*1000),{},{},{});
 let worldUpdate6b:WorldUpdate = new WorldUpdate("junction6b","walker2",WorldUpdate.datePlus(19*1000),{},{},{});
 */
+
+
 
 let timer=1;
 let timerInc = 0.5;

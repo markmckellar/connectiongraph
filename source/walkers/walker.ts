@@ -21,11 +21,11 @@ export class Walker extends WorldObject {
 	}
 
 	public isCurrentJunction(world:World,junction:Junction):boolean {
-		console.log("Walker:isCurrentJunction.junction="+junction.worldId.id);
-		console.log("Walker:isCurrentJunction.current.junction.tDestination="+
-			this.currentDestination.getJunction(world).worldId.id);
-		console.log("Walker:isCurrentJunction="+
-			(this.currentDestination.getJunction(world).worldId.id!==junction.worldId.id));
+		//console.log("Walker:isCurrentJunction.junction="+junction.worldId.id);
+		//console.log("Walker:isCurrentJunction.current.junction.tDestination="+
+		//	this.currentDestination.getJunction(world).worldId.id);
+		//console.log("Walker:isCurrentJunction="+
+		//	(this.currentDestination.getJunction(world).worldId.id!==junction.worldId.id));
 
 		return(this.currentDestination.getJunction(world).worldId.id===junction.worldId.id)	
 	}
