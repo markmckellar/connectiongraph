@@ -15,7 +15,8 @@ export abstract class WalkerEngine {
     public abstract addDestination(world:World,destination:Destination):void;
     public abstract addPath(world:World,path:Path):void;
     public abstract createBounds(width:number,height:number):void; 
-    public abstract changeWalkerDestination(world:World,walker:Walker,destination:Destination):void;       
+    public abstract changeWalkerDestination(world:World,walker:Walker,destination:Destination):void;
+    public abstract isWalkerAtDestination(world:World,walker:Walker):void;       
 
    // public abstract doesWalkerExist(world:World,walker:Walker):boolean;
     //public abstract doesJunctionExist(world:World,junction:Junction):boolean;

@@ -2,6 +2,9 @@ import { World } from "./walkers/world";
 import { MatterEngine } from "./walkers/matterengine";
 import * as Matter from "matter-js";
 import { WorldUpdate } from "./walkers/worldupdate";
+//import decomp from 'poly-decomp';
+
+//window.decomp = decomp;
 // import * as $ from "jquery";
 // import Greeter from "./entities/greeter";
 // let merge = require("merge2");
@@ -34,6 +37,15 @@ matterEngine.initMouse(render);
 // run the engine
 Matter.Engine.run(engine);
 Matter.Render.run(render);
+
+
+//let body:Matter.Body = Matter.Bodies.circle(350,350,40,{},8);     
+//console.log("main:body="+body.parts.length); 
+//let body2:Matter.Body = matterEngine.createBoundObject(body,1,1.05);
+
+//Matter.World.add(engine.world,[body2]);
+
+
 /*
 let worldUpdate1:WorldUpdate = new WorldUpdate("junction1","walker",WorldUpdate.datePlus(1*1000),{},{},{});
 let worldUpdate2:WorldUpdate = new WorldUpdate("junction2","walker",WorldUpdate.datePlus(2*1000),{},{},{});
@@ -48,18 +60,25 @@ let worldUpdate4b:WorldUpdate = new WorldUpdate("junction4b","walker2",WorldUpda
 let worldUpdate5b:WorldUpdate = new WorldUpdate("junction5b","walker2",WorldUpdate.datePlus(18*1000),{},{},{});
 let worldUpdate6b:WorldUpdate = new WorldUpdate("junction6b","walker2",WorldUpdate.datePlus(19*1000),{},{},{});
 */
+
 let timer=1;
-let timerInc = 1;
-for(let t=0;t<100;t++)
+let timerInc = 0.5;
+for(let t=0;t<10;t++)
 {
   for(let i=0;i<6;i++,timer+=timerInc) {
-    let worldUpdate:WorldUpdate = new WorldUpdate("junction"+i,"walker1",WorldUpdate.datePlus(timer*1000),{},{},{});
-    world.addWorldUpdate(worldUpdate);
+    let worldUpdate1:WorldUpdate = new WorldUpdate("junction"+i,"walker1",WorldUpdate.datePlus(timer*1000),{},{},{});
+    world.addWorldUpdate(worldUpdate1);
+    let worldUpdate2:WorldUpdate = new WorldUpdate("junction"+(5-i),"walker2",WorldUpdate.datePlus(timer*1000),{},{},{});
+    world.addWorldUpdate(worldUpdate2);
+    
   }
 
+
   for(let i=5;i>=0;i--,timer+=timerInc) {
-    let worldUpdate:WorldUpdate = new WorldUpdate("junction"+i,"walker1",WorldUpdate.datePlus(timer*1000),{},{},{});
-    world.addWorldUpdate(worldUpdate);
+    let worldUpdate1:WorldUpdate = new WorldUpdate("junction"+i,"walker1."+t,WorldUpdate.datePlus(timer*1000),{},{},{});
+    world.addWorldUpdate(worldUpdate1);
+    let worldUpdate2:WorldUpdate = new WorldUpdate("junction"+(5-i),"walker2."+t,WorldUpdate.datePlus(timer*1000),{},{},{});
+    world.addWorldUpdate(worldUpdate2);
   }
 }
 

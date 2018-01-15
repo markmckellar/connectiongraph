@@ -20,6 +20,10 @@ export class MatterEngine extends WalkerEngine {
     private _walkerDestinations : Map<string,Matter.Constraint>;
 
     private _engine : Matter.Engine;
+
+    public static boundsFilter:number = 0x0001;
+    public static walkerFilter:number = 0x0002;
+    public static junctionFilter:number = 0x0004;
     
 
     public constructor() {
@@ -82,23 +86,29 @@ export class MatterEngine extends WalkerEngine {
     public addWalker(world:World,walker:Walker):void { 
       if(!this.walkers.has(walker.worldId.id))
       {
-            let matterWalker = Matter.Bodies.circle(350,50,10,{},8);      
-              this.walkers.set(walker.worldId.id,matterWalker);
-              Matter.World.add(this.engine.world,[matterWalker]); 
-              
+        let junctionDensity = this.junctions.get(walker.getCurrentJunction(world).worldId.id).density;
+        console.log("MatterEngine:addWalker:junctionDensity="+junctionDensity);
 
-
-            let matterDestination = Matter.Constraint.create({
-                bodyA: this.walkers.get(walker.worldId.id),
-                bodyB: this.junctions.get(walker.getCurrentJunction(world).worldId.id),  
-                pointA: { x: -0, y: -0 },
-                pointB: { x: -0, y: -0 },
-                length:0,
-                stiffness:0.001,
-              });
-            this.walkerDestinations.set(walker.worldId.id,matterDestination);
+        let matterWalker = Matter.Bodies.circle(350,50,10,{density:junctionDensity/1000},8);
+        matterWalker.collisionFilter.category = MatterEngine.walkerFilter;
+        matterWalker.collisionFilter.mask = MatterEngine.walkerFilter|MatterEngine.boundsFilter;
+        
+        this.walkers.set(walker.worldId.id,matterWalker);
+        Matter.World.add(this.engine.world,[matterWalker]); 
           
-            Matter.World.add(this.engine.world,[matterDestination]); 
+      
+
+        let matterDestination = Matter.Constraint.create({
+            bodyA: this.walkers.get(walker.worldId.id),
+            bodyB: this.junctions.get(walker.getCurrentJunction(world).worldId.id),  
+            pointA: { x: -0, y: -0 },
+            pointB: { x: -0, y: -0 },
+            length:0,
+            stiffness:0.001,
+          });
+        this.walkerDestinations.set(walker.worldId.id,matterDestination);
+      
+        Matter.World.add(this.engine.world,[matterDestination]); 
       }
     }
 
@@ -120,6 +130,8 @@ export class MatterEngine extends WalkerEngine {
               let matterJunction = Matter.Bodies.circle(350,50,40,{},8);      
               this.junctions.set(junction.worldId.id,matterJunction);
               Matter.World.add(this.engine.world,[matterJunction]);
+              matterJunction.collisionFilter.category = MatterEngine.junctionFilter;
+              matterJunction.collisionFilter.mask = MatterEngine.junctionFilter|MatterEngine.boundsFilter;
               
       }
     }
@@ -139,15 +151,68 @@ export class MatterEngine extends WalkerEngine {
         // keep the mouse in sync with rendering
         render.controller.mouse = mouse;
     }
+
+    private cloneVerticies(inVertices:Array<Matter.Vector>):Array<Matter.Vector>
+    {
+      let newVeritices:Array<Matter.Vector> = new Array<Matter.Vector>();
+      
+      for(let x=0;x<inVertices.length;x++)
+      {
+        let v:Matter.Vector = inVertices[x];
+        newVeritices.push(Matter.Vector.create(v.x,v.y));
+      }
+      return(newVeritices);
+    }
+
+    public createBoundObject(body:Matter.Body,scaleInner:number,scaleOuter:number):Matter.Body {     
+      let pointsInner:Array<Matter.Vector> = this.cloneVerticies(body.vertices);
+      Matter.Vertices.scale(pointsInner,scaleInner,scaleInner,body.position);
+
+      let pointsOuter:Array<Matter.Vector> = this.cloneVerticies(body.vertices);
+      Matter.Vertices.scale(pointsOuter,scaleOuter,scaleOuter,body.position);
+     
+      let bodies:Array<Matter.Body> = new Array<Matter.Body>();
+      
+      // go all around the inner
+      for(let i=0;i<pointsInner.length;i++)
+      {
+        let newVeritices:Array<Matter.Vector> = new Array<Matter.Vector>();
+        let j = ((i+1)===pointsInner.length) ? 0 : (i+1);
+        
+        newVeritices.push(pointsInner[i]);
+        newVeritices.push(pointsOuter[i]);
+        newVeritices.push(pointsOuter[j]);
+        newVeritices.push(pointsInner[j]);     
+        //newVeritices.push(pointsInner[i]);
+        
+        let center:Matter.Vector = Matter.Vertices.centre(newVeritices);
+        let newBody:Matter.Body = Matter.Bodies.fromVertices(center.x,center.y,[newVeritices],{});
+         
+        bodies.push(newBody);
+      }
+
+      let newBody:Matter.Body = Matter.Body.create({parts: bodies });        
+      newBody.collisionFilter.category = MatterEngine.boundsFilter;
+      newBody.restitution = 1.0; 
+      return(newBody);
+  }
     
     public createBounds(width:number,height:number):void {
-        let thickness = 10;
+        //let thickness = 10;
         //let width = render.canvas.width;
         //let height = render.canvas.height;
+        /*
         let boundsBottom = Matter.Bodies.rectangle(width/2,height-thickness,width,thickness,{ isStatic: true });
         let boundsTop = Matter.Bodies.rectangle(width/2,0,width,thickness,{ isStatic: true });
         let boundsLeft = Matter.Bodies.rectangle(0,height/2,thickness,height, { isStatic: true });
         let boundsRight = Matter.Bodies.rectangle(width-thickness,height/2, thickness,height, { isStatic: true });
+
+        boundsBottom.collisionFilter.category = MatterEngine.boundsFilter;
+        boundsTop.collisionFilter.category = MatterEngine.boundsFilter;
+        boundsLeft.collisionFilter.category = MatterEngine.boundsFilter;
+        boundsRight.collisionFilter.category = MatterEngine.boundsFilter;
+        
+
         
         //boxA.restitution = 1.0;
         //boxB.restitution = 1.0;
@@ -156,7 +221,16 @@ export class MatterEngine extends WalkerEngine {
         boundsLeft.restitution = 1.0;
         boundsRight.restitution = 1.0;
         Matter.World.add(this.engine.world, [boundsBottom,boundsTop,boundsLeft,boundsRight]);
-   
+   */
+      let wallBoundsRect = Matter.Bodies.rectangle(width/2,height/2,width,height,{});
+      let walls:Matter.Body = this.createBoundObject(wallBoundsRect,1,10);
+      walls.collisionFilter.category = MatterEngine.boundsFilter;
+      walls.restitution = 1.0;
+      Matter.Body.setStatic(walls,true);
+      Matter.World.add(this.engine.world, [walls]);
+      
+      
+  
     }
 
     public get junctions(): Map<string,Matter.Body> {
