@@ -1,6 +1,9 @@
 export enum MatterEvent {
         collisionStart = 'collisionStart',
         collisionEnd = 'collisionEnd',
-        beforeUpdate = 'afterAdd',
+        beforeUpdate = 'beforeUpdate',
+        afterUpdate = 'afterUpdate',
+        beforeAdd = 'beforeAdd',
+        afterAdd = 'afterAdd',
         collisionActive = 'collisionActive',
     };

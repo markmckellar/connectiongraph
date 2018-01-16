@@ -80,7 +80,12 @@ export class MatterEngine extends WalkerEngine {
       
     }
 
-    public processPairsEvent(pairs:Array<any>,eventType:MatterEvent,event:any):void {
+    public processEngineEvent(eventType:MatterEvent,event:Object):void {
+      console.log("processEngineEvent:eventType="+eventType+":event="+event);
+    }
+
+    public processPairsEvent(eventType:MatterEvent,event:Object):void {
+      var pairs:Array<any> = event["pairs"];
       for(let i=0;i<pairs.length;i++){
 
         if(this.hasHandler(pairs[i].bodyA,eventType))
@@ -89,44 +94,99 @@ export class MatterEngine extends WalkerEngine {
         if(this.hasHandler(pairs[i].bodyB,eventType))
           this.getHandler(pairs[i].bodyB,eventType).eventHandler(event);
       }
-
     }
 
+    public processCollisionPairsEvent(eventType:MatterEvent,event: Matter.IEventCollision<Matter.Engine>):void {
+      var pairs:Matter.IPair[] = event.pairs;
+      for(let i=0;i<pairs.length;i++){
+
+        if(this.hasHandler(pairs[i].bodyA,eventType))
+          this.getHandler(pairs[i].bodyA,eventType).eventHandler(event);
+
+        if(this.hasHandler(pairs[i].bodyB,eventType))
+          this.getHandler(pairs[i].bodyB,eventType).eventHandler(event);
+      }
+    }
+/*
+    public processCollisionPairsEvent(eventType:MatterEvent,event: Matter.IEventCollision<Matter.Engine>):void {
+      var pairs:Matter.IPair[] = event.pairs;
+      for(let i=0;i<pairs.length;i++){
+
+        if(this.hasHandler(pairs[i].bodyA,eventType))
+          this.getHandler(pairs[i].bodyA,eventType).eventHandler(event);
+
+        if(this.hasHandler(pairs[i].bodyB,eventType))
+          this.getHandler(pairs[i].bodyB,eventType).eventHandler(event);
+      }
+    }
+*/
+
+/*
+    public processCollisionEvent(materEvent:MatterEvent,event: Matter.IEventCollision<Matter.Engine>):void  {      
+      if(materEvent===MatterEvent.collisionStart) this.processCollisionPairsEvent(materEvent,event);
+      else if(materEvent===MatterEvent.collisionEnd) this.processPairsEvent(materEvent,event);
+      else if(materEvent===MatterEvent.collisionActive) this.processPairsEvent(materEvent,event);
+    }
+*/
+    public processTimestampedEvent(materEvent:MatterEvent,event:Matter.IEventTimestamped<Matter.Engine>):void  {      
+     console.log("MatterEngine:processTimestampedEvent"+
+      ":event="+event.name+
+      ":timestamp="+event.timestamp+      
+      "");
+    }
+
+    public processCompositeEvent(materEvent:MatterEvent,event: Matter.IEventComposite<Matter.Composite>):void  {      
+      console.log("MatterEngine:processCompositeEvent"+
+       ":event="+event.name+
+       "");
+     }
+
+    
+/*
+    public processEvent(materEvent:MatterEvent,event:Object):void  {
+      if(materEvent===MatterEvent.collisionStart) this.processPairsEvent(materEvent,event);
+      else if(materEvent===MatterEvent.collisionEnd) this.processPairsEvent(materEvent,event);
+      else if(materEvent===MatterEvent.collisionActive) this.processPairsEvent(materEvent,event);
+      else if(materEvent===MatterEvent.beforeUpdate) this.processEngineEvent(materEvent,event);
+      else if(materEvent===MatterEvent.afterUpdate) this.processEngineEvent(materEvent,event);
+      else if(materEvent===MatterEvent.beforeAdd) this.processEngineEvent(materEvent,event);
+      else if(materEvent===MatterEvent.afterAdd) this.processEngineEvent(materEvent,event);
+    }
+*/
     public enableEvents():void {
-      let matterEngine:MatterEngine = this;
+      let matterEngine:MatterEngine = this;    
       console.log("World:event:enableEvents");			
       
-      Matter.Events.on(this.engine,MatterEvent.collisionStart, function(event) {
-            //console.log("*** World:event:collisionStart");			
-            var pairs:Array<any> = event.pairs;
-            //console.log("World:event:collisionStart="+pairs.length);			
-            matterEngine.processPairsEvent(pairs,MatterEvent.collisionStart,event);   
+      Matter.Events.on(this.engine,MatterEvent.collisionStart, function(event: Matter.IEventCollision<Matter.Engine>) {   
+            matterEngine.processCollisionPairsEvent(MatterEvent.collisionStart,event);
       });
 
-      Matter.Events.on(this.engine,MatterEvent.collisionEnd, function(event) {
-        //var pairs:Array<any> = event.pairs;
-        //console.log("World:event:collisionEnd="+pairs.length);			
-        //matterEngine.processPairsEvent(pairs,MatterEvent.collisionEnd);   
-       });
+      Matter.Events.on(this.engine,MatterEvent.collisionEnd, function(event: Matter.IEventCollision<Matter.Engine>) {  
+        matterEngine.processCollisionPairsEvent(MatterEvent.collisionEnd,event);
+      });
 
-       Matter.Events.on(this.engine,"beforeUpdate", function(event) {
-        //console.log("*** World:event:beforeUpdate");			
-        //var pairs:Array<any> = event.pairs;
-        //console.log("World:event:beforeUpdate="+pairs.length);			
-        //matterEngine.processEvent(pairs,MatterEvent.beforeUpdate);   
-  });
+      Matter.Events.on(this.engine,MatterEvent.collisionActive, function(event: Matter.IEventCollision<Matter.Engine>) {   
+        matterEngine.processCollisionPairsEvent(MatterEvent.collisionActive,event);
+      });
 
-      Matter.Events.on(this.engine,MatterEvent.collisionActive, function(event) {
-        //console.log("*** World:event:collisionActive");			
-        //var pairs:Array<any> = event.pairs;
-        //console.log("World:event:collisionActive="+pairs.length);			
-        //matterEngine.processPairsEvent(pairs,MatterEvent.collisionActive);   
+       Matter.Events.on(this.engine,MatterEvent.beforeUpdate, function(event: Matter.IEventTimestamped<Matter.Engine>) {  
+        matterEngine.processTimestampedEvent(MatterEvent.beforeUpdate,event);
+      });
+
+      Matter.Events.on(this.engine,MatterEvent.afterUpdate, function(event: Matter.IEventComposite<Matter.Composite>) {   
+        matterEngine.processCompositeEvent(MatterEvent.afterUpdate,event);
+      });
+
+      Matter.Events.on(this.engine,MatterEvent.beforeAdd,function(event: Matter.IEventComposite<Matter.Composite>) {      
+        matterEngine.processCompositeEvent(MatterEvent.beforeAdd,event);
+
+      });
+
+      Matter.Events.on(this.engine,MatterEvent.afterAdd, function(event: Matter.IEventComposite<Matter.Composite>) {    
+        matterEngine.processCompositeEvent(MatterEvent.afterAdd,event);
+
       });
     }
-
-
-
-
 
     public addPath(world:World,path:Path):void {    
       if(!this.paths.has(path.worldId.id))
