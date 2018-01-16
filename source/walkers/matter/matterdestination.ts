@@ -15,15 +15,16 @@ export class MatterDestination  {
 
     public constructor(world:World,matterEngine:MatterEngine,destination:Destination) {
 		this.destination = destination;
-		
-		this.spatialBody = this.getMatterJunction(world,matterEngine).getBoundryJunction();
+		let j:Matter.Body = this.getMatterJunction(world,matterEngine).getBoundryJunction();;
+		//this.spatialBody = this.getMatterJunction(world,matterEngine).getBoundryJunction();
+		this.spatialBody = Matter.Bodies.circle(j.position.x,j.position.y,40,{},8);
 		this.boundryBody = matterEngine.createBoundObject(this.spatialBody,1.05,1.5);
 		
 		this.spatialBody.collisionFilter.category = MatterEngine.boundrySpatialFilter;
-		this.spatialBody.collisionFilter.mask = MatterEngine.boundsFilter;
+		this.spatialBody.collisionFilter.mask = MatterEngine.boundsFilter|MatterEngine.walkerTravleing;
 		
 		this.boundryBody.collisionFilter.category = MatterEngine.boundryContainerFilter;
-		this.boundryBody.collisionFilter.mask = MatterEngine.boundsFilter;
+		this.boundryBody.collisionFilter.mask = MatterEngine.boundsFilter|MatterEngine.walkerArrived;
 	}
 
 	public getMatterJunction(world:World,matterEngine:MatterEngine):MatterJunction {
@@ -31,7 +32,7 @@ export class MatterDestination  {
 	}
 	
 	public addToEngine(world:World,matterEngine:MatterEngine):void {
-		Matter.World.add(matterEngine.engine.world,[this.boundryBody]);
+		Matter.World.add(matterEngine.engine.world,[this.boundryBody,this.spatialBody]);
 		matterEngine.pin(this.boundryBody,this.getMatterJunction(world,matterEngine).getBoundryJunction());		
 		matterEngine.pin(this.spatialBody,this.getMatterJunction(world,matterEngine).getBoundryJunction());			
 		

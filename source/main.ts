@@ -65,7 +65,7 @@ let worldUpdate6b:WorldUpdate = new WorldUpdate("junction6b","walker2",WorldUpda
 
 let timer=1;
 let timerInc = 0.5;
-for(let t=0;t<10;t++)
+for(let t=0;t<2;t++)
 {
   for(let i=0;i<6;i++,timer+=timerInc) {
     let worldUpdate1:WorldUpdate = new WorldUpdate("junction"+i,"walker1",WorldUpdate.datePlus(timer*1000),{},{},{});

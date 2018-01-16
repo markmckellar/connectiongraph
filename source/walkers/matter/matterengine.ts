@@ -7,6 +7,10 @@ import { World } from "../world";
 import { MatterJunction } from "./matterjunction";
 import { MatterDestination } from "./matterdestination";
 import { MatterWalker } from "./matterwalker";
+import { MatterEventConsumer } from "./mattereventconsumer";
+import { MatterEvent } from "./matterevent";
+
+
 import * as Matter from "matter-js";
 
 
@@ -19,8 +23,7 @@ export class MatterEngine extends WalkerEngine {
     private _destinations : Map<string,MatterDestination>;
     private _walkers : Map<string,MatterWalker>;
     private _paths : Map<string,Matter.Constraint>;
-    //private _walkerDestinations : Map<string,Matter.Constraint>;
-
+    private _eventHandlers : Map<string,MatterEventConsumer>;
     private _engine : Matter.Engine;
 
     public static boundsFilter:number = 1;//0x0001;
@@ -29,6 +32,10 @@ export class MatterEngine extends WalkerEngine {
     public static junctionFilter:number = 8;
     public static boundryContainerFilter:number = 16;
     public static boundrySpatialFilter:number = 32;
+    public static walkerTravleing:number = 64;
+    public static walkerArrived:number = 128;
+    
+    
     
     
 
@@ -38,18 +45,90 @@ export class MatterEngine extends WalkerEngine {
         this.destinations = new Map<string,MatterDestination>();
         this.paths = new Map<string,Matter.Constraint>();    
         this.walkers = new Map<string,MatterWalker>(); 
-        //this.walkerDestinations = new Map<string,Matter.Constraint>();    
+        this.eventHandlers = new Map<string,MatterEventConsumer>(); 
         
-        //this.engine = engine; 
         this.engine = Matter.Engine.create(); 
         
         this.engine.world.gravity.x = 0.0;
         this.engine.world.gravity.y = 0.0;
+        
+        this.enableEvents();
+
     }
 
-    public addPath(world:World,path:Path):void {
-      //console.log("MatterEngine.addPath:woldObjectId="+JSON.stringify(path.worldId.id));
+    public registerEventConsumer(matterEventConsumer:MatterEventConsumer):void {
+      this.eventHandlers.set(matterEventConsumer.getMapId(),matterEventConsumer);    
+    }
+
+    public deregisterEventConsumer(matterEventConsumer:MatterEventConsumer):void {
+      this.eventHandlers.delete(matterEventConsumer.getMapId());    
+    }
+
+    public hasHandler(body:Matter.Body,eventType:MatterEvent):boolean {
+      return(this.eventHandlers.has(MatterEventConsumer.getMapId(body,eventType)))
+    }
+
+    public getHandler(body:Matter.Body,eventType:MatterEvent):MatterEventConsumer {
+      return( this.eventHandlers.get(MatterEventConsumer.getMapId(body,eventType)) );
+    }
+
+    public disableEvents(world:World,matterEngine:MatterEngine):void {
+      Matter.Events.off(this,MatterEvent.beforeUpdate,function(event) {});
+      Matter.Events.off(this,MatterEvent.collisionActive,function(event) {});	
+      Matter.Events.off(this,MatterEvent.collisionEnd,function(event) {});		
+      Matter.Events.off(this,MatterEvent.collisionStart,function(event) {});		
       
+    }
+
+    public processPairsEvent(pairs:Array<any>,eventType:MatterEvent,event:any):void {
+      for(let i=0;i<pairs.length;i++){
+
+        if(this.hasHandler(pairs[i].bodyA,eventType))
+          this.getHandler(pairs[i].bodyA,eventType).eventHandler(event);
+
+        if(this.hasHandler(pairs[i].bodyB,eventType))
+          this.getHandler(pairs[i].bodyB,eventType).eventHandler(event);
+      }
+
+    }
+
+    public enableEvents():void {
+      let matterEngine:MatterEngine = this;
+      console.log("World:event:enableEvents");			
+      
+      Matter.Events.on(this.engine,MatterEvent.collisionStart, function(event) {
+            //console.log("*** World:event:collisionStart");			
+            var pairs:Array<any> = event.pairs;
+            //console.log("World:event:collisionStart="+pairs.length);			
+            matterEngine.processPairsEvent(pairs,MatterEvent.collisionStart,event);   
+      });
+
+      Matter.Events.on(this.engine,MatterEvent.collisionEnd, function(event) {
+        //var pairs:Array<any> = event.pairs;
+        //console.log("World:event:collisionEnd="+pairs.length);			
+        //matterEngine.processPairsEvent(pairs,MatterEvent.collisionEnd);   
+       });
+
+       Matter.Events.on(this.engine,"beforeUpdate", function(event) {
+        //console.log("*** World:event:beforeUpdate");			
+        //var pairs:Array<any> = event.pairs;
+        //console.log("World:event:beforeUpdate="+pairs.length);			
+        //matterEngine.processEvent(pairs,MatterEvent.beforeUpdate);   
+  });
+
+      Matter.Events.on(this.engine,MatterEvent.collisionActive, function(event) {
+        //console.log("*** World:event:collisionActive");			
+        //var pairs:Array<any> = event.pairs;
+        //console.log("World:event:collisionActive="+pairs.length);			
+        //matterEngine.processPairsEvent(pairs,MatterEvent.collisionActive);   
+      });
+    }
+
+
+
+
+
+    public addPath(world:World,path:Path):void {    
       if(!this.paths.has(path.worldId.id))
       {
         if(this.paths.has(Path.getPathId(path.endJunction,path.startJunction).id))
@@ -59,15 +138,11 @@ export class MatterEngine extends WalkerEngine {
         }
         else
         {
-         // console.log("MatterEngine.addPath:adding="+path.worldId.id);
-        
           this.addJunction(world,path.startJunction);
           this.addJunction(world,path.endJunction);
 
           let matterStartJunction:Matter.Body = this.junctions.get(path.startJunction.worldId.id).getAreaJunction();
           let matterEndJunction:Matter.Body = this.junctions.get(path.endJunction.worldId.id).getAreaJunction();
-          //console.log("MatterEngine.addPath:matterStartJunction="+JSON.stringify(matterStartJunction));
-          //console.log("MatterEngine.addPath:matterEndJunction="+JSON.stringify(matterEndJunction));
           
           let matterPath = Matter.Constraint.create({
               bodyA: matterStartJunction,
@@ -85,39 +160,20 @@ export class MatterEngine extends WalkerEngine {
     }
 
     public changeWalkerDestination(world:World,walker:Walker,destination:Destination):void{
-      this.walkers.get(walker.worldId.id).getWalker2DestinationSpring().bodyB = 
-        this.junctions.get(walker.getCurrentJunction(world).worldId.id).getAreaJunction();
+      let matterWalker:MatterWalker = this.walkers.get(walker.worldId.id);
+
+      matterWalker.getWalker2DestinationSpring().bodyB =  
+          matterWalker.getCurrentMaterDestination(this).getSpatialBody();;
+
+      matterWalker.walkerTravelingTotDestination(world,this);
     }       
     
     public addWalker(world:World,walker:Walker):void { 
       if(!this.walkers.has(walker.worldId.id))
       {
-        //let junctionDensity = this.junctions.get(walker.getCurrentJunction(world).worldId.id).getAreaJunction().density;
-        //console.log("MatterEngine:addWalker:junctionDensity="+junctionDensity);
-
-        //let matterWalker = Matter.Bodies.circle(350,50,10,{density:junctionDensity/1000},8);
-        //matterWalker.collisionFilter.category = MatterEngine.walkerFilter;
-        //matterWalker.collisionFilter.mask = MatterEngine.walkerFilter|MatterEngine.boundsFilter;
-        
         let matterWalker:MatterWalker = new MatterWalker(world,this,walker);
         this.walkers.set(walker.worldId.id,matterWalker);
         matterWalker.addToEngine(world,this);
-        //Matter.World.add(this.engine.world,[matterWalker]); 
-          /*
-      
-
-        let matterDestination = Matter.Constraint.create({
-            bodyA: this.walkers.get(walker.worldId.id),
-            bodyB: this.junctions.get(walker.getCurrentJunction(world).worldId.id).getAreaJunction(),  
-            pointA: { x: -0, y: -0 },
-            pointB: { x: -0, y: -0 },
-            length:0,
-            stiffness:0.001,
-          });
-        this.walkerDestinations.set(walker.worldId.id,matterDestination);
-      
-        Matter.World.add(this.engine.world,[matterDestination]);
-        */ 
       }
     }
 
@@ -156,6 +212,8 @@ export class MatterEngine extends WalkerEngine {
         // keep the mouse in sync with rendering
         render.controller.mouse = mouse;
     }
+
+  
 
     private cloneVerticies(inVertices:Array<Matter.Vector>):Array<Matter.Vector>
     {
@@ -268,16 +326,16 @@ export class MatterEngine extends WalkerEngine {
 	public set engine(value: Matter.Engine) {
 		this._engine = value;
   }
-  /*
+  
 
-	public get walkerDestinations(): Map<string,Matter.Constraint> {
-		return this._walkerDestinations;
+	public get eventHandlers(): Map<string,MatterEventConsumer> {
+		return this._eventHandlers;
 	}
 
-	public set walkerDestinations(value: Map<string,Matter.Constraint>) {
-		this._walkerDestinations = value;
+	public set eventHandlers(value: Map<string,MatterEventConsumer>) {
+		this._eventHandlers = value;
 	}
-*/
+  
   
     
 }
