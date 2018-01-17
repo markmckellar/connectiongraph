@@ -79,7 +79,7 @@ export class MatterWalker  {
 		let collisionStart:MatterEventConsumer = new MatterEventConsumer(
 			this.walker.worldId,
 			this.getAreaWalker(),
-			MatterEvent.collisionStart,
+			MatterEvent.collisionActive,
 			function(event:any) {
 				var pairs = event.pairs;
 				//console.log("collisionStart:walker="+matterWalker.walker.worldId.id+":pairs.length="+pairs.length);
@@ -94,6 +94,7 @@ export class MatterWalker  {
 					
 					// it is outside of the diestinationbounds
 
+					/*
 					console.log("collisionStart:walker="+matterWalker.walker.worldId.id+
 						":pairs.length="+pairs.length+
 						":walker="+(pair.bodyA===matterWalker.getAreaWalker() || pair.bodyB===matterWalker.getAreaWalker())+
@@ -104,15 +105,16 @@ export class MatterWalker  {
 						":contv="+containerDest+
 						
 						"");	
-					
+					*/
 
-					if( (pair.bodyA===spiatailDest || pair.bodyB===spiatailDest) && !isWalkerInisdeContainer){
-						matterWalker.walkerArrivedAtDestination(world,matterEngine);
-						console.log("collisionStart:walker="+matterWalker.walker.worldId.id+":pairs.length="+pairs.length);	
-					} 
-					else if ( (pair.bodyA===containerDest || pair.bodyB===containerDest) && !isWalkerInisdeContainer) {
-						matterWalker.walkerTravelingTotDestination(world,matterEngine);
-						console.log("collisionStart:walker="+matterWalker.walker.worldId.id+":pairs.length="+pairs.length);	
+					if( (pair.bodyA===spiatailDest || pair.bodyB===spiatailDest) ) {
+						if(!isWalkerInisdeContainer) matterWalker.walkerArrivedAtDestination(world,matterEngine);
+						//else matterWalker.walkerTravelingTotDestination(world,matterEngine);
+					}
+
+					if( (pair.bodyA===containerDest || pair.bodyB===containerDest) ) {
+						if(!isWalkerInisdeContainer) matterWalker.walkerTravelingTotDestination(world,matterEngine);
+						//else matterWalker.walkerTravelingTotDestination(world,matterEngine);
 					}
 				}
 			}
