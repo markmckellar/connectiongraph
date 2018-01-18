@@ -14,8 +14,8 @@ export class MatterJunction  {
 
     public constructor(world:World,matterEngine:MatterEngine,junction:Junction) {
 		this.junction = junction;
-		this.junctionBody = Matter.Bodies.circle(350,50,40,{},8);
-		this.spacerBody = Matter.Bodies.circle(350,50,70,{},8);
+		this.junctionBody = Matter.Bodies.circle(350,50,40,{render:{fillStyle:"blue",strokeStyle:"white"}},8);
+		this.spacerBody = Matter.Bodies.circle(350,50,70,{render:{fillStyle:"transparent",strokeStyle:"white"}},8);
 
 		this.junctionBody.collisionFilter.category = MatterEngine.junctionFilter;
 		this.junctionBody.collisionFilter.mask = MatterEngine.junctionFilter|MatterEngine.boundsFilter;

@@ -19,17 +19,21 @@ export class MatterWalker  {
 
 		this.walker = walker;
 		let junctionDensity = matterEngine.junctions.get(walker.getCurrentJunction(world).worldId.id).getAreaJunction().density;
-		this.walkerBody = Matter.Bodies.circle(350,50,10,{density:junctionDensity/1000},8);
+		this.walkerBody = Matter.Bodies.circle(350,50,10,
+			{render:{fillStyle:"blue",strokeStyle:"blue"},density:junctionDensity/1000},8);
 		
+		this.walkerBody.restitution = 0.0;
         this.walkerBody.collisionFilter.category = MatterEngine.walkerTravleing;
 		this.walkerBody.collisionFilter.mask = 
-			MatterEngine.walkerFilter|
-			//MatterEngine.walkerTravleing|
-			//MatterEngine.walkerArrived|			
+			//MatterEngine.walkerFilter|
+			MatterEngine.walkerTravleing|
+			MatterEngine.walkerArrived|			
 			MatterEngine.boundsFilter|
 			MatterEngine.boundryContainerFilter|
 			MatterEngine.boundrySpatialFilter;
   
+		this.walkerBody.frictionAir = 0.5;
+		
 
 		this.walker2DestinationSpring = Matter.Constraint.create({
             bodyA: this.getAreaWalker(),
@@ -37,9 +41,11 @@ export class MatterWalker  {
             pointA: { x: -0, y: -0 },
             pointB: { x: -0, y: -0 },
             length:0,
-            stiffness:0.001,
-          });
-		  this.walkerTravelingTotDestination(world,matterEngine);	
+			stiffness:0.0001,
+			
+		  });
+		  this.walker2DestinationSpring.render.visible=false;
+		this.walkerTravelingTotDestination(world,matterEngine);	
 	}
 
 
@@ -59,6 +65,7 @@ export class MatterWalker  {
 	public walkerArrivedAtDestination(world:World,matterEngine:MatterEngine) : void {
 		console.log("walkerArrivedAtDestination:walker="+this.walker.worldId.id+":arrived!");
 		this.getAreaWalker().collisionFilter.category  = MatterEngine.walkerArrived;
+		this.getWalker2DestinationSpring().stiffness = 0.0;
 		//this.getAreaWalker().collisionFilter.category  |= ~MatterEngine.walkerArrived;
 		
 		
@@ -67,6 +74,8 @@ export class MatterWalker  {
 	public walkerTravelingTotDestination(world:World,matterEngine:MatterEngine) : void {
 		console.log("walkerTravelingTotDestination:walker="+this.walker.worldId.id+":arrived!");
 		this.getAreaWalker().collisionFilter.category  = MatterEngine.walkerTravleing;
+		this.getWalker2DestinationSpring().stiffness = 0.01;
+		
 		//this.getAreaWalker().collisionFilter.category  |= ~MatterEngine.walkerTravleing;
 		
 		
@@ -88,6 +97,7 @@ export class MatterWalker  {
 
 					let spiatailDest:Matter.Body =  matterWalker.getCurrentMaterDestination(matterEngine).getSpatialBody();
 					let containerDest:Matter.Body =  matterWalker.getCurrentMaterDestination(matterEngine).getWalkerContainer();
+					let walkerBody:Matter.Body =  matterWalker.walkerBody;
 					
 					let isWalkerInisdeContainer:boolean = Matter.Vertices.contains(
 						containerDest.vertices,matterWalker.getAreaWalker().position);
@@ -106,15 +116,17 @@ export class MatterWalker  {
 						
 						"");	
 					*/
+					if( (pair.bodyA===walkerBody || pair.bodyB===walkerBody) ) {
+						
+						if( (pair.bodyA===spiatailDest || pair.bodyB===spiatailDest) ) {
+							if(!isWalkerInisdeContainer) matterWalker.walkerArrivedAtDestination(world,matterEngine);
+							//else matterWalker.walkerTravelingTotDestination(world,matterEngine);
+						}
 
-					if( (pair.bodyA===spiatailDest || pair.bodyB===spiatailDest) ) {
-						if(!isWalkerInisdeContainer) matterWalker.walkerArrivedAtDestination(world,matterEngine);
-						//else matterWalker.walkerTravelingTotDestination(world,matterEngine);
-					}
-
-					if( (pair.bodyA===containerDest || pair.bodyB===containerDest) ) {
-						if(!isWalkerInisdeContainer) matterWalker.walkerTravelingTotDestination(world,matterEngine);
-						//else matterWalker.walkerTravelingTotDestination(world,matterEngine);
+						if( (pair.bodyA===containerDest || pair.bodyB===containerDest) ) {
+							if(!isWalkerInisdeContainer) matterWalker.walkerTravelingTotDestination(world,matterEngine);
+							//else matterWalker.walkerTravelingTotDestination(world,matterEngine);
+						}
 					}
 				}
 			}

@@ -17,14 +17,20 @@ export class MatterDestination  {
 		this.destination = destination;
 		let j:Matter.Body = this.getMatterJunction(world,matterEngine).getBoundryJunction();;
 		//this.spatialBody = this.getMatterJunction(world,matterEngine).getBoundryJunction();
-		this.spatialBody = Matter.Bodies.circle(j.position.x,j.position.y,40,{isSensor:true},8);
+		this.spatialBody = Matter.Bodies.circle(j.position.x,j.position.y,40,
+			{
+				isSensor:true,
+				render:{fillStyle:"red",strokeStyle:"red"},
+			},8);
 		this.boundryBody = matterEngine.matterTools.createBoundObject(this.spatialBody,1.05,1.5);
 		
+		//this.spatialBody.render.fillStyle="red";
 		this.spatialBody.collisionFilter.category = MatterEngine.boundrySpatialFilter;
 		this.spatialBody.collisionFilter.mask = MatterEngine.boundsFilter|MatterEngine.walkerTravleing;
 		
 		this.boundryBody.collisionFilter.category = MatterEngine.boundryContainerFilter;
 		this.boundryBody.collisionFilter.mask = MatterEngine.boundsFilter|MatterEngine.walkerArrived;
+		this.boundryBody.restitution = 0.0;
 	}
 
 	public getMatterJunction(world:World,matterEngine:MatterEngine):MatterJunction {

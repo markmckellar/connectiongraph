@@ -73,7 +73,8 @@ export class MatterTools  {
           //newVeritices.push(pointsInner[i]);
           
           let center:Matter.Vector = Matter.Vertices.centre(newVeritices);
-          let newBody:Matter.Body = Matter.Bodies.fromVertices(center.x,center.y,[newVeritices],{});
+          let newBody:Matter.Body = Matter.Bodies.fromVertices(center.x,center.y,[newVeritices],
+                {render:{fillStyle:"transparent",strokeStyle:"white"}});
            
           bodies.push(newBody);
         }

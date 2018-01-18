@@ -35,10 +35,6 @@ export class MatterEngine extends WalkerEngine {
     public static boundrySpatialFilter:number = 32;
     public static walkerTravleing:number = 64;
     public static walkerArrived:number = 128;
-    
-    
-    
-    
 
     public constructor() {
         super();
@@ -53,7 +49,7 @@ export class MatterEngine extends WalkerEngine {
         
         this.engine.world.gravity.x = 0.0;
         this.engine.world.gravity.y = 0.0;
-        
+
         this.enableEvents();
 
     }
@@ -109,27 +105,7 @@ export class MatterEngine extends WalkerEngine {
           this.getHandler(pairs[i].bodyB,eventType).eventHandler(event);
       }
     }
-/*
-    public processCollisionPairsEvent(eventType:MatterEvent,event: Matter.IEventCollision<Matter.Engine>):void {
-      var pairs:Matter.IPair[] = event.pairs;
-      for(let i=0;i<pairs.length;i++){
 
-        if(this.hasHandler(pairs[i].bodyA,eventType))
-          this.getHandler(pairs[i].bodyA,eventType).eventHandler(event);
-
-        if(this.hasHandler(pairs[i].bodyB,eventType))
-          this.getHandler(pairs[i].bodyB,eventType).eventHandler(event);
-      }
-    }
-*/
-
-/*
-    public processCollisionEvent(materEvent:MatterEvent,event: Matter.IEventCollision<Matter.Engine>):void  {      
-      if(materEvent===MatterEvent.collisionStart) this.processCollisionPairsEvent(materEvent,event);
-      else if(materEvent===MatterEvent.collisionEnd) this.processPairsEvent(materEvent,event);
-      else if(materEvent===MatterEvent.collisionActive) this.processPairsEvent(materEvent,event);
-    }
-*/
     public processTimestampedEvent(materEvent:MatterEvent,event:Matter.IEventTimestamped<Matter.Engine>):void  {      
      //console.log("MatterEngine:processTimestampedEvent"+
      // ":event="+event.name+
@@ -143,19 +119,7 @@ export class MatterEngine extends WalkerEngine {
       // "");
      }
 
-    
-/*
-    public processEvent(materEvent:MatterEvent,event:Object):void  {
-      if(materEvent===MatterEvent.collisionStart) this.processPairsEvent(materEvent,event);
-      else if(materEvent===MatterEvent.collisionEnd) this.processPairsEvent(materEvent,event);
-      else if(materEvent===MatterEvent.collisionActive) this.processPairsEvent(materEvent,event);
-      else if(materEvent===MatterEvent.beforeUpdate) this.processEngineEvent(materEvent,event);
-      else if(materEvent===MatterEvent.afterUpdate) this.processEngineEvent(materEvent,event);
-      else if(materEvent===MatterEvent.beforeAdd) this.processEngineEvent(materEvent,event);
-      else if(materEvent===MatterEvent.afterAdd) this.processEngineEvent(materEvent,event);
-    }
-*/
-    public enableEvents():void {
+     public enableEvents():void {
       let matterEngine:MatterEngine = this;    
       console.log("World:event:enableEvents");			
       
