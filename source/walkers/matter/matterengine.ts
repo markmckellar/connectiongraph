@@ -10,6 +10,7 @@ import { MatterDestination } from "./matterdestination";
 import { MatterWalker } from "./matterwalker";
 import { MatterEventConsumer } from "./mattereventconsumer";
 import { MatterEvent } from "./matterevent";
+import { MatterCollisionEvent } from "./mattercollisionevent";
 
 
 import * as Matter from "matter-js";
@@ -25,7 +26,16 @@ export class MatterEngine extends WalkerEngine {
     private _walkers : Map<string,MatterWalker>;
     private _paths : Map<string,Matter.Constraint>;
     private _eventHandlers : Map<string,MatterEventConsumer>;
+
+    private _collisionEventHandlers : Map<string,MatterCollisionEvent>;
+      
+    //private _collisionEventHandlers : Map<string,Function(matterEngine:MatterEngine,eventType:MatterEvent,
+    //  event: Matter.IEventCollision<Matter.Engine>);
+
+
     private _engine : Matter.Engine;
+    private _mouse:Matter.Mouse;
+    private _mouseConstraint:Matter.MouseConstraint;
 
     public static boundsFilter:number = 1;//0x0001;
     public static walkerFilter:number = 2;
@@ -44,6 +54,7 @@ export class MatterEngine extends WalkerEngine {
         this.paths = new Map<string,Matter.Constraint>();    
         this.walkers = new Map<string,MatterWalker>(); 
         this.eventHandlers = new Map<string,MatterEventConsumer>(); 
+        this.collisionEventHandlers = new Map<string,MatterCollisionEvent>(); 
         
         this.engine = Matter.Engine.create(); 
         
@@ -52,6 +63,20 @@ export class MatterEngine extends WalkerEngine {
 
         this.enableEvents();
 
+    }
+
+    private getCollisionEventMapId(body:Matter.Body,eventType):string {
+      return(body.id+":"+eventType);
+    }
+
+    public registerCollisionEvent(body:Matter.Body,eventType:MatterEvent,event:MatterCollisionEvent):void {
+      this.collisionEventHandlers.set(this.getCollisionEventMapId(body,event),event);    
+    }
+
+
+
+    public deregisterCollisionEvent(body:Matter.Body,eventType:MatterEvent,event):void {
+      this.collisionEventHandlers.delete(this.getCollisionEventMapId(body,event));    
     }
 
     public registerEventConsumer(matterEventConsumer:MatterEventConsumer):void {
@@ -78,23 +103,19 @@ export class MatterEngine extends WalkerEngine {
       
     }
 
-    public processEngineEvent(eventType:MatterEvent,event:Object):void {
-      console.log("processEngineEvent:eventType="+eventType+":event="+event);
+    private processCollisionStart(event: Matter.IEventCollision<Matter.Engine>):void {
+      this.processCollisionPairsEvent(MatterEvent.collisionStart,event);
     }
 
-    public processPairsEvent(eventType:MatterEvent,event:Object):void {
-      var pairs:Array<any> = event["pairs"];
-      for(let i=0;i<pairs.length;i++){
-
-        if(this.hasHandler(pairs[i].bodyA,eventType))
-          this.getHandler(pairs[i].bodyA,eventType).eventHandler(event);
-
-        if(this.hasHandler(pairs[i].bodyB,eventType))
-          this.getHandler(pairs[i].bodyB,eventType).eventHandler(event);
-      }
+    private processCollisionEnd(event: Matter.IEventCollision<Matter.Engine>):void {
+      this.processCollisionPairsEvent(MatterEvent.collisionEnd,event);
     }
 
-    public processCollisionPairsEvent(eventType:MatterEvent,event: Matter.IEventCollision<Matter.Engine>):void {
+    private processCollisionActive(event: Matter.IEventCollision<Matter.Engine>):void {
+      this.processCollisionPairsEvent(MatterEvent.collisionActive,event);
+    }
+    
+    private processCollisionPairsEvent(eventType:MatterEvent,event: Matter.IEventCollision<Matter.Engine>):void {
       var pairs:Matter.IPair[] = event.pairs;
       for(let i=0;i<pairs.length;i++){
 
@@ -106,43 +127,44 @@ export class MatterEngine extends WalkerEngine {
       }
     }
 
-    public processTimestampedEvent(materEvent:MatterEvent,event:Matter.IEventTimestamped<Matter.Engine>):void  {      
+    private processBeforeUpdate(event:Matter.IEventTimestamped<Matter.Engine>):void {
+      this.processTimestampedEvent(MatterEvent.beforeUpdate,event);
+    }
+
+    private processTimestampedEvent(materEvent:MatterEvent,event:Matter.IEventTimestamped<Matter.Engine>):void  {      
      //console.log("MatterEngine:processTimestampedEvent"+
      // ":event="+event.name+
      // ":timestamp="+event.timestamp+      
      // "");
     }
 
-    public processCompositeEvent(materEvent:MatterEvent,event: Matter.IEventComposite<Matter.Composite>):void  {      
+    private processAfterUpdate(event: Matter.IEventComposite<Matter.Composite>):void {
+      this.processCompositeEvent(MatterEvent.afterUpdate,event);
+    }
+
+    private processBeforeAdd(event: Matter.IEventComposite<Matter.Composite>):void {
+      this.processCompositeEvent(MatterEvent.beforeAdd,event);
+    }
+
+    private processAfterAdd(event: Matter.IEventComposite<Matter.Composite>):void {
+      this.processCompositeEvent(MatterEvent.afterAdd,event);
+    }
+
+    private processCompositeEvent(materEvent:MatterEvent,event: Matter.IEventComposite<Matter.Composite>):void  {      
       //console.log("MatterEngine:processCompositeEvent"+
       // ":event="+event.name+
       // "");
      }
 
-     public enableEvents():void {
-      let matterEngine:MatterEngine = this;    
+     private enableEvents():void {
       console.log("World:event:enableEvents");			
-      
-      Matter.Events.on(this.engine,MatterEvent.collisionStart, function(event: Matter.IEventCollision<Matter.Engine>) {   
-            matterEngine.processCollisionPairsEvent(MatterEvent.collisionStart,event); });
-
-      Matter.Events.on(this.engine,MatterEvent.collisionEnd, function(event: Matter.IEventCollision<Matter.Engine>) {  
-        matterEngine.processCollisionPairsEvent(MatterEvent.collisionEnd,event);  });
-
-      Matter.Events.on(this.engine,MatterEvent.collisionActive, function(event: Matter.IEventCollision<Matter.Engine>) {   
-        matterEngine.processCollisionPairsEvent(MatterEvent.collisionActive,event);   });
-
-       Matter.Events.on(this.engine,MatterEvent.beforeUpdate, function(event: Matter.IEventTimestamped<Matter.Engine>) {  
-        matterEngine.processTimestampedEvent(MatterEvent.beforeUpdate,event);  });
-
-      Matter.Events.on(this.engine,MatterEvent.afterUpdate, function(event: Matter.IEventComposite<Matter.Composite>) {   
-        matterEngine.processCompositeEvent(MatterEvent.afterUpdate,event);  });
-
-      Matter.Events.on(this.engine,MatterEvent.beforeAdd,function(event: Matter.IEventComposite<Matter.Composite>) {      
-        matterEngine.processCompositeEvent(MatterEvent.beforeAdd,event);  });
-
-      Matter.Events.on(this.engine,MatterEvent.afterAdd, function(event: Matter.IEventComposite<Matter.Composite>) {    
-        matterEngine.processCompositeEvent(MatterEvent.afterAdd,event);   });
+      Matter.Events.on(this.engine,MatterEvent.collisionStart,this.processCollisionStart);
+      Matter.Events.on(this.engine,MatterEvent.collisionEnd,this.processCollisionEnd);
+      Matter.Events.on(this.engine,MatterEvent.collisionActive,this.processCollisionActive);
+      Matter.Events.on(this.engine,MatterEvent.beforeUpdate,this.processBeforeUpdate);
+      Matter.Events.on(this.engine,MatterEvent.afterUpdate,this.processAfterUpdate);
+      Matter.Events.on(this.engine,MatterEvent.beforeAdd,this.processBeforeAdd);
+      Matter.Events.on(this.engine,MatterEvent.afterAdd,this.processAfterAdd);
     }
 
     public addPath(world:World,path:Path):void {    
@@ -216,18 +238,22 @@ export class MatterEngine extends WalkerEngine {
 
 
     public initMouse(render:Matter.Render):void {
-        let mouse = Matter.Mouse.create(render.canvas);
+        this.mouse = Matter.Mouse.create(render.canvas);
+        this.mouseConstraint = Matter.MouseConstraint.create(this.engine);
+        this.mouseConstraint.mouse = this.mouse;
+        this.mouseConstraint.constraint.render.visible = false;
+        this.mouseConstraint.constraint.stiffness = 0.2;
         
-        // add mouse control
-        let mouseConstraint = Matter.MouseConstraint.create(this.engine);
-        mouseConstraint.mouse = mouse;
-        mouseConstraint.constraint.render.visible = false;
-        mouseConstraint.constraint.stiffness = 0.2;
-        
-        Matter.World.add(this.engine.world, mouseConstraint);
+        Matter.World.add(this.engine.world, this.mouseConstraint);
         
         // keep the mouse in sync with rendering
-        render.controller.mouse = mouse;
+        render.controller.mouse = this.mouse;
+
+
+
+
+
+        
     }
 
   
@@ -319,7 +345,33 @@ export class MatterEngine extends WalkerEngine {
 	public set matterTools(value: MatterTools ) {
 		this._matterTools = value;
 	}
+
+
+	public get mouseConstraint(): Matter.MouseConstraint {
+		return this._mouseConstraint;
+	}
+
+	public set mouseConstraint(value: Matter.MouseConstraint) {
+		this._mouseConstraint = value;
+	}
   
+
+	public get mouse(): Matter.Mouse {
+		return this._mouse;
+	}
+
+	public set mouse(value: Matter.Mouse) {
+		this._mouse = value;
+	}
+  
+
+	public get collisionEventHandlers(): Map<string,MatterCollisionEvent> {
+		return this._collisionEventHandlers;
+	}
+
+	public set collisionEventHandlers(value: Map<string,MatterCollisionEvent>) {
+		this._collisionEventHandlers = value;
+	}
   
     
 }
