@@ -1,5 +1,5 @@
 import { World } from "./walkers/world";
-import { MatterEngine } from "./walkers/matter/matterengine";
+import { MatterWalkerEngine } from "./walkers/matter/matterwalkerengine";
 import * as Matter from "matter-js";
 import { WorldUpdate } from "./walkers/worldupdate";
 //import decomp from 'poly-decomp';
@@ -15,7 +15,7 @@ import { WorldUpdate } from "./walkers/worldupdate";
 // const document = jsdom("");
 
 // let canvas = document.getElementById("world");
-let matterEngine = new MatterEngine();
+let matterEngine = new MatterWalkerEngine();
 let world = new World(matterEngine);
 let engine = matterEngine.engine;
 

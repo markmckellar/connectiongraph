@@ -1,5 +1,5 @@
 import { Junction } from "../junction";
-import { MatterEngine } from "./matterengine";
+import { MatterWalkerEngine } from "./matterwalkerengine";
 
 import { World } from "../world";
 
@@ -12,19 +12,19 @@ export class MatterJunction  {
     private _spacerBody:Matter.Body;
     private _junctionBody:Matter.Body;
 
-    public constructor(world:World,matterEngine:MatterEngine,junction:Junction) {
+    public constructor(world:World,matterEngine:MatterWalkerEngine,junction:Junction) {
 		this.junction = junction;
 		this.junctionBody = Matter.Bodies.circle(350,50,40,{render:{fillStyle:"blue",strokeStyle:"white"}},8);
 		this.spacerBody = Matter.Bodies.circle(350,50,70,{render:{fillStyle:"transparent",strokeStyle:"white"}},8);
 
-		this.junctionBody.collisionFilter.category = MatterEngine.junctionFilter;
-		this.junctionBody.collisionFilter.mask = MatterEngine.junctionFilter|MatterEngine.boundsFilter;
+		this.junctionBody.collisionFilter.category = MatterWalkerEngine.junctionFilter;
+		this.junctionBody.collisionFilter.mask = MatterWalkerEngine.junctionFilter|MatterWalkerEngine.boundsFilter;
 		
-		this.spacerBody.collisionFilter.category = MatterEngine.junctionSpacerFilter;
-		this.spacerBody.collisionFilter.mask = MatterEngine.junctionSpacerFilter|MatterEngine.boundsFilter;
+		this.spacerBody.collisionFilter.category = MatterWalkerEngine.junctionSpacerFilter;
+		this.spacerBody.collisionFilter.mask = MatterWalkerEngine.junctionSpacerFilter|MatterWalkerEngine.boundsFilter;
 	}
 
-	public addToEngine(world:World,matterEngine:MatterEngine):void {
+	public addToEngine(world:World,matterEngine:MatterWalkerEngine):void {
 		Matter.World.add(matterEngine.engine.world,[this.spacerBody,this.junctionBody]);
 		matterEngine.pin(this.spacerBody,this.junctionBody);		
 	}

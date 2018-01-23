@@ -1,7 +1,7 @@
 import { World } from "../../../source/walkers/world";
 import { WorldUpdate } from "../../../source/walkers/worldupdate";
 
-import { MatterEngine } from "../../../source/walkers/matter/matterengine";
+import { MatterWalkerEngine } from "../../../source/walkers/matter/matterwalkerengine";
 import * as Matter from "matter-js";
 // import * as $ from "jquery";
 // import Greeter from "./entities/greeter";
@@ -13,7 +13,7 @@ import * as Matter from "matter-js";
 // const document = jsdom("");
 
 // let canvas = document.getElementById("world");
-let matterEngine = new MatterEngine();
+let matterEngine = new MatterWalkerEngine();
 let world = new World(matterEngine);
 let engine = matterEngine.engine;
 

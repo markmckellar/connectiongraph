@@ -1,5 +1,5 @@
 import { Destination } from "../destination";
-import { MatterEngine } from "./matterengine";
+import { MatterWalkerEngine } from "./matterwalkerengine";
 import { MatterJunction } from "./matterjunction";
 
 import { World } from "../world";
@@ -13,7 +13,7 @@ export class MatterDestination  {
     private _boundryBody:Matter.Body;
     private _spatialBody:Matter.Body;
 
-    public constructor(world:World,matterEngine:MatterEngine,destination:Destination) {
+    public constructor(world:World,matterEngine:MatterWalkerEngine,destination:Destination) {
 		this.destination = destination;
 		let j:Matter.Body = this.getMatterJunction(world,matterEngine).getBoundryJunction();;
 		//this.spatialBody = this.getMatterJunction(world,matterEngine).getBoundryJunction();
@@ -25,19 +25,19 @@ export class MatterDestination  {
 		this.boundryBody = matterEngine.matterTools.createBoundObject(this.spatialBody,1.05,1.5);
 		
 		//this.spatialBody.render.fillStyle="red";
-		this.spatialBody.collisionFilter.category = MatterEngine.boundrySpatialFilter;
-		this.spatialBody.collisionFilter.mask = MatterEngine.boundsFilter|MatterEngine.walkerTravleing;
+		this.spatialBody.collisionFilter.category = MatterWalkerEngine.boundrySpatialFilter;
+		this.spatialBody.collisionFilter.mask = MatterWalkerEngine.boundsFilter|MatterWalkerEngine.walkerTravleing;
 		
-		this.boundryBody.collisionFilter.category = MatterEngine.boundryContainerFilter;
-		this.boundryBody.collisionFilter.mask = MatterEngine.boundsFilter|MatterEngine.walkerArrived;
+		this.boundryBody.collisionFilter.category = MatterWalkerEngine.boundryContainerFilter;
+		this.boundryBody.collisionFilter.mask = MatterWalkerEngine.boundsFilter|MatterWalkerEngine.walkerArrived;
 		this.boundryBody.restitution = 0.0;
 	}
 
-	public getMatterJunction(world:World,matterEngine:MatterEngine):MatterJunction {
+	public getMatterJunction(world:World,matterEngine:MatterWalkerEngine):MatterJunction {
 		return(matterEngine.junctions.get(this.destination.getJunction(world).worldId.id));
 	}
 	
-	public addToEngine(world:World,matterEngine:MatterEngine):void {
+	public addToEngine(world:World,matterEngine:MatterWalkerEngine):void {
 		Matter.World.add(matterEngine.engine.world,[this.boundryBody,this.spatialBody]);
 		matterEngine.pin(this.boundryBody,this.getMatterJunction(world,matterEngine).getBoundryJunction());		
 		matterEngine.pin(this.spatialBody,this.getMatterJunction(world,matterEngine).getBoundryJunction());			

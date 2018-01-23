@@ -1,5 +1,5 @@
 import * as Matter from "matter-js";
-import { MatterEngine } from "./matterengine";
+import { MatterWalkerEngine } from "./matterwalkerengine";
 
 
 
@@ -80,7 +80,7 @@ export class MatterTools  {
         }
   
         let newBody:Matter.Body = Matter.Body.create({parts: bodies });        
-        newBody.collisionFilter.category = MatterEngine.boundsFilter;
+        newBody.collisionFilter.category = MatterWalkerEngine.boundsFilter;
         newBody.restitution = 1.0; 
         return(newBody);
     }
