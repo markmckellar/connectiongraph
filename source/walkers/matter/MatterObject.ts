@@ -1,7 +1,7 @@
-import { MatterEngine } from "./matterengine";
+//import { MatterEngine } from "./matterengine";
 import { WorldId } from "../worldid";
 
-import * as Matter from "matter-js";
+//import * as Matter from "matter-js";
 
 
 

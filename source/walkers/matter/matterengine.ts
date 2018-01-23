@@ -8,31 +8,20 @@ import { World } from "../world";
 import { MatterJunction } from "./matterjunction";
 import { MatterDestination } from "./matterdestination";
 import { MatterWalker } from "./matterwalker";
-import { MatterEventConsumer } from "./mattereventconsumer";
 import { MatterEvent } from "./matterevent";
 import { MatterCollisionEvent } from "./mattercollisionevent";
-
+import { MatterCompositeEvent } from "./mattercompositeevent";
 
 import * as Matter from "matter-js";
 
-
-
 export class MatterEngine extends WalkerEngine {
-
-
 	  private _matterTools:MatterTools ;
     private _junctions : Map<string,MatterJunction>;
     private _destinations : Map<string,MatterDestination>;
     private _walkers : Map<string,MatterWalker>;
     private _paths : Map<string,Matter.Constraint>;
-    private _eventHandlers : Map<string,MatterEventConsumer>;
-
     private _collisionEventHandlers : Map<string,MatterCollisionEvent>;
-      
-    //private _collisionEventHandlers : Map<string,Function(matterEngine:MatterEngine,eventType:MatterEvent,
-    //  event: Matter.IEventCollision<Matter.Engine>);
-
-
+    private _compositeEventHandlers : Map<string,MatterCompositeEvent>;
     private _engine : Matter.Engine;
     private _mouse:Matter.Mouse;
     private _mouseConstraint:Matter.MouseConstraint;
@@ -53,8 +42,9 @@ export class MatterEngine extends WalkerEngine {
         this.destinations = new Map<string,MatterDestination>();
         this.paths = new Map<string,Matter.Constraint>();    
         this.walkers = new Map<string,MatterWalker>(); 
-        this.eventHandlers = new Map<string,MatterEventConsumer>(); 
+        //this.eventHandlers = new Map<string,MatterEventConsumer>(); 
         this.collisionEventHandlers = new Map<string,MatterCollisionEvent>(); 
+        this.compositeEventHandlers = new Map<string,MatterCompositeEvent>();
         
         this.engine = Matter.Engine.create(); 
         
@@ -63,72 +53,73 @@ export class MatterEngine extends WalkerEngine {
 
         this.enableEvents();
 
+        this.registerWalkerEvents();
     }
 
-    private getCollisionEventMapId(body:Matter.Body,eventType):string {
+    public registerWalkerEvents():void {
+
+      this.registerCompositeEvent("junctionSpacer",MatterEvent.afterUpdate,
+        function(matterEngine:MatterEngine,eventType:MatterEvent,event: Matter.IEventComposite<Matter.Composite>):void{
+         console.log("junctionSpacer!!!!!!!!!!!!!!!!!!!!");					
+        });
+  
+    }
+   
+    public registerCompositeEvent(name:string,eventType:MatterEvent,event:MatterCompositeEvent):void {
+      this.compositeEventHandlers.set(name,event);    
+    }
+
+    public deregisterCompositeEvent(name:string,eventType:MatterEvent,event:MatterCompositeEvent):void {
+      this.compositeEventHandlers.delete(name);    
+    }
+
+    public hasCompositeHandler(name:string,eventType:MatterEvent):boolean {
+      return(this.collisionEventHandlers.has(name))
+    }
+
+    public getCompositeHandler(name:string,eventType:MatterEvent):MatterCollisionEvent {
+      return( this.collisionEventHandlers.get(name) );
+    }
+    
+
+    private getCollisionEventMapId(body:Matter.Body,eventType:MatterEvent):string {
       return(body.id+":"+eventType);
     }
 
     public registerCollisionEvent(body:Matter.Body,eventType:MatterEvent,event:MatterCollisionEvent):void {
-      this.collisionEventHandlers.set(this.getCollisionEventMapId(body,event),event);    
+      this.collisionEventHandlers.set(this.getCollisionEventMapId(body,eventType),event);    
     }
 
-
-
-    public deregisterCollisionEvent(body:Matter.Body,eventType:MatterEvent,event):void {
-      this.collisionEventHandlers.delete(this.getCollisionEventMapId(body,event));    
+    public deregisterCollisionEvent(body:Matter.Body,eventType:MatterEvent,event:MatterCollisionEvent):void {
+      this.collisionEventHandlers.delete(this.getCollisionEventMapId(body,eventType));    
     }
 
-    public registerEventConsumer(matterEventConsumer:MatterEventConsumer):void {
-      this.eventHandlers.set(matterEventConsumer.getMapId(),matterEventConsumer);    
+    public hasCollisionHandler(body:Matter.Body,eventType:MatterEvent):boolean {
+      return(this.collisionEventHandlers.has(this.getCollisionEventMapId(body,eventType)))
     }
 
-    public deregisterEventConsumer(matterEventConsumer:MatterEventConsumer):void {
-      this.eventHandlers.delete(matterEventConsumer.getMapId());    
-    }
-
-    public hasHandler(body:Matter.Body,eventType:MatterEvent):boolean {
-      return(this.eventHandlers.has(MatterEventConsumer.getMapId(body,eventType)))
-    }
-
-    public getHandler(body:Matter.Body,eventType:MatterEvent):MatterEventConsumer {
-      return( this.eventHandlers.get(MatterEventConsumer.getMapId(body,eventType)) );
+    public getCollisionHandler(body:Matter.Body,eventType:MatterEvent):MatterCollisionEvent {
+      return( this.collisionEventHandlers.get(this.getCollisionEventMapId(body,eventType)) );
     }
 
     public disableEvents(world:World,matterEngine:MatterEngine):void {
+      // what does the function passed to deregistger an event even mean?!?!?
       Matter.Events.off(this,MatterEvent.beforeUpdate,function(event) {});
       Matter.Events.off(this,MatterEvent.collisionActive,function(event) {});	
       Matter.Events.off(this,MatterEvent.collisionEnd,function(event) {});		
-      Matter.Events.off(this,MatterEvent.collisionStart,function(event) {});		
-      
+      Matter.Events.off(this,MatterEvent.collisionStart,function(event) {});		      
     }
 
-    private processCollisionStart(event: Matter.IEventCollision<Matter.Engine>):void {
-      this.processCollisionPairsEvent(MatterEvent.collisionStart,event);
-    }
-
-    private processCollisionEnd(event: Matter.IEventCollision<Matter.Engine>):void {
-      this.processCollisionPairsEvent(MatterEvent.collisionEnd,event);
-    }
-
-    private processCollisionActive(event: Matter.IEventCollision<Matter.Engine>):void {
-      this.processCollisionPairsEvent(MatterEvent.collisionActive,event);
-    }
-    
     private processCollisionPairsEvent(eventType:MatterEvent,event: Matter.IEventCollision<Matter.Engine>):void {
       var pairs:Matter.IPair[] = event.pairs;
       for(let i=0;i<pairs.length;i++){
+        // TODO this is the collision loop...  we can probably drop from 4 hash lookps to 2
+        if(this.hasCollisionHandler(pairs[i].bodyA,eventType))
+          this.getCollisionHandler(pairs[i].bodyA,eventType)(this,eventType,event);
 
-        if(this.hasHandler(pairs[i].bodyA,eventType))
-          this.getHandler(pairs[i].bodyA,eventType).eventHandler(event);
-
-        if(this.hasHandler(pairs[i].bodyB,eventType))
-          this.getHandler(pairs[i].bodyB,eventType).eventHandler(event);
+        if(this.hasCollisionHandler(pairs[i].bodyB,eventType))
+          this.getCollisionHandler(pairs[i].bodyB,eventType)(this,eventType,event);
       }
-    }
-
-    private processBeforeUpdate(event:Matter.IEventTimestamped<Matter.Engine>):void {
-      this.processTimestampedEvent(MatterEvent.beforeUpdate,event);
     }
 
     private processTimestampedEvent(materEvent:MatterEvent,event:Matter.IEventTimestamped<Matter.Engine>):void  {      
@@ -138,33 +129,47 @@ export class MatterEngine extends WalkerEngine {
      // "");
     }
 
-    private processAfterUpdate(event: Matter.IEventComposite<Matter.Composite>):void {
-      this.processCompositeEvent(MatterEvent.afterUpdate,event);
-    }
-
-    private processBeforeAdd(event: Matter.IEventComposite<Matter.Composite>):void {
-      this.processCompositeEvent(MatterEvent.beforeAdd,event);
-    }
-
-    private processAfterAdd(event: Matter.IEventComposite<Matter.Composite>):void {
-      this.processCompositeEvent(MatterEvent.afterAdd,event);
-    }
-
-    private processCompositeEvent(materEvent:MatterEvent,event: Matter.IEventComposite<Matter.Composite>):void  {      
+    private processCompositeEvent(materEvent:MatterEvent,event: Matter.IEventComposite<Matter.Composite>):void  {  
+      for(let key in this.compositeEventHandlers.keys){
+        let handler:MatterCompositeEvent = this.compositeEventHandlers.get(key);
+        handler(this,materEvent,event);
+      } 
       //console.log("MatterEngine:processCompositeEvent"+
       // ":event="+event.name+
       // "");
      }
 
      private enableEvents():void {
-      console.log("World:event:enableEvents");			
-      Matter.Events.on(this.engine,MatterEvent.collisionStart,this.processCollisionStart);
-      Matter.Events.on(this.engine,MatterEvent.collisionEnd,this.processCollisionEnd);
-      Matter.Events.on(this.engine,MatterEvent.collisionActive,this.processCollisionActive);
-      Matter.Events.on(this.engine,MatterEvent.beforeUpdate,this.processBeforeUpdate);
-      Matter.Events.on(this.engine,MatterEvent.afterUpdate,this.processAfterUpdate);
-      Matter.Events.on(this.engine,MatterEvent.beforeAdd,this.processBeforeAdd);
-      Matter.Events.on(this.engine,MatterEvent.afterAdd,this.processAfterAdd);
+      console.log("World:event:enableEvents")
+      let me:MatterEngine = this;
+
+      Matter.Events.on(this.engine,MatterEvent.collisionStart,
+        function(event:Matter.IEventCollision<Matter.Engine>)
+        { me.processCollisionPairsEvent(MatterEvent.collisionStart,event) } ); 
+      
+      Matter.Events.on(this.engine,MatterEvent.collisionEnd,
+        function(event:Matter.IEventCollision<Matter.Engine>)
+        { me.processCollisionPairsEvent(MatterEvent.collisionEnd,event) } ); 
+      
+      Matter.Events.on(this.engine,MatterEvent.collisionEnd,
+        function(event:Matter.IEventCollision<Matter.Engine>)
+        { me.processCollisionPairsEvent(MatterEvent.collisionEnd,event) } ); 
+            
+      Matter.Events.on(this.engine,MatterEvent.beforeUpdate,
+        function(event:Matter.IEventTimestamped<Matter.Engine>)
+        { me.processTimestampedEvent(MatterEvent.collisionEnd,event) } ); 
+  
+      Matter.Events.on(this.engine,MatterEvent.afterUpdate,
+        function(event:Matter.IEventComposite<Matter.Composite>)
+        { me.processCompositeEvent(MatterEvent.afterUpdate,event) } ); 
+    
+      Matter.Events.on(this.engine,MatterEvent.beforeAdd,
+        function(event:Matter.IEventComposite<Matter.Composite>)
+        { me.processCompositeEvent(MatterEvent.beforeAdd,event) } ); 
+  
+      Matter.Events.on(this.engine,MatterEvent.afterAdd,
+        function(event:Matter.IEventComposite<Matter.Composite>)
+        { me.processCompositeEvent(MatterEvent.afterAdd,event) } ); 
     }
 
     public addPath(world:World,path:Path):void {    
@@ -244,21 +249,10 @@ export class MatterEngine extends WalkerEngine {
         this.mouseConstraint.constraint.render.visible = false;
         this.mouseConstraint.constraint.stiffness = 0.2;
         
-        Matter.World.add(this.engine.world, this.mouseConstraint);
-        
+        Matter.World.add(this.engine.world, this.mouseConstraint);        
         // keep the mouse in sync with rendering
         render.controller.mouse = this.mouse;
-
-
-
-
-
-        
     }
-
-  
-
-  
 
     public isWalkerAtDestination(world:World,walker:Walker):void {
       //let matterDestination = this.destinations.get(walker.getCurrentDestination().worldId.id);      
@@ -272,8 +266,6 @@ export class MatterEngine extends WalkerEngine {
   
       Matter.World.add(this.engine.world,[pin]);
     }
-
-    
     
     public createBounds(width:number,height:number):void {
       let wallBoundsRect = Matter.Bodies.rectangle(width/2,height/2,width,height,{});
@@ -329,15 +321,6 @@ export class MatterEngine extends WalkerEngine {
 		this._engine = value;
   }
   
-
-	public get eventHandlers(): Map<string,MatterEventConsumer> {
-		return this._eventHandlers;
-	}
-
-	public set eventHandlers(value: Map<string,MatterEventConsumer>) {
-		this._eventHandlers = value;
-	}
-
 	public get matterTools(): MatterTools  {
 		return this._matterTools;
 	}
@@ -365,13 +348,22 @@ export class MatterEngine extends WalkerEngine {
 	}
   
 
-	public get collisionEventHandlers(): Map<string,MatterCollisionEvent> {
+	private get collisionEventHandlers(): Map<string,MatterCollisionEvent> {
 		return this._collisionEventHandlers;
 	}
 
-	public set collisionEventHandlers(value: Map<string,MatterCollisionEvent>) {
+	private set collisionEventHandlers(value: Map<string,MatterCollisionEvent>) {
 		this._collisionEventHandlers = value;
 	}
   
+
+	private get compositeEventHandlers(): Map<string,MatterCompositeEvent> {
+		return this._compositeEventHandlers;
+	}
+
+	private set compositeEventHandlers(value: Map<string,MatterCompositeEvent>) {
+		this._compositeEventHandlers = value;
+	}
+
     
 }

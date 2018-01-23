@@ -1,6 +1,6 @@
 import { Walker } from "../walker";
 import { MatterEngine } from "./matterengine";
-import { MatterEventConsumer } from "./mattereventconsumer";
+//import { MatterEventConsumer } from "./mattereventconsumer";
 import { MatterEvent } from "./matterevent";
 import { MatterCollisionEvent } from "./mattercollisionevent";
 import { MatterDestination } from "./matterdestination";
@@ -85,7 +85,7 @@ export class MatterWalker  {
 
 		let matterWalker:MatterWalker = this;
 
-		let fsfsd:MatterCollisionEvent = 
+		let collisionStart:MatterCollisionEvent = 
 		function(matterEngine:MatterEngine,eventType:MatterEvent,event: Matter.IEventCollision<Matter.Engine>):void{
 				let containerDest:Matter.Body =  matterWalker.getCurrentMaterDestination(matterEngine).getWalkerContainer();				
 				let isWalkerInisdeContainer:boolean = Matter.Vertices.contains(
@@ -102,8 +102,8 @@ export class MatterWalker  {
 
 			}
 			
-
-		let collisionStart:MatterEventConsumer = new MatterEventConsumer(
+/*
+		let collisionStartx:MatterEventConsumer = new MatterEventConsumer(
 			this.walker.worldId,
 			this.getAreaWalker(),
 			MatterEvent.collisionActive,
@@ -122,8 +122,8 @@ export class MatterWalker  {
 				}
 			}
 		);
-
-		matterEngine.registerEventConsumer(collisionStart);
+*/
+		matterEngine.registerCollisionEvent(this.getAreaWalker(),MatterEvent.collisionActive,collisionStart);
 	}
 
  
