@@ -2,7 +2,7 @@ import { Junction } from "./junction";
 import { Destination } from "./destination";
 import { Walker } from "./walker";
 import { Path } from "./path";
-import { WalkerEngine } from "./walkerengine";
+import { WalkerEngine } from "../engine/walkerengine";
 import { WorldUpdate } from "./worldupdate";
 import { WorldUpdateQueue } from "./worldupdatequeue";
 import { WorldId } from "./worldid";

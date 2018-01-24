@@ -1,8 +1,8 @@
-import { Walker } from "../walker";
+import { Walker } from "../walkerworld/walker";
 import { MatterWalkerEngine } from "./matterwalkerengine";
 import { MatterEvent } from "./matterevent";
 import { MatterDestination } from "./matterdestination";
-import { World } from "../world";
+import { World } from "../walkerworld/world";
 
 import * as Matter from "matter-js";
 

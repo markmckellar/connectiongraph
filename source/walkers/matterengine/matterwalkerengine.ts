@@ -1,9 +1,9 @@
-import { Walker } from "../walker";
-import { Junction } from "../junction";
-import { Destination } from "../destination";
-import { Path } from "../path";
-import { WalkerEngine } from "../walkerengine";
-import { World } from "../world";
+import { Walker } from "../walkerworld/walker";
+import { Junction } from "../walkerworld/junction";
+import { Destination } from "../walkerworld/destination";
+import { Path } from "../walkerworld/path";
+import { WalkerEngine } from "../engine/walkerengine";
+import { World } from "../walkerworld/world";
 import { MatterJunction } from "./matterjunction";
 import { MatterDestination } from "./matterdestination";
 import { MatterWalker } from "./matterwalker";

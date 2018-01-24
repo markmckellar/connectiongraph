@@ -1,5 +1,5 @@
 import { MatterTools } from "./mattertools";
-import { World } from "../world";
+import { World } from "../walkerworld/world";
 import { MatterEvent } from "./matterevent";
 import { MatterCollisionEvent } from "./mattercollisionevent";
 import { MatterCompositeEvent } from "./mattercompositeevent";

@@ -1,7 +1,7 @@
-import { World } from "./walkers/world";
-import { MatterWalkerEngine } from "./walkers/matter/matterwalkerengine";
+import { World } from "./walkers/walkerworld/world";
+import { MatterWalkerEngine } from "./walkers/matterengine/matterwalkerengine";
 import * as Matter from "matter-js";
-import { WorldUpdate } from "./walkers/worldupdate";
+import { WorldUpdate } from "./walkers/walkerworld/worldupdate";
 //import decomp from 'poly-decomp';
 
 //window.decomp = decomp;

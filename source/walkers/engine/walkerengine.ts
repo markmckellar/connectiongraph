@@ -1,8 +1,8 @@
-import { Walker } from "./walker";
-import { Junction } from "./junction";
-import { Destination } from "./destination";
-import { Path } from "./path";
-import { World } from "./world";
+import { Walker } from "../walkerworld/walker";
+import { Junction } from "../walkerworld/junction";
+import { Destination } from "../walkerworld/destination";
+import { Path } from "../walkerworld/path";
+import { World } from "../walkerworld/world";
 
 export interface WalkerEngine {
 

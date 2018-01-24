@@ -1,5 +1,4 @@
 
-
 export class WorldId {
     private _id:string;
 

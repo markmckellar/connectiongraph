@@ -1,7 +1,7 @@
 
 import { MatterEvent } from "./matterevent";
 import * as Matter from "matter-js";
-import { WorldId } from "../worldid";
+import { WorldId } from "../walkerworld/worldid";
 
 
 

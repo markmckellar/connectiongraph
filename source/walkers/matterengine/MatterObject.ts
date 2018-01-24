@@ -1,5 +1,5 @@
 //import { MatterEngine } from "./matterengine";
-import { WorldId } from "../worldid";
+import { WorldId } from "../walkerworld/worldid";
 
 //import * as Matter from "matter-js";
 
