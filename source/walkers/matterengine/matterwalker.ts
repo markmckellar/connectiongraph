@@ -5,6 +5,7 @@ import { MatterDestination } from "./matterdestination";
 import { World } from "../walkerworld/world";
 
 import * as Matter from "matter-js";
+import { MatterEngine } from "./matterengine";
 
 
 
@@ -42,8 +43,34 @@ export class MatterWalker  {
 			stiffness:0.0001,
 			
 		  });
-		  this.walker2DestinationSpring.render.visible=false;
+		this.walker2DestinationSpring.render.visible=false;
 		this.walkerTravelingTotDestination(world,matterEngine);	
+
+		this.registerRenderer(matterEngine);
+	}
+
+	public registerRenderer(matterEngine:MatterEngine):void {
+		let matterWalker:MatterWalker = this;
+		matterEngine.registerTimestampedEvent(
+			this.walker.worldId.id,
+			MatterEvent.afterRender,
+			function(matterEngine:MatterEngine,eventType:MatterEvent,event: Matter.IEventTimestamped<Matter.Engine>):void{
+			  console.log("afterRender!!!!!!!!!!!!!!!!!!!!");	
+			  let context:CanvasRenderingContext2D = matterEngine.render.context;
+			  		
+			  context.fillStyle = matterEngine.matterTools.getColorFromString("ffffffff");
+			  context.strokeStyle = matterEngine.matterTools.getColorFromString("0000ffff");
+
+			  context.beginPath();
+			  context.arc(matterWalker.walkerBody.position.x,
+				matterWalker.walkerBody.position.y,
+				200,
+				0,Math.PI * 2, false);
+			  context.closePath();
+			  context.fill();
+			  context.lineWidth = 1;
+			  context.stroke();
+			});    
 	}
 
 

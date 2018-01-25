@@ -1,7 +1,11 @@
-import { World } from "./walkers/walkerworld/world";
+//import { World } from "./walkers/walkerworld/world";
 import { MatterWalkerEngine } from "./walkers/matterengine/matterwalkerengine";
 import * as Matter from "matter-js";
 import { WorldUpdate } from "./walkers/walkerworld/worldupdate";
+//import { WalkerRenderer } from "./walkers/renderer/walkerrederer";
+import { World } from "./walkers/walkerworld/world";
+
+
 //import decomp from 'poly-decomp';
 
 //window.decomp = decomp;
@@ -20,19 +24,23 @@ let world = new World(matterEngine);
 let engine = matterEngine.engine;
 
 // create a renderer
-let render = Matter.Render.create({
+let render = matterEngine.render;
+/*let render = Matter.Render.create({
+//let render = WalkerRenderer.create({
   element: document.body,
   engine: engine,
   options : {
     hasBounds:false,
     height:600,
     width:800,
-    wireframes:false,
+    wireframes:false,    
   },
 });
 
-world.walkerEngine.createBounds(render.canvas.width,render.canvas.height);
+*/
+
 matterEngine.initMouse(render);
+matterEngine.initRendererEvents(render);
 
 // run the engine
 Matter.Engine.run(engine);
@@ -114,3 +122,40 @@ function doDraw()
 
 world.processWorldUpdates();
 console.log("yy main:world.junctions.keys.length="+world.junctions.size);
+
+
+
+
+
+/*
+
+//render
+var canvas = document.createElement('canvas'),
+  ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+document.body.appendChild(canvas);
+
+window.onresize = function(event) {
+  ctx.canvas.width = window.innerWidth;
+  ctx.canvas.height = window.innerHeight;
+};
+
+(function render() {
+  var bodies = Matter.Composite.allBodies(engine.world);
+  window.requestAnimationFrame(render);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.beginPath();
+  for (var i = 0; i < bodies.length; i += 1) {
+    var vertices = bodies[i].vertices;
+    ctx.moveTo(vertices[0].x, vertices[0].y);
+    for (var j = 1; j < vertices.length; j += 1) {
+      ctx.lineTo(vertices[j].x, vertices[j].y);
+    }
+    ctx.lineTo(vertices[0].x, vertices[0].y);
+  }
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = '#000000';
+  ctx.stroke();
+})();
+*/

@@ -31,6 +31,22 @@ export class MatterTools  {
         return(points);
     }
 
+    public getColorFromString(colorString:string):string
+    {
+      if(colorString.length==6)
+      {
+        colorString += "ff";
+      }
+      
+      let color = "rgba("+
+          parseInt(colorString.substring(0,2), 16)+","+
+          parseInt(colorString.substring(2,4), 16)+","+
+          parseInt(colorString.substring(4,6), 16)+","+
+          parseInt(colorString.substring(6,8), 16)/255.0+")";
+      
+      return(color);
+    }
+
     private cloneVerticies(inVertices:Array<Matter.Vector>):Array<Matter.Vector>
     {
       let newVeritices:Array<Matter.Vector> = new Array<Matter.Vector>();

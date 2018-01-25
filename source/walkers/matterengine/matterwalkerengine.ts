@@ -40,12 +40,24 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
 
     public registerWalkerEvents():void {
 
+      /*
       this.registerCompositeEvent(
         "junctionSpacer",
         MatterEvent.afterUpdate,
         function(matterEngine:MatterEngine,eventType:MatterEvent,event: Matter.IEventComposite<Matter.Composite>):void{
-         //console.log("junctionSpacer!!!!!!!!!!!!!!!!!!!!");					
+        // console.log("junctionSpacer!!!!!!!!!!!!!!!!!!!!");					
         });
+
+        
+      this.registerTimestampedEvent(
+        "beforeRender",
+        MatterEvent.beforeRender,
+        function(matterEngine:MatterEngine,eventType:MatterEvent,event: Matter.IEventTimestamped<Matter.Engine>):void{
+          //console.log("beforeRender!!!!!!!!!!!!!!!!!!!!");					
+        });
+*/
+       
+      
   
     }
     
@@ -117,19 +129,6 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
               this.junctions.set(junction.worldId.id,matterJunction);
               matterJunction.addToEngine(world,this);                       
       }
-    }
-
-
-    public initMouse(render:Matter.Render):void {
-        this.mouse = Matter.Mouse.create(render.canvas);
-        this.mouseConstraint = Matter.MouseConstraint.create(this.engine);
-        this.mouseConstraint.mouse = this.mouse;
-        this.mouseConstraint.constraint.render.visible = false;
-        this.mouseConstraint.constraint.stiffness = 0.2;
-        
-        Matter.World.add(this.engine.world, this.mouseConstraint);        
-        // keep the mouse in sync with rendering
-        render.controller.mouse = this.mouse;
     }
 
     public isWalkerAtDestination(world:World,walker:Walker):void {

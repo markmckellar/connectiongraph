@@ -6,4 +6,6 @@ export enum MatterEvent {
         beforeAdd = 'beforeAdd',
         afterAdd = 'afterAdd',
         collisionActive = 'collisionActive',
+        beforeRender = 'beforeRender',
+        afterRender = 'afterRender',
     };

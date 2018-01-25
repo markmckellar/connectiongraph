@@ -3,6 +3,8 @@ import { World } from "../walkerworld/world";
 import { MatterEvent } from "./matterevent";
 import { MatterCollisionEvent } from "./mattercollisionevent";
 import { MatterCompositeEvent } from "./mattercompositeevent";
+import { MatterTimestampedEvent } from "./mattertimestampedevent";
+
 
 import * as Matter from "matter-js";
 
@@ -10,7 +12,11 @@ export class MatterEngine  {
     private _matterTools:MatterTools ;
     private _collisionEventHandlers : Map<string,MatterCollisionEvent>;
     private _compositeEventHandlers : Map<string,MatterCompositeEvent>;
+    private _timestampEventHandlers : Map<string,MatterTimestampedEvent>;
+    
     private _engine : Matter.Engine;
+    private _render : Matter.Render;
+    
     private _mouse:Matter.Mouse;
     private _mouseConstraint:Matter.MouseConstraint;
 
@@ -18,13 +24,32 @@ export class MatterEngine  {
         this.matterTools = new MatterTools();
         this.collisionEventHandlers = new Map<string,MatterCollisionEvent>(); 
         this.compositeEventHandlers = new Map<string,MatterCompositeEvent>();
+        this.timestampEventHandlers = new Map<string,MatterTimestampedEvent>();
+
         
         this.engine = Matter.Engine.create(); 
         
         this.engine.world.gravity.x = 0.0;
         this.engine.world.gravity.y = 0.0;
 
+
+        this.render = Matter.Render.create({
+          //let render = WalkerRenderer.create({
+            element: document.body,
+            engine: this.engine,
+            options : {
+              hasBounds:false,
+              height:600,
+              width:800,
+              wireframes:false,    
+            },
+          });
+
         this.enableEvents();
+    }
+
+    private geTimestampedEventMapId(name:string,eventType:MatterEvent):string {
+      return(name+":"+eventType);
     }
 
     private getCompositeEventMapId(name:string,eventType:MatterEvent):string {
@@ -38,6 +63,16 @@ export class MatterEngine  {
   
       public deregisterCompositeEvent(name:string,eventType:MatterEvent,event:MatterCompositeEvent):void {
         this.compositeEventHandlers.delete(this.getCompositeEventMapId(name,eventType));    
+      }
+
+
+      public registerTimestampedEvent(name:string,eventType:MatterEvent,event:MatterTimestampedEvent):void {
+        this.timestampEventHandlers.set(this.geTimestampedEventMapId(name,eventType),event);    
+        console.log("MatterEngine:registerTimestampedEvent:.keys.length="+this.timestampEventHandlers.keys.length);
+      }
+  
+      public deregisterTimestampedEvent(name:string,eventType:MatterEvent,event:MatterTimestampedEvent):void {
+        this.timestampEventHandlers.delete(this.geTimestampedEventMapId(name,eventType));    
       }
   
       /*
@@ -69,6 +104,30 @@ export class MatterEngine  {
       public getCollisionHandler(body:Matter.Body,eventType:MatterEvent):MatterCollisionEvent {
         return( this.collisionEventHandlers.get(this.getCollisionEventMapId(body,eventType)) );
       }
+
+      public initMouse(render:Matter.Render):void {
+        this.mouse = Matter.Mouse.create(render.canvas);
+        this.mouseConstraint = Matter.MouseConstraint.create(this.engine);
+        this.mouseConstraint.mouse = this.mouse;
+        this.mouseConstraint.constraint.render.visible = false;
+        this.mouseConstraint.constraint.stiffness = 0.2;
+        
+        Matter.World.add(this.engine.world, this.mouseConstraint);        
+        // keep the mouse in sync with rendering
+        render.controller.mouse = this.mouse;
+    }
+
+    public initRendererEvents(render:Matter.Render):void {
+      let me:MatterEngine = this;
+
+      Matter.Events.on(render,MatterEvent.beforeRender,
+        function(event:Matter.IEventTimestamped<Matter.Engine>)
+        { me.processTimestampedEvent(MatterEvent.beforeRender,event) } );    
+
+      Matter.Events.on(render,MatterEvent.afterRender,
+        function(event:Matter.IEventTimestamped<Matter.Engine>)
+        { me.processTimestampedEvent(MatterEvent.afterRender,event) } );   
+    }
   
       public disableEvents(world:World,matterEngine:MatterEngine):void {
         // what does the function passed to deregistger an event even mean?!?!?
@@ -91,10 +150,20 @@ export class MatterEngine  {
       }
   
       private processTimestampedEvent(eventType:MatterEvent,event:Matter.IEventTimestamped<Matter.Engine>):void  {      
-       //console.log("MatterEngine:processTimestampedEvent"+
-       // ":event="+event.name+
-       // ":timestamp="+event.timestamp+      
-       // "");
+        //console.log("MatterEngine:processTimestampedEvent:keys.length="+ Array.from(  this.timestampEventHandlers.keys() ).length);
+
+        let keys = Array.from(  this.timestampEventHandlers.keys() );
+        console.log("MatterEngine:processTimestampedEvent:keys.length="+keys.length);
+        for(let i=0;i<keys.length;i++ ){
+          let name:string = keys[i];
+          console.log("-----MasterEngine:processTimestampedEvent:looking at:name="+name);
+          
+          if(name.endsWith(eventType)) {
+            console.log("----------MatterEngine:processTimestampedEvent:has:name="+name);
+            let handler:MatterTimestampedEvent =  this.timestampEventHandlers.get(name);
+            handler(this,eventType,event);
+          }          
+        }
       }
   
       private processCompositeEvent(eventType:MatterEvent,event: Matter.IEventComposite<Matter.Composite>):void  {  
@@ -113,11 +182,13 @@ export class MatterEngine  {
           }          
         }
 
+        /*
         for(let name in this.compositeEventHandlers.keys){
           console.log("MatterEngine:processCompositeEvent:name="+name);
           let handler:MatterCompositeEvent = this.compositeEventHandlers.get(name);
           handler(this,eventType,event);
         } 
+        */
         
        }
   
@@ -152,6 +223,7 @@ export class MatterEngine  {
         Matter.Events.on(this.engine,MatterEvent.afterAdd,
           function(event:Matter.IEventComposite<Matter.Composite>)
           { me.processCompositeEvent(MatterEvent.afterAdd,event) } ); 
+
       }
 
     public get engine(): Matter.Engine {
@@ -204,5 +276,25 @@ export class MatterEngine  {
 
 	public set compositeEventHandlers(value: Map<string,MatterCompositeEvent>) {
 		this._compositeEventHandlers = value;
+  }
+  
+
+	public get timestampEventHandlers(): Map<string,MatterTimestampedEvent> {
+		return this._timestampEventHandlers;
 	}
+
+	public set timestampEventHandlers(value: Map<string,MatterTimestampedEvent>) {
+		this._timestampEventHandlers = value;
+	}
+
+	public get render(): Matter.Render {
+		return this._render;
+	}
+
+	public set render(value: Matter.Render) {
+		this._render = value;
+	}
+
+
+  
 }
