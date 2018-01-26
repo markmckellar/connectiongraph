@@ -1,6 +1,7 @@
 import { Junction } from "./junction";
 import { Destination } from "./destination";
 import { Walker } from "./walker";
+import { WorldPosition } from "./worldposition";
 import { Path } from "./path";
 import { WalkerEngine } from "../engine/walkerengine";
 import { WorldUpdate } from "./worldupdate";
@@ -38,8 +39,9 @@ export class World {
 			//console.log("world.addPath:before::this.paths.keys.length="+this.paths.size);	
 			//console.log("wolrd.addPath:adding:"+path.worldId.id);
 			this.paths.set(path.worldId.id,path);
-			this.addJunction(path.startJunction);
-			this.addJunction(path.endJunction);
+			//this.addJunction(path.startJunction);
+			this.addJunction(path.endJunction,
+				this.walkerEngine.getJunctionPosition(path.startJunction));
 			//console.log("world.addPath:after::this.paths.keys.length="+this.paths.size);	
 			//console.log("world.addPath:after::hasPath="+this.hasPath(path.startJunction,path.endJunction));	
 			
@@ -47,11 +49,11 @@ export class World {
 		}
 	}
 
-	public addJunction(junction:Junction):void {
+	public addJunction(junction:Junction,position:WorldPosition):void {
 		if(!this.hasJunction(junction.worldId))
 		{
 			this.junctions.set(junction.worldId.id,junction);
-			this.walkerEngine.addJunction(this,junction);
+			this.walkerEngine.addJunction(this,junction,position);
 			this.addDestination(junction.defaultDestination);
 		}
 	}
@@ -127,6 +129,7 @@ export class World {
 
 	
 	private processOneWorldUpdate(worldUpdate:WorldUpdate):void {
+
 		let junction:Junction = worldUpdate.getJunction(this);
 		let walker:Walker = worldUpdate.getWalker(this,junction);
 		//console.log("processOneWorldUpdate:junction.woldObjectId="+JSON.stringify(junction.worldId.id));
@@ -134,8 +137,12 @@ export class World {
 		//	JSON.stringify(walker.getCurrentDestination().getJunction(this).worldId.id));
 		
 		if(!walker.isCurrentJunction(this,junction))
-		{
+		{			
 			let startingJunction = walker.getCurrentJunction(this);
+
+			this.walkerEngine.setJunctionPosition(junction,this.walkerEngine.getJunctionPosition(startingJunction))
+			
+
 			//console.log("processOneWorldUpdate:startingJunction="+startingJunction.worldId.id);
 			//console.log("processOneWorldUpdate:junction="+junction.worldId.id);
 			let path:Path = worldUpdate.getPath(this,startingJunction,junction);

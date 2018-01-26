@@ -18,7 +18,10 @@ export class MatterWalker  {
 
 		this.walker = walker;
 		let junctionDensity = matterEngine.junctions.get(walker.getCurrentJunction(world).worldId.id).getAreaJunction().density;
-		this.walkerBody = Matter.Bodies.circle(350,50,10,
+		
+		let position:Matter.Vector = this.getCurrentMaterDestination(matterEngine).getSpatialBody().position;
+		
+		this.walkerBody = Matter.Bodies.circle(position.x,position.y,10,
 			{render:{fillStyle:"blue",strokeStyle:"blue"},density:junctionDensity/1000},8);
 		
 		this.walkerBody.restitution = 0.0;
@@ -64,7 +67,7 @@ export class MatterWalker  {
 			  context.beginPath();
 			  context.arc(matterWalker.walkerBody.position.x,
 				matterWalker.walkerBody.position.y,
-				200,
+				10,
 				0,Math.PI * 2, false);
 			  context.closePath();
 			  context.fill();

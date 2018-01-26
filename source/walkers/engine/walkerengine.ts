@@ -3,6 +3,8 @@ import { Junction } from "../walkerworld/junction";
 import { Destination } from "../walkerworld/destination";
 import { Path } from "../walkerworld/path";
 import { World } from "../walkerworld/world";
+import { WorldPosition } from "../walkerworld/worldposition";
+
 
 export interface WalkerEngine {
 
@@ -10,8 +12,11 @@ export interface WalkerEngine {
     //public constructor() {
     //}
 
+    setJunctionPosition(junction:Junction,position:WorldPosition):void;
     addWalker(world:World,walker:Walker):void;
-    addJunction(world:World,junction:Junction):void;
+    getJunctionPosition(junction:Junction):WorldPosition;
+    addJunction(world:World,junction:Junction,position:WorldPosition):void;
+    hasJunction(junction:Junction):boolean;    
     addDestination(world:World,destination:Destination):void;
     addPath(world:World,path:Path):void;
     createBounds(width:number,height:number):void; 

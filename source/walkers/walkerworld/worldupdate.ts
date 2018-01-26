@@ -4,6 +4,8 @@ import { Junction } from "./junction";
 import { DefaultJunction } from "./defaultjunction";
 import { Walker } from "./walker";
 import { Path } from "./path";
+import { WorldPosition } from "./worldposition";
+
 
 
 export class WorldUpdate {
@@ -40,7 +42,7 @@ export class WorldUpdate {
 		let junction:Junction = null;
 		if(!world.hasJunction(this.junctionWorldId)) {
 			junction = new DefaultJunction(this.junctionWorldId);
-			world.addJunction(junction);
+			world.addJunction(junction,new WorldPosition(10,10));
 		} 
 		junction = world.getJunction(this.junctionWorldId);
 		return(junction);

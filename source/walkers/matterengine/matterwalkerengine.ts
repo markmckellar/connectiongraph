@@ -1,6 +1,8 @@
 import { Walker } from "../walkerworld/walker";
 import { Junction } from "../walkerworld/junction";
 import { Destination } from "../walkerworld/destination";
+import { WorldPosition } from "../walkerworld/worldposition";
+
 import { Path } from "../walkerworld/path";
 import { WalkerEngine } from "../engine/walkerengine";
 import { World } from "../walkerworld/world";
@@ -8,7 +10,7 @@ import { MatterJunction } from "./matterjunction";
 import { MatterDestination } from "./matterdestination";
 import { MatterWalker } from "./matterwalker";
 import { MatterEngine } from "./matterengine";
-import { MatterEvent } from "./matterevent";
+//import { MatterEvent } from "./matterevent";
 
 import * as Matter from "matter-js";
 
@@ -72,10 +74,13 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
         }
         else
         {
-          this.addJunction(world,path.startJunction);
-          this.addJunction(world,path.endJunction);
-
+          //let endPosition:Matter.Vector = (this.hasJunction(world,path.endJunction)) ? null : null;
+          //this.addJunction(world,path.startJunction,);
           let matterStartJunction:Matter.Body = this.junctions.get(path.startJunction.worldId.id).getAreaJunction();
+          
+          this.addJunctionMatterPosition(world,path.endJunction,
+            matterStartJunction.position);
+
           let matterEndJunction:Matter.Body = this.junctions.get(path.endJunction.worldId.id).getAreaJunction();
           
           let matterPath = Matter.Constraint.create({
@@ -120,16 +125,43 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
       }
     }
 
+    public hasJunction(junction:Junction):boolean {
+      return(this.junctions.has(junction.worldId.id));
+    }
+
+    public getMatterJunction(junction:Junction):MatterJunction {
+      return(this.junctions.get(junction.worldId.id));
+    }
+
+    public getJunctionPosition(junction:Junction):WorldPosition {
+      return( this.vectorToPosition(this.getMatterJunction(junction).getAreaJunction().position) );                       
+  
+    }
+
+    public setJunctionPosition(junction:Junction,position:WorldPosition):void{
+      this.getMatterJunction(junction).setPosition(position);
+    }
     
 
-    public addJunction(world:World,junction:Junction):void {
-      if(!this.junctions.has(junction.worldId.id))
+    public vectorToPosition(vector:Matter.Vector):WorldPosition {
+      return( new WorldPosition(vector.x,vector.y));
+    }
+
+    public addJunction(world:World,junction:Junction,position:WorldPosition):void {
+      this.addJunctionMatterPosition(world,junction,Matter.Vector.create(position.x,position.y));                       
+  
+    }
+    
+
+    public addJunctionMatterPosition(world:World,junction:Junction,position:Matter.Vector):void {
+      if(!this.hasJunction(junction))
       {
-              let matterJunction = new MatterJunction(world,this,junction);      
+              let matterJunction = new MatterJunction(world,this,junction,position);      
               this.junctions.set(junction.worldId.id,matterJunction);
               matterJunction.addToEngine(world,this);                       
       }
     }
+
 
     public isWalkerAtDestination(world:World,walker:Walker):void {
       //let matterDestination = this.destinations.get(walker.getCurrentDestination().worldId.id);      

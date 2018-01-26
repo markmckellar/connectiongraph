@@ -41,7 +41,7 @@ let render = matterEngine.render;
 
 matterEngine.initMouse(render);
 matterEngine.initRendererEvents(render);
-
+matterEngine.createBounds(render.canvas.width,render.canvas.height);
 // run the engine
 Matter.Engine.run(engine);
 Matter.Render.run(render);
@@ -72,7 +72,7 @@ let worldUpdate6b:WorldUpdate = new WorldUpdate("junction6b","walker2",WorldUpda
 
 
 let timer=1;
-let timerInc = 0.2;
+let timerInc = 1;
 for(let t=0;t<10;t++)
 {
   for(let i=0;i<22;i++,timer+=timerInc) {
