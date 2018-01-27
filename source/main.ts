@@ -5,6 +5,18 @@ import { WorldUpdate } from "./walkers/walkerworld/worldupdate";
 //import { WalkerRenderer } from "./walkers/renderer/walkerrederer";
 import { World } from "./walkers/walkerworld/world";
 
+//////////////////////////////////////////////////
+// somehow there is a way to make those anoying 
+// matter-js: Bodies.fromVertices: poly-decomp.js required. Could not decompose vertices. Fallback to convex hull
+//import { decomp } from "poly-decomp";
+//let dc = require('poly-decomp');
+////global decomp = require('poly-decomp');
+//eval("decomp = dc;")
+//let windowHandle:any = window;
+//windowHandle.decomp = decomp;
+//window.decomp = decomp;
+//(<any>window).decomp = decomp;
+//////////////////////////////////////////////////
 
 //import decomp from 'poly-decomp';
 

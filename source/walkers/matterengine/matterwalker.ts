@@ -58,7 +58,7 @@ export class MatterWalker  {
 			this.walker.worldId.id,
 			MatterEvent.afterRender,
 			function(matterEngine:MatterEngine,eventType:MatterEvent,event: Matter.IEventTimestamped<Matter.Engine>):void{
-			  console.log("afterRender!!!!!!!!!!!!!!!!!!!!");	
+			  //console.log("afterRender!!!!!!!!!!!!!!!!!!!!");	
 			  let context:CanvasRenderingContext2D = matterEngine.render.context;
 			  		
 			  context.fillStyle = matterEngine.matterTools.getColorFromString("ffffffff");

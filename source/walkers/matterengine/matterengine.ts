@@ -153,13 +153,13 @@ export class MatterEngine  {
         //console.log("MatterEngine:processTimestampedEvent:keys.length="+ Array.from(  this.timestampEventHandlers.keys() ).length);
 
         let keys = Array.from(  this.timestampEventHandlers.keys() );
-        console.log("MatterEngine:processTimestampedEvent:keys.length="+keys.length);
+        //console.log("MatterEngine:processTimestampedEvent:keys.length="+keys.length);
         for(let i=0;i<keys.length;i++ ){
           let name:string = keys[i];
-          console.log("-----MasterEngine:processTimestampedEvent:looking at:name="+name);
+          //console.log("-----MasterEngine:processTimestampedEvent:looking at:name="+name);
           
           if(name.endsWith(eventType)) {
-            console.log("----------MatterEngine:processTimestampedEvent:has:name="+name);
+            //console.log("----------MatterEngine:processTimestampedEvent:has:name="+name);
             let handler:MatterTimestampedEvent =  this.timestampEventHandlers.get(name);
             handler(this,eventType,event);
           }          

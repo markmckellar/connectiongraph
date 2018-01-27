@@ -135,6 +135,7 @@ export class World {
 		//console.log("processOneWorldUpdate:junction.woldObjectId="+JSON.stringify(junction.worldId.id));
 		//console.log("processOneWorldUpdate:walker.currentJunction.woldObjectId="+
 		//	JSON.stringify(walker.getCurrentDestination().getJunction(this).worldId.id));
+		// 
 		
 		if(!walker.isCurrentJunction(this,junction))
 		{			
