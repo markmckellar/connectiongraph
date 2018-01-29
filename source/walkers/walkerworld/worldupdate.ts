@@ -38,11 +38,24 @@ export class WorldUpdate {
 		return(date);
 	}
 	
+	
 	public getJunction(world:World):Junction {
 		let junction:Junction = null;
-		if(!world.hasJunction(this.junctionWorldId)) {
+		let updateJunctionExists:boolean = world.hasJunction(this.junctionWorldId);
+		
+		if(!updateJunctionExists) {
 			junction = new DefaultJunction(this.junctionWorldId);
-			world.addJunction(junction,new WorldPosition(10,10));
+			let updateWalkerExists:boolean = world.hasWalker(this.walkerWorldId);
+
+			let startPosition:WorldPosition = world.getNewJunctionPosition();
+						
+			if(updateWalkerExists) {
+				startPosition = world.walkerEngine.getJunctionPosition(
+					world.getWalker(this.walkerWorldId).getCurrentJunction(world));
+			}
+			
+
+			world.addJunction(junction,startPosition);
 		} 
 		junction = world.getJunction(this.junctionWorldId);
 		return(junction);

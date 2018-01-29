@@ -33,6 +33,7 @@ export class MatterEngine  {
         this.engine.world.gravity.y = 0.0;
 
 
+        //let x:Matter.IRenderDefinition = null;
         this.render = Matter.Render.create({
           //let render = WalkerRenderer.create({
             element: document.body,

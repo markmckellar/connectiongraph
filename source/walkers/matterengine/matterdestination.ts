@@ -19,7 +19,8 @@ export class MatterDestination  {
 		this.spatialBody = Matter.Bodies.circle(j.position.x,j.position.y,40,
 			{
 				isSensor:true,
-				render:{fillStyle:"red",strokeStyle:"red"},
+				
+				render:{fillStyle:"transparent",strokeStyle:"red"},
 			},8);
 		this.boundryBody = matterEngine.matterTools.createBoundObject(this.spatialBody,1.05,1.5);
 		

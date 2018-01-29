@@ -55,6 +55,7 @@ matterEngine.initMouse(render);
 matterEngine.initRendererEvents(render);
 matterEngine.createBounds(render.canvas.width,render.canvas.height);
 // run the engine
+//matterEngine.engine.timing.timeScale = 0.0001;
 Matter.Engine.run(engine);
 Matter.Render.run(render);
 
@@ -84,24 +85,25 @@ let worldUpdate6b:WorldUpdate = new WorldUpdate("junction6b","walker2",WorldUpda
 
 
 let timer=1;
-let timerInc = 1;
-for(let t=0;t<10;t++)
+let timerInc = 2;
+let junctionNum = 20;
+for(let t=0;t<15;t++)
 {
-  for(let i=0;i<22;i++,timer+=timerInc) {
+  for(let i=0;i<junctionNum;i++,timer+=timerInc) {
     let worldUpdate1:WorldUpdate = new WorldUpdate("junction"+i,"walker1",WorldUpdate.datePlus(timer*1000),{},{},{});
     world.addWorldUpdate(worldUpdate1);
-    let worldUpdate2:WorldUpdate = new WorldUpdate("junction"+(5-i),"walker2",WorldUpdate.datePlus(timer*1000),{},{},{});
-    world.addWorldUpdate(worldUpdate2);
+    //let worldUpdate2:WorldUpdate = new WorldUpdate("junction"+(5-i),"walker2",WorldUpdate.datePlus(timer*1000),{},{},{});
+    //world.addWorldUpdate(worldUpdate2);
     
   }
-/*
 
-  for(let i=5;i>=0;i--,timer+=timerInc) {
-    let worldUpdate1:WorldUpdate = new WorldUpdate("junction"+i,"walker1."+t,WorldUpdate.datePlus(timer*1000),{},{},{});
+
+  for(let i=junctionNum;i>=0;i--,timer+=timerInc) {
+    let worldUpdate1:WorldUpdate = new WorldUpdate("junction"+i,"walker1."+t,WorldUpdate.datePlus(timer*1000*0.6),{},{},{});
     world.addWorldUpdate(worldUpdate1);
-    let worldUpdate2:WorldUpdate = new WorldUpdate("junction"+(5-i),"walker2."+t,WorldUpdate.datePlus(timer*1000),{},{},{});
+    let worldUpdate2:WorldUpdate = new WorldUpdate("junction"+(5-i),"walker2."+t,WorldUpdate.datePlus(timer*1000*0.7),{},{},{});
     world.addWorldUpdate(worldUpdate2);
-  }*/
+  }
 }
 
 /*

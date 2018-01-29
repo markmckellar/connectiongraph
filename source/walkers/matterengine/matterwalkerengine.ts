@@ -88,8 +88,8 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
               bodyB: matterEndJunction,  
               pointA: { x: -0, y: -0 },
               pointB: { x: -0, y: -0 },
-              length:30,
-              stiffness:0.001,
+              length:59,
+              stiffness:0.01,
             });
           this.paths.set(path.worldId.id,matterPath);
         

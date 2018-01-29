@@ -16,8 +16,8 @@ export class MatterJunction  {
 
     public constructor(world:World,matterEngine:MatterWalkerEngine,junction:Junction,position:Matter.Vector) {
 		this.junction = junction;
-		this.junctionBody = Matter.Bodies.circle(position.x,position.y,20,{render:{fillStyle:"blue",strokeStyle:"white"}},8);
-		this.spacerBody = Matter.Bodies.circle(position.x,position.y,40,{render:{fillStyle:"transparent",strokeStyle:"white"}},8);
+		this.junctionBody = Matter.Bodies.circle(position.x,position.y,30,{render:{fillStyle:"blue",strokeStyle:"white"}},8);
+		this.spacerBody = Matter.Bodies.circle(position.x,position.y,60,{render:{fillStyle:"transparent",strokeStyle:"white"}},8);
 
 		this.junctionBody.collisionFilter.category = MatterWalkerEngine.junctionFilter;
 		this.junctionBody.collisionFilter.mask = MatterWalkerEngine.junctionFilter|MatterWalkerEngine.boundsFilter;
@@ -27,13 +27,20 @@ export class MatterJunction  {
 	}
 
 	public setPosition(position:WorldPosition):void {
-		Matter.Body.setPosition(this.junctionBody,Matter.Vector.create(position.x,position.y));
-		Matter.Body.setPosition(this.spacerBody,Matter.Vector.create(position.x,position.y));
+		//position.x = 700;
+		//position.y = 500;
+		//Matter.Body.setPosition(this.junctionBody,Matter.Vector.create(position.x,position.y));
+		//Matter.Body.setPosition(this.spacerBody,Matter.Vector.create(position.x,position.y));
+		
+		this.junctionBody.position.x=position.x;
+		this.junctionBody.position.y=position.y;
+		this.spacerBody.position.x=position.x;
+		this.spacerBody.position.y=position.y;
 	}
 
 	public addToEngine(world:World,matterEngine:MatterWalkerEngine):void {
 		Matter.World.add(matterEngine.engine.world,[this.spacerBody,this.junctionBody]);
-		matterEngine.pin(this.spacerBody,this.junctionBody);		
+		matterEngine.pin(this.spacerBody,this.junctionBody);
 	}
 	
 	public getAreaJunction():Matter.Body {

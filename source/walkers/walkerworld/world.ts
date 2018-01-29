@@ -31,6 +31,10 @@ export class World {
 		this.walkerEngine =  walkerEngine;
 	}
 
+	public getContext() {
+		this
+	}
+
 	public addPath(path:Path):void {
 		//console.log("world.addPath:path="+JSON.stringify(path));	
 		
@@ -127,8 +131,13 @@ export class World {
 		}	
 	}
 
+	public getNewJunctionPosition():WorldPosition {
+		return( new WorldPosition(20,20) );
+	}
+
 	
 	private processOneWorldUpdate(worldUpdate:WorldUpdate):void {
+		
 
 		let junction:Junction = worldUpdate.getJunction(this);
 		let walker:Walker = worldUpdate.getWalker(this,junction);
@@ -136,22 +145,24 @@ export class World {
 		//console.log("processOneWorldUpdate:walker.currentJunction.woldObjectId="+
 		//	JSON.stringify(walker.getCurrentDestination().getJunction(this).worldId.id));
 		// 
+		let isCurrentJunction:boolean = (walker.isCurrentJunction(this,junction)); 
+		console.log("processOneWorldUpdate:"+
+			":junction="+junction.worldId.id+
+			":Walker="+walker.worldId.id+
+			":isCurrentJunction="+isCurrentJunction+
+			"");
 		
-		if(!walker.isCurrentJunction(this,junction))
+		if(!isCurrentJunction)
 		{			
 			let startingJunction = walker.getCurrentJunction(this);
-
-			this.walkerEngine.setJunctionPosition(junction,this.walkerEngine.getJunctionPosition(startingJunction))
-			
-
+			//let startPosition:WorldPosition = this.walkerEngine.getJunctionPosition(startingJunction);
+			//this.walkerEngine.setJunctionPosition(junction,startPosition);
 			//console.log("processOneWorldUpdate:startingJunction="+startingJunction.worldId.id);
 			//console.log("processOneWorldUpdate:junction="+junction.worldId.id);
 			let path:Path = worldUpdate.getPath(this,startingJunction,junction);
 			//console.log("processOneWorldUpdate.path="+JSON.stringify(path))
-			
 			walker.setCurrentDestination(this,path.endJunction.getWalkerDestination(walker));
-			//console.log("processOneWorldUpdate.walker.currentDestination="+JSON.stringify(walker.getCurrentDestination()))
-			
+			//console.log("processOneWorldUpdate.walker.currentDestination="+JSON.stringify(walker.getCurrentDestination()))	
 		}
 
 	}
