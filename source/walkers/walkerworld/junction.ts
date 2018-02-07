@@ -9,6 +9,8 @@ import { WorldObjectDisplay } from "../renderer/worldobjectdisplay";
 
 
 export abstract class Junction extends WorldObject {
+
+    static junctionBody:string = "junctionBody";
    
     private _destinations: Map<string,Destination>;
     private _destinationList: Array<Destination>;

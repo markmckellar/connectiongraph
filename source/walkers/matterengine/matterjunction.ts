@@ -3,6 +3,7 @@ import { WorldPosition } from "../walkerworld/worldposition";
 
 import { MatterWalkerEngine } from "./matterwalkerengine";
 
+import { WorldShape } from "../renderer/shapes/worldshape";
 import { World } from "../walkerworld/world";
 
 import * as Matter from "matter-js";
@@ -16,8 +17,24 @@ export class MatterJunction  {
 
     public constructor(world:World,matterEngine:MatterWalkerEngine,junction:Junction,position:Matter.Vector) {
 		this.junction = junction;
-		this.junctionBody = Matter.Bodies.circle(position.x,position.y,30,{render:{fillStyle:"blue",strokeStyle:"white"}},8);
-		this.spacerBody = Matter.Bodies.circle(position.x,position.y,60,{render:{fillStyle:"transparent",strokeStyle:"white"}},8);
+		
+		let junctionBodyShape:WorldShape = junction.worldObjectDisplay.getShape(junction,Junction.junctionBody);
+		this.junctionBody = matterEngine.matterTools.getBodyFromWorldShape(
+			new WorldPosition(position.x,position.y),
+			junctionBodyShape);
+
+		let spacerBodyPoints:Array<Matter.Vector> = matterEngine.matterTools.cloneVerticies(this.junctionBody.vertices);
+		Matter.Vertices.scale(spacerBodyPoints,2.0,2.0,this.junctionBody.position);
+		   
+		this.spacerBody = Matter.Bodies.fromVertices(this.junctionBody.position.x,
+			this.junctionBody.position.y,[spacerBodyPoints],
+			{render:{fillStyle:"transparent",strokeStyle:"white"}});
+	   
+			
+
+
+		//this.junctionBody = Matter.Bodies.circle(position.x,position.y,30,{render:{fillStyle:"blue",strokeStyle:"white"}},8);
+		//this.spacerBody = Matter.Bodies.circle(position.x,position.y,60,{render:{fillStyle:"transparent",strokeStyle:"white"}},8);
 
 		this.junctionBody.collisionFilter.category = MatterWalkerEngine.junctionFilter;
 		this.junctionBody.collisionFilter.mask = MatterWalkerEngine.junctionFilter|MatterWalkerEngine.boundsFilter;

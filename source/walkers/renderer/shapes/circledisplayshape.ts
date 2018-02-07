@@ -34,7 +34,7 @@ export class CircleDisplayShape extends WorldShape
 	
 	
 	
-	public drawShape(worldObjectDisplay:WorldObjectDisplay,world:World,context:CanvasRenderingContext2D,):void
+	public drawShape(worldObjectDisplay:WorldObjectDisplay,world:World,context:CanvasRenderingContext2D):void
 	{
 		//super.drawConnector(canvasHolder,node);
 		/*

@@ -1,5 +1,8 @@
 import * as Matter from "matter-js";
 import { MatterWalkerEngine } from "./matterwalkerengine";
+import { WorldPosition } from "../walkerworld/worldposition";
+import { WorldShape } from "../renderer/shapes/worldshape";
+
 
 
 
@@ -47,7 +50,7 @@ export class MatterTools  {
       return(color);
     }
 
-    private cloneVerticies(inVertices:Array<Matter.Vector>):Array<Matter.Vector>
+    public cloneVerticies(inVertices:Array<Matter.Vector>):Array<Matter.Vector>
     {
       let newVeritices:Array<Matter.Vector> = new Array<Matter.Vector>();
       
@@ -57,6 +60,31 @@ export class MatterTools  {
         newVeritices.push(Matter.Vector.create(v.x,v.y));
       }
       return(newVeritices);
+    }
+
+    public getVectorArrayFromWorldPostionArray(location:WorldPosition,positionArray:Array<WorldPosition>):Array<Matter.Vector> {
+      let newVeritices:Array<Matter.Vector> = new Array<Matter.Vector>();
+      for(let i=0;i<positionArray.length;i++) newVeritices.push( 
+        this.getVectorFromWorldPostion(location,positionArray[i]) );
+        return(newVeritices);
+    }
+
+    public getVectorFromWorldPostion(location:WorldPosition,position:WorldPosition):Matter.Vector {
+      let newVeritice = Matter.Vector.create(position.x+location.x,position.y+location.y) ;
+        return(newVeritice);
+    }
+
+    public getBodyFromWorldPostionArray(location:WorldPosition,positionArray:Array<WorldPosition>):Matter.Body {
+      let newVeritices:Array<Matter.Vector> = this.getVectorArrayFromWorldPostionArray(location,positionArray);
+      //let center:Matter.Vector = Matter.Vertices.centre(newVeritices);
+      let newBody:Matter.Body = Matter.Bodies.fromVertices(location.x,location.y,[newVeritices]);
+      return(newBody);
+    }
+
+    public getBodyFromWorldShape(location:WorldPosition,shape:WorldShape):Matter.Body {
+      let newVeritices:Array<Matter.Vector> = this.getVectorArrayFromWorldPostionArray(location,shape.shapePoints);
+      let newBody:Matter.Body = Matter.Bodies.fromVertices(location.x,location.y,[newVeritices]);
+      return(newBody);
     }
 
     public createBoundObject(body:Matter.Body,scaleInner:number,scaleOuter:number):Matter.Body {     
