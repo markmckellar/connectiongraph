@@ -139,7 +139,7 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
     }
 
     public setJunctionPosition(junction:Junction,position:WorldPosition):void{
-      this.getMatterJunction(junction).setPosition(position);
+      this.getMatterJunction(junction).setPosition(this,position);
     }
     
 

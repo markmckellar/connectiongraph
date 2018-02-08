@@ -5,6 +5,8 @@ import { DefaultJunction } from "./defaultjunction";
 import { Walker } from "./walker";
 import { Path } from "./path";
 import { WorldPosition } from "./worldposition";
+import { WorldObjectDisplayFactory } from "../renderer/worldobjetdisplayfactory";
+
 
 
 
@@ -44,7 +46,10 @@ export class WorldUpdate {
 		let updateJunctionExists:boolean = world.hasJunction(this.junctionWorldId);
 		
 		if(!updateJunctionExists) {
-			junction = new DefaultJunction(this.junctionWorldId);
+			junction = new DefaultJunction(
+				this.junctionWorldId,
+				WorldObjectDisplayFactory.getWorldObjectDisplay("junction")
+			);
 			let updateWalkerExists:boolean = world.hasWalker(this.walkerWorldId);
 
 			let startPosition:WorldPosition = world.getNewJunctionPosition();
@@ -64,7 +69,11 @@ export class WorldUpdate {
 	public getWalker(world:World,junction:Junction):Walker {
 		let walker:Walker = null;
 		if(!world.hasWalker(this.walkerWorldId)) {
-			walker = new Walker(this.walkerWorldId,junction);
+			walker = new Walker(
+				this.walkerWorldId,
+				junction,
+				WorldObjectDisplayFactory.getWorldObjectDisplay("walker")
+			);
 			world.addWalker(walker);
 		} 
 		walker = world.getWalker(this.walkerWorldId);
@@ -74,7 +83,10 @@ export class WorldUpdate {
 	public getPath(world:World,startJunction:Junction,endJunction:Junction):Path {
 		let path:Path = null;
 		if(!world.hasPath(startJunction,endJunction)) {
-			path = new Path(startJunction,endJunction);
+			path = new Path(
+				startJunction,
+				endJunction,
+				WorldObjectDisplayFactory.getWorldObjectDisplay("path"));
 			world.addPath(path);
 		} 
 		path = world.getPath(startJunction,endJunction);

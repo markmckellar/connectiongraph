@@ -8,16 +8,16 @@ import { WorldPosition } from "../walkerworld/worldposition";
 
 
 
-export abstract class WorldObjectDisplayFactory {
+export class WorldObjectDisplayFactory {
    // private _shapePoints:Array<WorldShape>;  
     
-    constructor() {
+    public constructor() {
     }
 
-    public getWorldObjectDisplay(someKinaTag:string):WorldObjectDisplay {
+    public static getWorldObjectDisplay(someKinaTag:string):WorldObjectDisplay {
 
         someKinaTag = "junction";
-
+        /*
         let options:Object =
             {
                 shapes:
@@ -36,18 +36,18 @@ export abstract class WorldObjectDisplayFactory {
                     },
                 ],
             };
-
+        */
         // constructor(position:WorldPosition,shapes:Map<string,WorldShape>) {
         // public abstract drawObject(worldObjectDisplay:WorldObjectDisplay,world:World):void;
 
         let shapes:Map<string,WorldShape> = new Map<string,WorldShape>();
-        shapes.set("junctionCircle",new CircleDisplayShape("junctionCircle",40,8,new WorldPosition(0,0)));
+        shapes.set("junctionBody",new CircleDisplayShape("junctionBody",40,8,new WorldPosition(0,0)));
 
         let wod:WorldObjectDisplay = 
-        new WorldObjectDisplay(
-            new WorldPosition(0,0),
-            shapes
-        ) => drawObject(worldObjectDisplay:WorldObjectDisplay,world:World):void {};
+        new(class extends WorldObjectDisplay {
+            public drawObject(worldObjectDisplay:WorldObjectDisplay,world:World):void{                
+                }
+            } )(new WorldPosition(0,0),shapes);
 
         return(wod);
 

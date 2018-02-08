@@ -29,7 +29,7 @@ export class CircleDisplayShape extends WorldShape
 					);	
 		}
 		
-		return(pointList);;
+		return(pointList);
 	}
 	
 	
