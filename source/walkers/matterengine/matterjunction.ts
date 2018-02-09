@@ -24,6 +24,7 @@ export class MatterJunction  {
 			new WorldPosition(position.x,position.y),
 			junctionBodyShape);
 		//this.junctionBody = Matter.Bodies.circle(position.x,position.y,30,{render:{fillStyle:"blue",strokeStyle:"white"}},8);			
+		
 		this.junctionBody.collisionFilter.category = MatterWalkerEngine.junctionFilter;
 		this.junctionBody.collisionFilter.mask = MatterWalkerEngine.junctionFilter|MatterWalkerEngine.boundsFilter;			
 
@@ -36,14 +37,41 @@ export class MatterJunction  {
 		Matter.Body.scale(this.spacerBody,2.0,2.0,this.spacerBody.position);
 */					
 	
+/*
+		matterEngine.matterTools.getVectorArrayFromWorldPostionArray(
+				new WorldPosition(position.x,position.y),
+				junctionBodyShape.shapePoints)
+			);
+		var polygon = { 
+			label: 'Polygon Body',
+			position: { x: x, y: y },
+			vertices: Matter.Vertices.
+		};
+
+		if (options.chamfer) {
+			var chamfer = options.chamfer;
+			polygon.vertices = Vertices.chamfer(polygon.vertices, chamfer.radius, 
+									chamfer.quality, chamfer.qualityMin, chamfer.qualityMax);
+			delete options.chamfer;
+		}
+
+		return Body.create(Common.extend({}, polygon, options));
+		*/
 		//this.spacerBody = Matter.Bodies.circle(position.x,position.y,60,{render:{fillStyle:"transparent",strokeStyle:"white"}},8);
 		//this.spacerBody.collisionFilter.category = MatterWalkerEngine.junctionSpacerFilter;
 		//this.spacerBody.collisionFilter.mask = MatterWalkerEngine.junctionSpacerFilter|MatterWalkerEngine.boundsFilter;
-		let spacerPosition = matterEngine.matterTools.getVectorFromWorldPostion(
-			new WorldPosition(0,0),
-			new WorldPosition(position.x,position.y));
+		//let spacerPosition = matterEngine.matterTools.getVectorFromWorldPostion(
+		//	new WorldPosition(0,0),
+		//	new WorldPosition(position.x,position.y));
+		
 		this.spacerBody = Matter.Body.create(
-			{}
+			//Matter.Common.extend({},
+			{
+				position: { x: position.x, y: position.y },
+				vertices: matterEngine.matterTools.getVectorArrayFromWorldPostionArray(
+					new WorldPosition(position.x,position.y),
+					junctionBodyShape.shapePoints)
+			}
 			/*
 			{collisionFilter:{
 				category:MatterWalkerEngine.junctionSpacerFilter,
@@ -53,14 +81,19 @@ export class MatterJunction  {
 		}
 			*/
 		);
+		this.spacerBody.collisionFilter.category = MatterWalkerEngine.junctionSpacerFilter;
+		this.spacerBody.collisionFilter.mask = MatterWalkerEngine.junctionSpacerFilter|MatterWalkerEngine.boundsFilter;
+		
+		/*
 		Matter.Body.setVertices(
 			this.spacerBody,
 			matterEngine.matterTools.getVectorArrayFromWorldPostionArray(
 				new WorldPosition(position.x,position.y),
 				junctionBodyShape.shapePoints)
 			);
-		Matter.Body.scale(this.spacerBody,2.0,2.0,spacerPosition);
-		Matter.Body.translate(this.spacerBody,spacerPosition);
+			*/
+		Matter.Body.scale(this.spacerBody,2.0,2.0,this.spacerBody.position);
+		//////////////Matter.Body.translate(this.spacerBody,spacerPosition);
 
 			
 
