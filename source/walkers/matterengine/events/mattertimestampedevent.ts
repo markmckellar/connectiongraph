@@ -1,4 +1,4 @@
-import { MatterEngine } from "./matterengine";
+import { MatterEngine } from "../matterengine";
 import { MatterEvent } from "./matterevent";
 import * as Matter from "matter-js";
 

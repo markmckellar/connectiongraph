@@ -1,11 +1,11 @@
-import { World } from "./world";
-import { WorldId } from "./worldid";
+import { WalkerWorld } from "./walkerworld";
+import { WorldId } from "../world/worldid";
 import { Junction } from "./junction";
 import { DefaultJunction } from "./defaultjunction";
 import { Walker } from "./walker";
 import { Path } from "./path";
-import { WorldPosition } from "./worldposition";
-import { WorldObjectDisplayFactory } from "../renderer/worldobjetdisplayfactory";
+import { WorldPosition } from "../world/worldposition";
+import { WorldObjectDisplayFactory } from "../display/worldobjetdisplayfactory";
 
 
 
@@ -41,55 +41,53 @@ export class WorldUpdate {
 	}
 	
 	
-	public getJunction(world:World):Junction {
+	public getJunction(walkerWorld:WalkerWorld):Junction {
 		let junction:Junction = null;
-		let updateJunctionExists:boolean = world.hasJunction(this.junctionWorldId);
+		let updateJunctionExists:boolean = walkerWorld.hasJunction(this.junctionWorldId);
 		
 		if(!updateJunctionExists) {
-			junction = new DefaultJunction(
-				this.junctionWorldId,
-				WorldObjectDisplayFactory.getWorldObjectDisplay("junction")
-			);
-			let updateWalkerExists:boolean = world.hasWalker(this.walkerWorldId);
-
-			let startPosition:WorldPosition = world.getNewJunctionPosition();
-						
-			if(updateWalkerExists) {
-				startPosition = world.walkerEngine.getJunctionPosition(
-					world.getWalker(this.walkerWorldId).getCurrentJunction(world));
-			}
 			
 
-			world.addJunction(junction,startPosition);
+			let updateWalkerExists:boolean = walkerWorld.hasWalker(this.walkerWorldId);
+			let startPosition:WorldPosition = walkerWorld.getNewJunctionPosition();						
+			if(updateWalkerExists) startPosition = walkerWorld.walkerEngine.getJunctionPosition(
+					walkerWorld.getWalker(this.walkerWorldId).getCurrentJunction(walkerWorld));
+			
+			junction = new DefaultJunction(
+						this.junctionWorldId,
+						WorldObjectDisplayFactory.getWorldObjectDisplay("junction"),
+					);
+
+			walkerWorld.addJunction(junction,startPosition);
 		} 
-		junction = world.getJunction(this.junctionWorldId);
+		junction = walkerWorld.getJunction(this.junctionWorldId);
 		return(junction);
 	}
 
-	public getWalker(world:World,junction:Junction):Walker {
+	public getWalker(walkerWorld:WalkerWorld,junction:Junction):Walker {
 		let walker:Walker = null;
-		if(!world.hasWalker(this.walkerWorldId)) {
+		if(!walkerWorld.hasWalker(this.walkerWorldId)) {
 			walker = new Walker(
 				this.walkerWorldId,
 				junction,
 				WorldObjectDisplayFactory.getWorldObjectDisplay("walker")
 			);
-			world.addWalker(walker);
+			walkerWorld.addWalker(walker);
 		} 
-		walker = world.getWalker(this.walkerWorldId);
+		walker = walkerWorld.getWalker(this.walkerWorldId);
 		return(walker);
 	}
 
-	public getPath(world:World,startJunction:Junction,endJunction:Junction):Path {
+	public getPath(walkerWorld:WalkerWorld,startJunction:Junction,endJunction:Junction):Path {
 		let path:Path = null;
-		if(!world.hasPath(startJunction,endJunction)) {
+		if(!walkerWorld.hasPath(startJunction,endJunction)) {
 			path = new Path(
 				startJunction,
 				endJunction,
 				WorldObjectDisplayFactory.getWorldObjectDisplay("path"));
-			world.addPath(path);
+				walkerWorld.addPath(path);
 		} 
-		path = world.getPath(startJunction,endJunction);
+		path = walkerWorld.getPath(startJunction,endJunction);
 		//console.log("WorldUpdate:haspath="+world.hasPath(startJunction,endJunction));
 		//console.log("WorldUpdate:path="+path);
 		//console.log("WorldUpdate:pathjson="+JSON.stringify(path));

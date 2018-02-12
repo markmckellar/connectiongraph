@@ -1,14 +1,14 @@
 import { MatterTools } from "./mattertools";
-import { World } from "../walkerworld/world";
-import { MatterEvent } from "./matterevent";
-import { MatterCollisionEvent } from "./mattercollisionevent";
-import { MatterCompositeEvent } from "./mattercompositeevent";
-import { MatterTimestampedEvent } from "./mattertimestampedevent";
+import { DisplayHolder } from "../display/DisplayHolder";
+import { MatterEvent } from "./events/matterevent";
+import { MatterCollisionEvent } from "./events/mattercollisionevent";
+import { MatterCompositeEvent } from "./events/mattercompositeevent";
+import { MatterTimestampedEvent } from "./events/mattertimestampedevent";
 
 
 import * as Matter from "matter-js";
 
-export class MatterEngine  {
+export class MatterEngine  implements DisplayHolder {
     private _matterTools:MatterTools ;
     private _collisionEventHandlers : Map<string,MatterCollisionEvent>;
     private _compositeEventHandlers : Map<string,MatterCompositeEvent>;
@@ -47,6 +47,10 @@ export class MatterEngine  {
           });
 
         this.enableEvents();
+    }
+
+    public get2DGraphicsContext():CanvasRenderingContext2D {
+      return( this.render.context );
     }
 
     private geTimestampedEventMapId(name:string,eventType:MatterEvent):string {
@@ -130,7 +134,7 @@ export class MatterEngine  {
         { me.processTimestampedEvent(MatterEvent.afterRender,event) } );   
     }
   
-      public disableEvents(world:World,matterEngine:MatterEngine):void {
+      public disableEvents(matterEngine:MatterEngine):void {
         // what does the function passed to deregistger an event even mean?!?!?
         Matter.Events.off(this,MatterEvent.beforeUpdate,function(event) {});
         Matter.Events.off(this,MatterEvent.collisionActive,function(event) {});	

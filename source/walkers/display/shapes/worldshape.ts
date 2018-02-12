@@ -1,5 +1,5 @@
-import { WorldPosition } from "../../walkerworld/worldposition";
-import { World } from "../../walkerworld/world";
+import { WorldPosition } from "../../world/worldposition";
+import { WalkerWorld } from "../../walkerworld/walkerworld";
 import { WorldObjectDisplay } from "../worldobjectdisplay";
 
 
@@ -16,7 +16,7 @@ export abstract  class WorldShape {
         this.offsetFromOrigin = offsetFromOrigin;
     }
 
-	public abstract drawShape(worldObjectDisplay:WorldObjectDisplay,world:World,context:CanvasRenderingContext2D,):void;
+	public abstract drawShape(worldObjectDisplay:WorldObjectDisplay,walkerWorld:WalkerWorld,context:CanvasRenderingContext2D,):void;
     
     
 

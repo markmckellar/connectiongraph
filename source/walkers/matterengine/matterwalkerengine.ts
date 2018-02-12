@@ -1,15 +1,16 @@
 import { Walker } from "../walkerworld/walker";
 import { Junction } from "../walkerworld/junction";
 import { Destination } from "../walkerworld/destination";
-import { WorldPosition } from "../walkerworld/worldposition";
+import { WorldPosition } from "../world/worldposition";
 
 import { Path } from "../walkerworld/path";
 import { WalkerEngine } from "../engine/walkerengine";
-import { World } from "../walkerworld/world";
+import { WalkerWorld } from "../walkerworld/walkerworld";
 import { MatterJunction } from "./matterjunction";
 import { MatterDestination } from "./matterdestination";
 import { MatterWalker } from "./matterwalker";
 import { MatterEngine } from "./matterengine";
+import { MatterTools } from "./mattertools";
 //import { MatterEvent } from "./matterevent";
 
 import * as Matter from "matter-js";
@@ -64,7 +65,7 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
     }
     
 
-    public addPath(world:World,path:Path):void {    
+    public addPath(walkerWorld:WalkerWorld,path:Path):void {    
       if(!this.paths.has(path.worldId.id))
       {
         if(this.paths.has(Path.getPathId(path.endJunction,path.startJunction).id))
@@ -78,8 +79,8 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
           //this.addJunction(world,path.startJunction,);
           let matterStartJunction:Matter.Body = this.junctions.get(path.startJunction.worldId.id).getAreaJunction();
           
-          this.addJunctionMatterPosition(world,path.endJunction,
-            matterStartJunction.position);
+          this.addJunction(walkerWorld,path.endJunction,
+            MatterTools.getWorldPostionFromVector(matterStartJunction.position));
 
           let matterEndJunction:Matter.Body = this.junctions.get(path.endJunction.worldId.id).getAreaJunction();
           
@@ -98,30 +99,30 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
       }
     }
 
-    public changeWalkerDestination(world:World,walker:Walker,destination:Destination):void{
+    public changeWalkerDestination(walkerWorld:WalkerWorld,walker:Walker,destination:Destination):void{
       let matterWalker:MatterWalker = this.walkers.get(walker.worldId.id);
 
       matterWalker.getWalker2DestinationSpring().bodyB =  
           matterWalker.getCurrentMaterDestination(this).getSpatialBody();;
 
-      matterWalker.walkerTravelingTotDestination(world,this);
+      matterWalker.walkerTravelingTotDestination(walkerWorld,this);
     }       
     
-    public addWalker(world:World,walker:Walker):void { 
+    public addWalker(walkerWorld:WalkerWorld,walker:Walker):void { 
       if(!this.walkers.has(walker.worldId.id))
       {
-        let matterWalker:MatterWalker = new MatterWalker(world,this,walker);
+        let matterWalker:MatterWalker = new MatterWalker(walkerWorld,this,walker);
         this.walkers.set(walker.worldId.id,matterWalker);
-        matterWalker.addToEngine(world,this);
+        matterWalker.addToEngine(walkerWorld,this);
       }
     }
 
-    public addDestination(world:World,destination:Destination):void { 
+    public addDestination(walkerWorld:WalkerWorld,destination:Destination):void { 
       if(!this._destinations.has(destination.worldId.id))
       {
-        let matterDestination = new MatterDestination(world,this,destination);
+        let matterDestination = new MatterDestination(walkerWorld,this,destination);
         this.destinations.set(destination.worldId.id,matterDestination);
-        matterDestination.addToEngine(world,this);         
+        matterDestination.addToEngine(walkerWorld,this);         
       }
     }
 
@@ -138,32 +139,40 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
   
     }
 
+    /*
     public setJunctionPosition(junction:Junction,position:WorldPosition):void{
       this.getMatterJunction(junction).setPosition(this,position);
     }
-    
+    */
 
     public vectorToPosition(vector:Matter.Vector):WorldPosition {
       return( new WorldPosition(vector.x,vector.y));
     }
 
-    public addJunction(world:World,junction:Junction,position:WorldPosition):void {
-      this.addJunctionMatterPosition(world,junction,Matter.Vector.create(position.x,position.y));                       
+    public addJunction(walkerWorld:WalkerWorld,junction:Junction,position:WorldPosition):void {
+      //this.addJunctionMatterPosition(walkerWorld,junction,Matter.Vector.create(position.x,position.y));                       
+
+      if(!this.hasJunction(junction))
+      {
+              let matterJunction = new MatterJunction(walkerWorld,this,junction,position);      
+              this.junctions.set(junction.worldId.id,matterJunction);
+              matterJunction.addToEngine(walkerWorld,this);                       
+      }
   
     }
     
-
-    public addJunctionMatterPosition(world:World,junction:Junction,position:Matter.Vector):void {
+/*
+    public addJunctionMatterPosition(walkerWorld:WalkerWorld,junction:Junction,position:Matter.Vector):void {
       if(!this.hasJunction(junction))
       {
-              let matterJunction = new MatterJunction(world,this,junction,position);      
+              let matterJunction = new MatterJunction(walkerWorld,this,junction,position);      
               this.junctions.set(junction.worldId.id,matterJunction);
-              matterJunction.addToEngine(world,this);                       
+              matterJunction.addToEngine(walkerWorld,this);                       
       }
     }
+*/
 
-
-    public isWalkerAtDestination(world:World,walker:Walker):void {
+    public isWalkerAtDestination(walkerWorld:WalkerWorld,walker:Walker):void {
       //let matterDestination = this.destinations.get(walker.getCurrentDestination().worldId.id);      
     }       
     
@@ -178,7 +187,7 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
     
     public createBounds(width:number,height:number):void {
       let wallBoundsRect = Matter.Bodies.rectangle(width/2,height/2,width,height,{});
-      let walls:Matter.Body = this.matterTools.createBoundObject(wallBoundsRect,1,10);
+      let walls:Matter.Body = MatterTools.createBoundObject(wallBoundsRect,1,10);
       walls.collisionFilter.category = MatterWalkerEngine.boundsFilter;
       walls.restitution = 1.0;
       Matter.Body.setStatic(walls,true);

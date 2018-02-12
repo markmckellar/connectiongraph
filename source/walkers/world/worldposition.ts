@@ -8,7 +8,6 @@ export class WorldPosition {
         this.y = y;
     }
 
-
 	public get x(): number {
 		return this._x;
 	}

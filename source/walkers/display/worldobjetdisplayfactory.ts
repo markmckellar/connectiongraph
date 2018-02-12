@@ -1,8 +1,10 @@
 import { WorldShape } from "./shapes/worldshape";
-import { World } from "../walkerworld/world";
+import { WalkerWorld } from "../walkerworld/walkerworld";
 import { WorldObjectDisplay } from "./worldobjectdisplay";
 import { CircleDisplayShape } from "./shapes/circledisplayshape";
-import { WorldPosition } from "../walkerworld/worldposition";
+import { WorldPosition } from "../world/worldposition";
+import { WorldObject } from "../world/worldobject";
+
 
 
 
@@ -45,7 +47,7 @@ export class WorldObjectDisplayFactory {
 
         let wod:WorldObjectDisplay = 
         new(class extends WorldObjectDisplay {
-            public drawObject(worldObjectDisplay:WorldObjectDisplay,world:World):void{                
+            public drawObject(walkerWorld:WalkerWorld,worldObject:WorldObject,context:CanvasRenderingContext2D):void{                
                 }
             } )(new WorldPosition(0,0),shapes);
 

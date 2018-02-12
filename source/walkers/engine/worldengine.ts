@@ -1,10 +1,11 @@
+/*
 import { Walker } from "../walkerworld/walker";
 import { Junction } from "../walkerworld/junction";
 import { Destination } from "../walkerworld/destination";
 import { Path } from "../walkerworld/path";
 import { World } from "../walkerworld/world";
-import { WorldPosition } from "../walkerworld/worldposition";
-
+import { WorldPosition } from "../world/worldposition";
+*/
 
 export interface WorldEngine {
 

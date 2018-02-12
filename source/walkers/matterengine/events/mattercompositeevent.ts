@@ -1,4 +1,4 @@
-import { MatterEngine } from "./matterengine";
+import { MatterEngine } from "../matterengine";
 import { MatterEvent } from "./matterevent";
 import * as Matter from "matter-js";
 
@@ -11,8 +11,8 @@ export abstract class MatterCollisionEvent  {
         event: Matter.IEventCollision<Matter.Engine>):void;
 }
 */
-export interface MatterCollisionEvent {
+export interface MatterCompositeEvent {
     (matterEngine:MatterEngine,
         eventType:MatterEvent,
-        event: Matter.IEventCollision<Matter.Engine>):void;        
-  }
+        event: Matter.IEventComposite<Matter.Composite>):void;
+    }

@@ -1,20 +1,13 @@
+import { EngineObject } from "../engine/engineobject";
+
 //import { MatterEngine } from "./matterengine";
-import { WorldId } from "../walkerworld/worldid";
+//import { WorldId } from "../world/worldid";
+import { WorldPosition } from "../world/worldposition";
+import * as Matter from "matter-js";
 
-//import * as Matter from "matter-js";
-
-
-
-export class MatterObject  {
-    private _worldId:WorldId;
-
-
-	public get worldId(): WorldId {
-		return this._worldId;
+export abstract class MatterObject extends EngineObject {
+	
+	public bodyPostion2WorldPosition(body:Matter.Body):WorldPosition {
+		return( new WorldPosition(body.position.x,body.position.y) );
 	}
-
-	public set worldId(value: WorldId) {
-		this._worldId = value;
-	}
-
 }

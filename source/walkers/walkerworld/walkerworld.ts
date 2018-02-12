@@ -1,16 +1,18 @@
 import { Junction } from "./junction";
 import { Destination } from "./destination";
 import { Walker } from "./walker";
-import { WorldPosition } from "./worldposition";
+import { WorldPosition } from "../world/worldposition";
 import { Path } from "./path";
 import { WalkerEngine } from "../engine/walkerengine";
 import { WorldUpdate } from "./worldupdate";
 import { WorldUpdateQueue } from "./worldupdatequeue";
-import { WorldId } from "./worldid";
+import { WorldId } from "../world/worldid";
+import { World } from "../world/world";
+import { DisplayHolder } from "../display/displayholder";
 
 
 
-export class World {
+export class WalkerWorld  extends World {
 
 	private _walkerEngine:WalkerEngine;
 	private _junctions : Map<string,Junction>;
@@ -22,7 +24,8 @@ export class World {
 	
 	
 
-    public constructor(walkerEngine:WalkerEngine) {
+    public constructor(displayHolder:DisplayHolder,walkerEngine:WalkerEngine) {
+		super(displayHolder);
 		this.walkers = new Map<string,Walker>();
 		this.junctions = new Map<string,Junction>();	
 		this.paths = new Map<string,Path>();	

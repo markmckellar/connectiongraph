@@ -1,14 +1,14 @@
 import * as Matter from "matter-js";
 import { MatterWalkerEngine } from "./matterwalkerengine";
-import { WorldPosition } from "../walkerworld/worldposition";
-import { WorldShape } from "../renderer/shapes/worldshape";
+import { WorldPosition } from "../world/worldposition";
+import { WorldShape } from "../display/shapes/worldshape";
 
 
 
 
 export class MatterTools  {
 
-    public getLongerLine(p1:Matter.Vector,p2:Matter.Vector):Matter.Vector[] {
+    public static getLongerLine(p1:Matter.Vector,p2:Matter.Vector):Matter.Vector[] {
 
         let middleX = (p1.x+p2.x)/2;
         let middleY = (p1.y+p2.y)/2;
@@ -50,7 +50,7 @@ export class MatterTools  {
       return(color);
     }
 
-    public cloneVerticies(inVertices:Array<Matter.Vector>):Array<Matter.Vector>
+    public static cloneVerticies(inVertices:Array<Matter.Vector>):Array<Matter.Vector>
     {
       let newVeritices:Array<Matter.Vector> = new Array<Matter.Vector>();
       
@@ -62,32 +62,42 @@ export class MatterTools  {
       return(newVeritices);
     }
 
-    public getVectorArrayFromWorldPostionArray(location:WorldPosition,positionArray:Array<WorldPosition>):Array<Matter.Vector> {
+    public static getVectorArrayFromWorldPostionOffsetArray(offset:WorldPosition,positionArray:Array<WorldPosition>):Array<Matter.Vector> {
       let newVeritices:Array<Matter.Vector> = new Array<Matter.Vector>();
       for(let i=0;i<positionArray.length;i++) newVeritices.push( 
-        this.getVectorFromWorldPostion(location,positionArray[i]) );
+        this.getVectorFromWorldPostionOffset(offset,positionArray[i]) );
         return(newVeritices);
     }
 
-    public getVectorFromWorldPostion(location:WorldPosition,position:WorldPosition):Matter.Vector {
-      let newVeritice = Matter.Vector.create(position.x+location.x,position.y+location.y) ;
+    public static getVectorFromWorldPostionOffset(offset:WorldPosition,position:WorldPosition):Matter.Vector {
+      let newVeritice = Matter.Vector.create(position.x+offset.x,position.y+offset.y) ;
         return(newVeritice);
     }
 
-    public getBodyFromWorldPostionArray(location:WorldPosition,positionArray:Array<WorldPosition>):Matter.Body {
-      let newVeritices:Array<Matter.Vector> = this.getVectorArrayFromWorldPostionArray(location,positionArray);
+    public static getWorldPostionFromVector(vector:Matter.Vector):WorldPosition {
+      let worldPosition:WorldPosition = new WorldPosition(vector.x,vector.y) ;
+        return(worldPosition);
+    }
+
+    public static getVectorFromWorldPostion(position:WorldPosition):Matter.Vector {
+      let newVeritice = Matter.Vector.create(position.x,position.y) ;
+        return(newVeritice);
+    }
+
+    public static getBodyFromWorldPostionArray(location:WorldPosition,positionArray:Array<WorldPosition>):Matter.Body {
+      let newVeritices:Array<Matter.Vector> = this.getVectorArrayFromWorldPostionOffsetArray(location,positionArray);
       //let center:Matter.Vector = Matter.Vertices.centre(newVeritices);
       let newBody:Matter.Body = Matter.Bodies.fromVertices(location.x,location.y,[newVeritices]);
       return(newBody);
     }
 
-    public getBodyFromWorldShape(location:WorldPosition,shape:WorldShape):Matter.Body {
-      let newVeritices:Array<Matter.Vector> = this.getVectorArrayFromWorldPostionArray(location,shape.shapePoints);
+    public static getBodyFromWorldShape(location:WorldPosition,shape:WorldShape):Matter.Body {
+      let newVeritices:Array<Matter.Vector> = this.getVectorArrayFromWorldPostionOffsetArray(location,shape.shapePoints);
       let newBody:Matter.Body = Matter.Bodies.fromVertices(location.x,location.y,[newVeritices]);
       return(newBody);
     }
 
-    public createBoundObject(body:Matter.Body,scaleInner:number,scaleOuter:number):Matter.Body {     
+    public static createBoundObject(body:Matter.Body,scaleInner:number,scaleOuter:number):Matter.Body {     
         let pointsInner:Array<Matter.Vector> = this.cloneVerticies(body.vertices);
         Matter.Vertices.scale(pointsInner,scaleInner,scaleInner,body.position);
   
@@ -130,7 +140,7 @@ export class MatterTools  {
     }
 	
    
-    public findClosestPostionOnLine(p1:Matter.Vector,p2:Matter.Vector):Matter.Vector
+    public static findClosestPostionOnLine(p1:Matter.Vector,p2:Matter.Vector):Matter.Vector
 	{
 		  var A = p1.x-p2.x;
 		  var B = p1.x-p2.y;

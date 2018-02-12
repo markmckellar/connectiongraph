@@ -1,9 +1,11 @@
 import { Destination } from "./destination";
-import { WorldObject } from "./worldobject";
+import { WorldObject } from "../world/worldobject";
 import { Junction } from "./junction";
-import { WorldId } from "./worldid";
-import { World } from "./world";
-import { WorldObjectDisplay } from "../renderer/worldobjectdisplay";
+import { WorldId } from "../world/worldid";
+import {WalkerWorld } from "./walkerworld";
+import { WorldObjectDisplay } from "../display/worldobjectdisplay";
+import { EngineObject } from "../engine/engineobject";
+
 
 
 
@@ -11,33 +13,33 @@ export class Walker extends WorldObject {
 	private _currentDestination: Destination;
 	private _travelingToDestination:boolean;
 
-    public constructor(worldId:WorldId,junction:Junction,worldObjectDisplay:WorldObjectDisplay) {
-		super(worldId,worldObjectDisplay);
+    public constructor(worldId:WorldId,junction:Junction,worldObjectDisplay:WorldObjectDisplay,engineObject:EngineObject) {
+		super(worldId,worldObjectDisplay,engineObject);
 		this.travelingToDestination = true;
 		this.currentDestination = junction.getWalkerDestination(this);
 	}
 
-	public isAtDesination(world:World):boolean{
+	public isAtDesination(walkerworld:WalkerWorld):boolean{
 		return(false);
 	}
 
-	public isCurrentJunction(world:World,junction:Junction):boolean {
+	public isCurrentJunction(walkerworld:WalkerWorld,junction:Junction):boolean {
 		//console.log("Walker:isCurrentJunction.junction="+junction.worldId.id);
 		//console.log("Walker:isCurrentJunction.current.junction.tDestination="+
 		//	this.currentDestination.getJunction(world).worldId.id);
 		//console.log("Walker:isCurrentJunction="+
 		//	(this.currentDestination.getJunction(world).worldId.id!==junction.worldId.id));
 
-		return(this.currentDestination.getJunction(world).worldId.id===junction.worldId.id)	
+		return(this.currentDestination.getJunction(walkerworld).worldId.id===junction.worldId.id)	
 	}
 
-	public setCurrentDestination(world:World,destination:Destination):void {
+	public setCurrentDestination(walkerworld:WalkerWorld,destination:Destination):void {
 		this.currentDestination = destination;
-		world.walkerEngine.changeWalkerDestination(world,this,this.currentDestination);
+		walkerworld.walkerEngine.changeWalkerDestination(walkerworld,this,this.currentDestination);
 	}
 
-	public getCurrentJunction(world:World): Junction {
-		return this._currentDestination.getJunction(world);
+	public getCurrentJunction(walkerworld:WalkerWorld): Junction {
+		return this._currentDestination.getJunction(walkerworld);
 	}
 
 	public getCurrentDestination(): Destination {

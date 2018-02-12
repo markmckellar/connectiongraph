@@ -1,8 +1,8 @@
 import { Walker } from "../walkerworld/walker";
 import { MatterWalkerEngine } from "./matterwalkerengine";
-import { MatterEvent } from "./matterevent";
+import { MatterEvent } from "./events/matterevent";
 import { MatterDestination } from "./matterdestination";
-import { World } from "../walkerworld/world";
+import { WalkerWorld } from "../walkerworld/walkerworld";
 
 import * as Matter from "matter-js";
 import { MatterEngine } from "./matterengine";
@@ -14,10 +14,10 @@ export class MatterWalker  {
     private _walkerBody:Matter.Body;
     private _walker2DestinationSpring:Matter.Constraint	;
 
-    public constructor(world:World,matterEngine:MatterWalkerEngine,walker:Walker) {
+    public constructor(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine,walker:Walker) {
 
 		this.walker = walker;
-		let junctionDensity = matterEngine.junctions.get(walker.getCurrentJunction(world).worldId.id).getAreaJunction().density;
+		let junctionDensity = matterEngine.junctions.get(walker.getCurrentJunction(walkerWorld).worldId.id).getAreaJunction().density;
 		
 		let position:Matter.Vector = this.getCurrentMaterDestination(matterEngine).getSpatialBody().position;
 		
@@ -35,7 +35,6 @@ export class MatterWalker  {
 			MatterWalkerEngine.boundrySpatialFilter;
   
 		this.walkerBody.frictionAir = 0.5;
-		
 
 		this.walker2DestinationSpring = Matter.Constraint.create({
             bodyA: this.getAreaWalker(),
@@ -47,18 +46,19 @@ export class MatterWalker  {
 			
 		  });
 		this.walker2DestinationSpring.render.visible=false;
-		this.walkerTravelingTotDestination(world,matterEngine);	
+		this.walkerTravelingTotDestination(walkerWorld,matterEngine);	
 
-		this.registerRenderer(matterEngine);
+		this.registerRenderer(matterEngine,walker);
 	}
 
-	public registerRenderer(matterEngine:MatterEngine):void {
+	public registerRenderer(matterEngine:MatterEngine,walker:Walker):void {
 		let matterWalker:MatterWalker = this;
 		matterEngine.registerTimestampedEvent(
 			this.walker.worldId.id,
 			MatterEvent.afterRender,
 			function(matterEngine:MatterEngine,eventType:MatterEvent,event: Matter.IEventTimestamped<Matter.Engine>):void{
 			  //console.log("afterRender!!!!!!!!!!!!!!!!!!!!");	
+			  //walker.worldObjectDisplay.drawObject();
 			  let context:CanvasRenderingContext2D = matterEngine.render.context;
 			  		
 			  context.fillStyle = matterEngine.matterTools.getColorFromString("ffffffff");
@@ -84,13 +84,13 @@ export class MatterWalker  {
 
 	}
 
-	public addToEngine(world:World,matterEngine:MatterWalkerEngine):void {
+	public addToEngine(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine):void {
 		Matter.World.add(matterEngine.engine.world,[this.walkerBody]);
 		Matter.World.add(matterEngine.engine.world,[this.walker2DestinationSpring]);
-		this.enableWalkerEvents(world,matterEngine);
+		this.enableWalkerEvents(walkerWorld,matterEngine);
 	}
 
-	public walkerArrivedAtDestination(world:World,matterEngine:MatterWalkerEngine) : void {
+	public walkerArrivedAtDestination(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine) : void {
 		//console.log("walkerArrivedAtDestination:walker="+this.walker.worldId.id+":arrived!");
 		this.getAreaWalker().collisionFilter.category  = MatterWalkerEngine.walkerArrived;
 		this.getWalker2DestinationSpring().stiffness = 0.0;
@@ -99,7 +99,7 @@ export class MatterWalker  {
 		
 	}
 
-	public walkerTravelingTotDestination(world:World,matterEngine:MatterWalkerEngine) : void {
+	public walkerTravelingTotDestination(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine) : void {
 		//console.log("walkerTravelingTotDestination:walker="+this.walker.worldId.id+":arrived!");
 		this.getAreaWalker().collisionFilter.category  = MatterWalkerEngine.walkerTravleing;
 		this.getWalker2DestinationSpring().stiffness = 0.01;
@@ -109,7 +109,7 @@ export class MatterWalker  {
 		
 	}
 
-	public enableWalkerEvents(world:World,matterWalkerEngine:MatterWalkerEngine):void {
+	public enableWalkerEvents(walkerWorld:WalkerWorld,matterWalkerEngine:MatterWalkerEngine):void {
 
 		let matterWalker:MatterWalker = this;
 
@@ -121,8 +121,8 @@ export class MatterWalker  {
 				let isWalkerInisdeContainer:boolean = Matter.Vertices.contains(
 					containerDest.vertices,matterWalker.getAreaWalker().position);
 				
-				if(isWalkerInisdeContainer) matterWalker.walkerArrivedAtDestination(world,matterEngine);
-				else matterWalker.walkerTravelingTotDestination(world,matterEngine);
+				if(isWalkerInisdeContainer) matterWalker.walkerArrivedAtDestination(walkerWorld,matterEngine);
+				else matterWalker.walkerTravelingTotDestination(walkerWorld,matterEngine);
 
 
 				if(matterEngine.mouseConstraint.body===matterWalker.walkerBody)

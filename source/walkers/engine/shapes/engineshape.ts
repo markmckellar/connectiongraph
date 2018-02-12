@@ -1,32 +1,17 @@
-import { WorldPosition } from "../../walkerworld/worldposition";
-import { World } from "../../engine/world";
+import { WorldPosition } from "../../world/worldposition";
 //import { WorldObjectDisplay } from "../worldobjectdisplay";
 
 
 
-export abstract  class EngineShape {
-	private _position:WorldPosition;
+export abstract  class EngineShape {	
 	private _shapeName:string;
 
-    constructor(shapeName:string,position:WorldPosition)
+    constructor(shapeName:string)
     {
 		this.shapeName = shapeName;
-        this.position = position;
-    }
-
-	public abstract moveShape(worldObjectDisplay:WorldObjectDisplay,world:World,):void;
-    
-
-	public get position(): WorldPosition {
-		return this._position;
-	}
-
-	public set position(value: WorldPosition) {
-		this._position = value;
-	}
-    
-
-    
+	}	
+	
+    public abstract getWorldPosition():WorldPosition;
 
 	public get shapeName(): string {
 		return this._shapeName;

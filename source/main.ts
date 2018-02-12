@@ -3,7 +3,7 @@ import { MatterWalkerEngine } from "./walkers/matterengine/matterwalkerengine";
 import * as Matter from "matter-js";
 import { WorldUpdate } from "./walkers/walkerworld/worldupdate";
 //import { WalkerRenderer } from "./walkers/renderer/walkerrederer";
-import { World } from "./walkers/walkerworld/world";
+import { WalkerWorld } from "./walkers/walkerworld/walkerworld";
 
 //////////////////////////////////////////////////
 // somehow there is a way to make those anoying 
@@ -32,7 +32,7 @@ import { World } from "./walkers/walkerworld/world";
 
 // let canvas = document.getElementById("world");
 let matterEngine = new MatterWalkerEngine();
-let world = new World(matterEngine);
+let walkerWorld = new WalkerWorld(matterEngine,matterEngine);
 let engine = matterEngine.engine;
 
 // create a renderer
@@ -91,7 +91,7 @@ for(let t=0;t<15;t++)
 {
   for(let i=0;i<junctionNum;i++,timer+=timerInc) {
     let worldUpdate1:WorldUpdate = new WorldUpdate("junction"+i,"walker1",WorldUpdate.datePlus(timer*1000),{},{},{});
-    world.addWorldUpdate(worldUpdate1);
+    walkerWorld.addWorldUpdate(worldUpdate1);
     //let worldUpdate2:WorldUpdate = new WorldUpdate("junction"+(5-i),"walker2",WorldUpdate.datePlus(timer*1000),{},{},{});
     //world.addWorldUpdate(worldUpdate2);
     
@@ -100,9 +100,9 @@ for(let t=0;t<15;t++)
 
   for(let i=junctionNum;i>=0;i--,timer+=timerInc) {
     let worldUpdate1:WorldUpdate = new WorldUpdate("junction"+i,"walker1."+t,WorldUpdate.datePlus(timer*1000*0.6),{},{},{});
-    world.addWorldUpdate(worldUpdate1);
+    walkerWorld.addWorldUpdate(worldUpdate1);
     let worldUpdate2:WorldUpdate = new WorldUpdate("junction"+(5-i),"walker2."+t,WorldUpdate.datePlus(timer*1000*0.7),{},{},{});
-    world.addWorldUpdate(worldUpdate2);
+    walkerWorld.addWorldUpdate(worldUpdate2);
   }
 }
 
@@ -130,12 +130,12 @@ setInterval(doDraw,interval);
 function doDraw()
 {
   //console.log(".");
-	world.processWorldUpdates();
+	walkerWorld.processWorldUpdates();
 }
 
 
-world.processWorldUpdates();
-console.log("yy main:world.junctions.keys.length="+world.junctions.size);
+walkerWorld.processWorldUpdates();
+console.log("yy main:world.junctions.keys.length="+walkerWorld.junctions.size);
 
 
 

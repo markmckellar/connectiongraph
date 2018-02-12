@@ -1,10 +1,11 @@
 //import { Path } from "./path";
 //import { Walker } from "./walker";
-import { WorldObject } from "./worldobject";
+import { WorldObject } from "../world/worldobject";
 import { Destination } from "./destination";
 import { Walker } from "./walker";
-import { WorldId } from "./worldid";
-import { WorldObjectDisplay } from "../renderer/worldobjectdisplay";
+import { WorldId } from "../world/worldid";
+import { WorldObjectDisplay } from "../display/worldobjectdisplay";
+import { EngineObject } from "../engine/engineobject";
 
 
 
@@ -16,8 +17,8 @@ export abstract class Junction extends WorldObject {
     private _destinationList: Array<Destination>;
     private _defaultDestination: Destination;
 
-    public constructor(worldId:WorldId,worldObjectDisplay:WorldObjectDisplay)  {
-        super(worldId,worldObjectDisplay);
+    public constructor(worldId:WorldId,worldObjectDisplay:WorldObjectDisplay,engineObject:EngineObject)  {
+        super(worldId,worldObjectDisplay,engineObject);
         this.destinations = new Map<string,Destination>();
         this.destinationList = Array<Destination>();
         this._defaultDestination = this.getNewDefaultDestination();

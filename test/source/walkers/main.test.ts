@@ -1,4 +1,4 @@
-import { World } from "../../../source/walkers/walkerworld/world";
+import { WalkerWorld } from "../../../source/walkers/walkerworld/walkerworld";
 import { WorldUpdate } from "../../../source/walkers/walkerworld/worldupdate";
 
 import { MatterWalkerEngine } from "../../../source/walkers/matterengine/matterwalkerengine";
@@ -14,7 +14,7 @@ import * as Matter from "matter-js";
 
 // let canvas = document.getElementById("world");
 let matterEngine = new MatterWalkerEngine();
-let world = new World(matterEngine);
+let walkerWorld = new WalkerWorld(matterEngine,matterEngine);
 let engine = matterEngine.engine;
 
 // create a renderer
@@ -29,7 +29,7 @@ let render = Matter.Render.create({
   },
 });
 
-world.walkerEngine.createBounds(render.canvas.width,render.canvas.height);
+walkerWorld.walkerEngine.createBounds(render.canvas.width,render.canvas.height);
 matterEngine.initMouse(render);
 
 // run the engine
@@ -52,14 +52,14 @@ let worldUpdate4:WorldUpdate = new WorldUpdate("junction4","walker",new Date(),{
 let worldUpdate5:WorldUpdate = new WorldUpdate("junction5","walker",new Date(),{},{},{});
 
 
-world.addWorldUpdate(worldUpdate1);
-world.addWorldUpdate(worldUpdate2);
-world.addWorldUpdate(worldUpdate3);
-world.addWorldUpdate(worldUpdate4);
-world.addWorldUpdate(worldUpdate5);
+walkerWorld.addWorldUpdate(worldUpdate1);
+walkerWorld.addWorldUpdate(worldUpdate2);
+walkerWorld.addWorldUpdate(worldUpdate3);
+walkerWorld.addWorldUpdate(worldUpdate4);
+walkerWorld.addWorldUpdate(worldUpdate5);
 
 
-world.processWorldUpdates();
+walkerWorld.processWorldUpdates();
 
 //Observable.interval(10000).takeWhile(() => true).subscribe(() => this.function());
 
@@ -67,4 +67,4 @@ world.processWorldUpdates();
 //  this.callFuntionAtIntervals();
 //}, 1000);
 
-console.log("xx main:world.junctions.keys.length="+world.junctions.size);
+console.log("xx main:world.junctions.keys.length="+walkerWorld.junctions.size);

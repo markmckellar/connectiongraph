@@ -1,8 +1,8 @@
 import { WorldShape } from "./shapes/worldshape";
-import { WorldObject } from "../walkerworld/worldobject";
-import { World } from "../walkerworld/world";
+import { WorldObject } from "../world/worldobject";
+import { WalkerWorld } from "../walkerworld/walkerworld";
 
-import { WorldPosition } from "../walkerworld/worldposition";
+import { WorldPosition } from "../world/worldposition";
 
 
 
@@ -18,7 +18,7 @@ export abstract class WorldObjectDisplay {
     }
 
 
-	public abstract drawObject(worldObjectDisplay:WorldObjectDisplay,world:World):void;
+	public abstract drawObject(walkerWorld:WalkerWorld,worldObject:WorldObject,context:CanvasRenderingContext2D):void;
 	
 	public getShape(worldObject:WorldObject,shapeName:string):WorldShape {
 

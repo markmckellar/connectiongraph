@@ -1,6 +1,6 @@
 import { WorldShape } from "../shapes/worldshape";
-import { WorldPosition } from "../../walkerworld/worldposition";
-import { World } from "../../walkerworld/world";
+import { WorldPosition } from "../../world/worldposition";
+import { WalkerWorld } from "../../walkerworld/walkerworld";
 import { WorldObjectDisplay } from "../worldobjectdisplay";
 
 export class CircleDisplayShape extends WorldShape
@@ -34,7 +34,7 @@ export class CircleDisplayShape extends WorldShape
 	
 	
 	
-	public drawShape(worldObjectDisplay:WorldObjectDisplay,world:World,context:CanvasRenderingContext2D):void
+	public drawShape(worldObjectDisplay:WorldObjectDisplay,walkerWorld:WalkerWorld,context:CanvasRenderingContext2D):void
 	{
 		//super.drawConnector(canvasHolder,node);
 		/*
