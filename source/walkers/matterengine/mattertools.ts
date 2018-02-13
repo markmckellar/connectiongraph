@@ -1,10 +1,6 @@
 import * as Matter from "matter-js";
 import { MatterWalkerEngine } from "./matterwalkerengine";
 import { WorldPosition } from "../world/worldposition";
-import { WorldShape } from "../display/shapes/worldshape";
-
-
-
 
 export class MatterTools  {
 
@@ -95,11 +91,13 @@ export class MatterTools  {
       return(newBody);
     }
 
+    /*
     public static getBodyFromWorldShape(location:WorldPosition,shape:WorldShape):Matter.Body {
       let newVeritices:Array<Matter.Vector> = this.getVectorArrayFromWorldPostionOffsetArray(location,shape.shapePoints);
       let newBody:Matter.Body = Matter.Bodies.fromVertices(location.x,location.y,[newVeritices]);
       return(newBody);
     }
+    */
 
     public static createBoundObject(body:Matter.Body,scaleInner:number,scaleOuter:number):Matter.Body {     
         let pointsInner:Array<Matter.Vector> = this.cloneVerticies(body.vertices);

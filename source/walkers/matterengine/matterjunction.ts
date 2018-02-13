@@ -4,6 +4,9 @@ import { MatterWalkerEngine } from "./matterwalkerengine";
 import { MatterTools } from "./mattertools";
 import { MatterObject } from "./matterobject";
 import { WalkerWorld } from "../walkerworld/walkerworld";
+import { MatterEngine } from "./matterengine";
+import { MatterEvent } from "./events/matterevent";
+import { MatterCircle } from "./shapes/mattercircle";
 import * as Matter from "matter-js";
 //import { MatterTools } from "./mattertools";
 
@@ -14,19 +17,23 @@ export class MatterJunction  extends MatterObject {
     private _spacerBody:Matter.Body;
     private _junctionBody:Matter.Body;
 
-    public constructor(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine,junction:Junction,worldPosition:WorldPosition) {
+    public constructor(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine,junction:Junction,worldPosition:WorldPosition,matterCircle:MatterCircle) {
 		super(junction.worldId);
 		let position = MatterTools.getVectorFromWorldPostion(worldPosition);
 		
 		this.junction = junction;
 
-		this.junctionBody = Matter.Bodies.circle(position.x,position.y,30,{render:{fillStyle:"blue",strokeStyle:"white"}},8);					
+		
+		this.junctionBody = matterCircle.circleBody;					
+		//this.junctionBody = Matter.Bodies.circle(position.x,position.y,30,{render:{fillStyle:"blue",strokeStyle:"white"}},8);					
 		this.junctionBody.collisionFilter.category = MatterWalkerEngine.junctionFilter;
 		this.junctionBody.collisionFilter.mask = MatterWalkerEngine.junctionFilter|MatterWalkerEngine.boundsFilter;		
 
 		this.spacerBody = Matter.Bodies.circle(position.x,position.y,60,{render:{fillStyle:"transparent",strokeStyle:"white"}},8);
 		this.spacerBody.collisionFilter.category = MatterWalkerEngine.junctionSpacerFilter;
 		this.spacerBody.collisionFilter.mask = MatterWalkerEngine.junctionSpacerFilter|MatterWalkerEngine.boundsFilter;
+
+		this.registerRenderer(walkerWorld,matterEngine,junction);
 	}
 
 	public getWorldPosition():WorldPosition {
@@ -38,6 +45,18 @@ export class MatterJunction  extends MatterObject {
 		Matter.Body.translate(this.spacerBody,MatterTools.getVectorFromWorldPostion(worldPosition));
 	}
 
+	public registerRenderer(walkerWorld:WalkerWorld,matterEngine:MatterEngine,junction:Junction):void {
+		//let matterJunction:MatterJunction = this;	
+		matterEngine.registerTimestampedEvent(
+			junction.worldId.id,
+			MatterEvent.afterRender,
+			function(matterEngine:MatterEngine,eventType:MatterEvent,event: Matter.IEventTimestamped<Matter.Engine>):void{
+			  //console.log("afterRender!!!!!!!!!!!!!!!!!!!!");	
+			  //walker.worldObjectDisplay.drawObject();
+			  let context:CanvasRenderingContext2D = matterEngine.render.context;
+			  junction.worldObjectDisplay.drawObject(walkerWorld,junction,context);		  		
+			});    
+	}
 
 	public addToEngine(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine):void {
 		Matter.World.add(matterEngine.engine.world,[this.spacerBody,this.junctionBody]);
