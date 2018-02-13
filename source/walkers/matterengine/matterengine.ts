@@ -1,5 +1,5 @@
 import { MatterTools } from "./mattertools";
-import { DisplayHolder } from "../display/DisplayHolder";
+import { DisplayHolder } from "../display/displayholder";
 import { MatterEvent } from "./events/matterevent";
 import { MatterCollisionEvent } from "./events/mattercollisionevent";
 import { MatterCompositeEvent } from "./events/mattercompositeevent";
