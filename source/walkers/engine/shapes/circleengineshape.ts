@@ -7,12 +7,12 @@ export abstract class CircleEngineShape extends EngineShape
 {
 	private _radius:number;
 
-	constructor(shapeName:string,radius:number,curvePoints:number,position:WorldPosition)
+	constructor(shapeName:string,radius:number)
 	{
 		super(
 			shapeName		
 		);
-		
+		this.radius = radius;
 	}
 
 	public get radius(): number {

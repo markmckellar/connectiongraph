@@ -30,7 +30,7 @@ export class MatterJunction  extends MatterObject {
 	}
 
 	public getWorldPosition():WorldPosition {
-		return( this.bodyPostion2WorldPosition(this.junctionBody) );
+		return( MatterTools.bodyPostion2WorldPosition(this.junctionBody) );
 	}
 
 	public translate(worldPosition:WorldPosition):void {

@@ -34,7 +34,11 @@ export class MatterTools  {
         return(points);
     }
 
-    public getColorFromString(colorString:string):string
+    public static bodyPostion2WorldPosition(body:Matter.Body):WorldPosition {
+      return( new WorldPosition(body.position.x,body.position.y) );
+    }
+
+    public static getColorFromString(colorString:string):string
     {
       if(colorString.length==6)
       {
