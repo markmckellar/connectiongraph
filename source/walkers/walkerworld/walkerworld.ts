@@ -3,7 +3,7 @@ import { Destination } from "./destination";
 import { Walker } from "./walker";
 import { WorldPosition } from "../world/worldposition";
 import { Path } from "./path";
-import { WalkerEngine } from "../engine/walkerengine";
+import { WalkerEngine } from "./walkerengine";
 import { WorldUpdate } from "./worldupdate";
 import { WorldUpdateQueue } from "./worldupdatequeue";
 import { WorldId } from "../world/worldid";

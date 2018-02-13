@@ -4,7 +4,7 @@ import { Destination } from "../walkerworld/destination";
 import { WorldPosition } from "../world/worldposition";
 
 import { Path } from "../walkerworld/path";
-import { WalkerEngine } from "../engine/walkerengine";
+import { WalkerEngine } from "../walkerworld/walkerengine";
 import { WalkerWorld } from "../walkerworld/walkerworld";
 import { MatterJunction } from "./matterjunction";
 import { MatterDestination } from "./matterdestination";
