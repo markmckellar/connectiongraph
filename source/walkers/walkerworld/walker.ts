@@ -4,7 +4,6 @@ import { Junction } from "./junction";
 import { WorldId } from "../world/worldid";
 import {WalkerWorld } from "./walkerworld";
 import { WorldObjectDisplay } from "../display/worldobjectdisplay";
-import { EngineObject } from "../engine/engineobject";
 
 
 
@@ -13,8 +12,8 @@ export class Walker extends WorldObject {
 	private _currentDestination: Destination;
 	private _travelingToDestination:boolean;
 
-    public constructor(worldId:WorldId,junction:Junction,worldObjectDisplay:WorldObjectDisplay,engineObject:EngineObject) {
-		super(worldId,worldObjectDisplay,engineObject);
+    public constructor(worldId:WorldId,junction:Junction,worldObjectDisplay:WorldObjectDisplay) {
+		super(worldId,worldObjectDisplay);
 		this.travelingToDestination = true;
 		this.currentDestination = junction.getWalkerDestination(this);
 	}

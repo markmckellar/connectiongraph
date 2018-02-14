@@ -10,21 +10,18 @@ import * as Matter from "matter-js";
 export class MatterCircle extends CircleEngineShape
 {
 	private _circleBody:Matter.Body;
+	private _curvePoints:number;
 
-	constructor(shapeName:string,radius:number,curvePoints:number,position:WorldPosition)
+	constructor(shapeName:string,radius:number,curvePoints:number,position:WorldPosition,options:any)
 	{
-		super(
-            shapeName,
-            radius	
-        );
-        
+		super(shapeName,radius);
+		
+		this.curvePoints = curvePoints;
         this.circleBody = Matter.Bodies.circle(
             position.x,position.y,
             radius,
-            {render:{fillStyle:"blue",strokeStyle:"white"}},
-            8);					
-        
-		
+            options,
+            curvePoints);					
 	}
 
     public getWorldPosition():WorldPosition {
@@ -38,6 +35,15 @@ export class MatterCircle extends CircleEngineShape
 	public set circleBody(value: Matter.Body) {
 		this._circleBody = value;
 	}
+
+	public get curvePoints(): number {
+		return this._curvePoints;
+	}
+
+	public set curvePoints(value: number) {
+		this._curvePoints = value;
+	}
+	
 
 
 }

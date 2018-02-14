@@ -1,5 +1,4 @@
 import { Junction } from "./junction";
-import { EngineObject } from "../engine/engineobject";
 import { Walker } from "./walker";
 import { WorldObject } from "../world/worldobject";
 import { WalkerWorld } from "./walkerworld";
@@ -14,8 +13,8 @@ export abstract class Destination extends WorldObject {
 
     private  _junctionWorldId:WorldId;
 
-    public constructor(worldId:WorldId,junction:Junction,worldObjectDisplay:WorldObjectDisplay,engineObject:EngineObject)  {
-        super(worldId,worldObjectDisplay,engineObject);
+    public constructor(worldId:WorldId,junction:Junction,worldObjectDisplay:WorldObjectDisplay)  {
+        super(worldId,worldObjectDisplay);
         this.junctionWorldId=junction.worldId;
     }
 

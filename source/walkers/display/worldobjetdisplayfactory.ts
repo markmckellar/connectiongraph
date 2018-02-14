@@ -1,13 +1,10 @@
-import { WorldShape } from "./shapes/worldshape";
+//import { WorldShape } from "./shapes/worldshape";
 import { WalkerWorld } from "../walkerworld/walkerworld";
 import { WorldObjectDisplay } from "./worldobjectdisplay";
-import { CircleDisplayShape } from "./shapes/circledisplayshape";
+//import { CircleDisplayShape } from "./shapes/circledisplayshape";
 import { WorldPosition } from "../world/worldposition";
-import { WorldObject } from "../world/worldobject";
-
-
-
-
+//import { WorldObject } from "../world/worldobject";
+import { JunctionCircleOnlyDisplay } from "../walkerworld/display/junctioncircleonlydisplay";
 
 
 export class WorldObjectDisplayFactory {
@@ -16,7 +13,7 @@ export class WorldObjectDisplayFactory {
     public constructor() {
     }
 
-    public static getWorldObjectDisplay(someKinaTag:string):WorldObjectDisplay {
+    public static getWorldObjectDisplay(someKinaTag:string,worldPosition:WorldPosition,walkerWorld:WalkerWorld):WorldObjectDisplay {
 
         someKinaTag = "junction";
         /*
@@ -42,15 +39,19 @@ export class WorldObjectDisplayFactory {
         // constructor(position:WorldPosition,shapes:Map<string,WorldShape>) {
         // public abstract drawObject(worldObjectDisplay:WorldObjectDisplay,world:World):void;
 
-        let shapes:Map<string,WorldShape> = new Map<string,WorldShape>();
-        shapes.set("junctionBody",new CircleDisplayShape("junctionBody",40,8,new WorldPosition(0,0)));
+        //let shapes:Map<string,WorldShape> = new Map<string,WorldShape>();
+        //shapes.set("junctionBody",new CircleDisplayShape("junctionBody",40,worldPosition,walkerWorld.walkerEngine) );
 
-        let wod:WorldObjectDisplay = 
+        let wod:WorldObjectDisplay = new JunctionCircleOnlyDisplay(worldPosition,walkerWorld);
+        /*
         new(class extends WorldObjectDisplay {
-            public drawObject(walkerWorld:WalkerWorld,worldObject:WorldObject,context:CanvasRenderingContext2D):void{                
+            public drawObject(walkerWorld:WalkerWorld,worldObject:WorldObject,context:CanvasRenderingContext2D):void{   
+
+                this.getShape(worldObject,"junctionBody").drawShape(this,walkerWorld,context);
+
                 }
             } )(new WorldPosition(0,0),shapes);
-
+    */
         return(wod);
 
     }

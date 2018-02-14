@@ -5,20 +5,83 @@ import { WorldObjectDisplay } from "../worldobjectdisplay";
 
 
 export abstract  class WorldShape {
-    private _shapePoints:Array<WorldPosition>;
-	private _offsetFromOrigin:WorldPosition;
 	private _shapeName:string;
 
-    constructor(shapeName:string,shapePoints:Array<WorldPosition>,offsetFromOrigin:WorldPosition)
+    constructor(shapeName:string)
     {
 		this.shapeName = shapeName;
-        this.shapePoints = shapePoints;
-        this.offsetFromOrigin = offsetFromOrigin;
     }
 
 	public abstract drawShape(worldObjectDisplay:WorldObjectDisplay,walkerWorld:WalkerWorld,context:CanvasRenderingContext2D,):void;
     
-    
+	public static getCirclePositionList(radius:number,curvePoints:number):Array<WorldPosition> {
+		let pointList = new Array<WorldPosition>();
+		
+		let angleInc = 360 / curvePoints;
+		for(let angle=0;angle<=360;angle=angle+angleInc)
+		{
+			let rads = angle * (Math.PI/180);
+			pointList.push(
+					new WorldPosition(
+							radius*Math.cos(rads),
+							radius*Math.sin(rads))
+					);	
+		}
+		
+		return(pointList);
+	}
+
+	public static getTrianglePositionList(width:number,height:number):Array<WorldPosition> {
+		let pointList = new Array<WorldPosition>();
+		
+		pointList.push(new WorldPosition(0,-(height/2)));
+		pointList.push(new WorldPosition(width/2,height/2));
+		pointList.push(new WorldPosition(-(width/2),height/2));
+		pointList.push(new WorldPosition(0,-(height/2)));
+		
+		return(pointList);;
+	}
+	
+	public static getRectanglePositionList(width:number,height:number):Array<WorldPosition> {
+		let pointList = new Array<WorldPosition>();
+		
+		pointList.push(new WorldPosition(-(width/2),-(height/2)));
+		pointList.push(new WorldPosition((width/2),-(height/2)));
+		pointList.push(new WorldPosition((width/2),(height/2)));
+		pointList.push(new WorldPosition(-(width/2),(height/2)));	
+		pointList.push(new WorldPosition(-(width/2),-(height/2)));
+	
+		return(pointList);;
+	}
+
+	public static getArcPositionList(endAngle:number,startAngle:number,radius:number,curvePoints:number):Array<WorldPosition> {
+		let pointList = new Array<WorldPosition>();
+		
+		// bug durring the port to javascript... it was just expecting one arg so probably endAngle was used
+		let angle:number = Math.abs(endAngle-startAngle);
+		let angleInc:number = angle / curvePoints;
+		
+		pointList.push(new WorldPosition(0,0));
+		for(let angle=startAngle;
+			angle<=endAngle && angleInc>0;
+			angle=angle+angleInc)
+		{
+			if( (angle+angleInc) > endAngle )
+			{
+				if(angle!=endAngle) angle = endAngle ;
+			}
+			var rads = angle * (Math.PI/180);
+			pointList.push(
+					new WorldPosition(
+							radius*Math.cos(rads),
+							radius*Math.sin(rads))
+					);	
+		}
+		
+		pointList.push(new WorldPosition(0,0));
+		
+		return(pointList);
+	}
 
     public static fillTextMutipleLines(context:CanvasRenderingContext2D,text:string,x:number,y:number,lineHeight:number,splitChar:string)
 	{
@@ -77,25 +140,6 @@ export abstract  class WorldShape {
 	
 	}
     
-
-	public get offsetFromOrigin(): WorldPosition {
-		return this._offsetFromOrigin;
-	}
-
-	public set offsetFromOrigin(value: WorldPosition) {
-		this._offsetFromOrigin = value;
-	}
-    
-
-	public get shapePoints(): Array<WorldPosition> {
-		return this._shapePoints;
-	}
-
-	public set shapePoints(value: Array<WorldPosition>) {
-		this._shapePoints = value;
-	}
-	
-
 	public get shapeName(): string {
 		return this._shapeName;
 	}

@@ -3,23 +3,24 @@ import { MatterWalkerEngine } from "./matterwalkerengine";
 import { MatterEvent } from "./events/matterevent";
 import { MatterDestination } from "./matterdestination";
 import { WalkerWorld } from "../walkerworld/walkerworld";
-
+import { MatterObject } from "./matterobject";
+import { WorldPosition } from "../world/worldposition";
+import { MatterTools } from "./mattertools";
 import * as Matter from "matter-js";
 import { MatterEngine } from "./matterengine";
 
 
 
-export class MatterWalker  {
-    private _walker:Walker;
+export class MatterWalker  extends MatterObject {
     private _walkerBody:Matter.Body;
     private _walker2DestinationSpring:Matter.Constraint	;
 
-    public constructor(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine,walker:Walker) {
+	public constructor(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine,walker:Walker) {
+		super(walker.worldId);
 
-		this.walker = walker;
 		let junctionDensity = matterEngine.junctions.get(walker.getCurrentJunction(walkerWorld).worldId.id).getAreaJunction().density;
 		
-		let position:Matter.Vector = this.getCurrentMaterDestination(matterEngine).getSpatialBody().position;
+		let position:Matter.Vector = this.getCurrentMaterDestination(walker,matterEngine).getSpatialBody().position;
 		
 		this.walkerBody = Matter.Bodies.circle(position.x,position.y,10,
 			{render:{fillStyle:"blue",strokeStyle:"blue"},density:junctionDensity/1000},8);
@@ -38,7 +39,7 @@ export class MatterWalker  {
 
 		this.walker2DestinationSpring = Matter.Constraint.create({
             bodyA: this.getAreaWalker(),
-            bodyB: matterEngine.destinations.get(this.walker.getCurrentDestination().worldId.id).getSpatialBody(),  
+            bodyB: matterEngine.destinations.get(walker.getCurrentDestination().worldId.id).getSpatialBody(),  
             pointA: { x: -0, y: -0 },
             pointB: { x: -0, y: -0 },
             length:0,
@@ -54,15 +55,15 @@ export class MatterWalker  {
 	public registerRenderer(matterEngine:MatterEngine,walker:Walker):void {
 		let matterWalker:MatterWalker = this;
 		matterEngine.registerTimestampedEvent(
-			this.walker.worldId.id,
+			walker.worldId.id,
 			MatterEvent.afterRender,
 			function(matterEngine:MatterEngine,eventType:MatterEvent,event: Matter.IEventTimestamped<Matter.Engine>):void{
 			  //console.log("afterRender!!!!!!!!!!!!!!!!!!!!");	
 			  //walker.worldObjectDisplay.drawObject();
 			  let context:CanvasRenderingContext2D = matterEngine.render.context;
 			  		
-			  context.fillStyle = matterEngine.matterTools.getColorFromString("ffffffff");
-			  context.strokeStyle = matterEngine.matterTools.getColorFromString("0000ffff");
+			  context.fillStyle = MatterTools.getColorFromString("ffffffff");
+			  context.strokeStyle = MatterTools.getColorFromString("0000ffff");
 
 			  context.beginPath();
 			  context.arc(matterWalker.walkerBody.position.x,
@@ -76,18 +77,27 @@ export class MatterWalker  {
 			});    
 	}
 
+	public translate(worldPosition:WorldPosition):void {
+		Matter.Body.translate(this.walkerBody,MatterTools.getVectorFromWorldPostion(worldPosition));
+	}
+	
+	public getWorldPosition():WorldPosition {
+		return( MatterTools.bodyPostion2WorldPosition(this.walkerBody) );
+	}
+ 
 
-	public getCurrentMaterDestination(matterEngine:MatterWalkerEngine) {
+
+	public getCurrentMaterDestination(walker:Walker,matterEngine:MatterWalkerEngine) {
 		let matterDestination:MatterDestination = 
-				matterEngine.destinations.get(this.walker.getCurrentDestination().worldId.id);
+				matterEngine.destinations.get(walker.getCurrentDestination().worldId.id);
 		return(matterDestination);
 
 	}
 
-	public addToEngine(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine):void {
+	public addToEngine(walker:Walker,walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine):void {
 		Matter.World.add(matterEngine.engine.world,[this.walkerBody]);
 		Matter.World.add(matterEngine.engine.world,[this.walker2DestinationSpring]);
-		this.enableWalkerEvents(walkerWorld,matterEngine);
+		this.enableWalkerEvents(walker,walkerWorld,matterEngine);
 	}
 
 	public walkerArrivedAtDestination(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine) : void {
@@ -109,7 +119,7 @@ export class MatterWalker  {
 		
 	}
 
-	public enableWalkerEvents(walkerWorld:WalkerWorld,matterWalkerEngine:MatterWalkerEngine):void {
+	public enableWalkerEvents(walker:Walker,walkerWorld:WalkerWorld,matterWalkerEngine:MatterWalkerEngine):void {
 
 		let matterWalker:MatterWalker = this;
 
@@ -117,7 +127,7 @@ export class MatterWalker  {
 			this.getAreaWalker(),
 			MatterEvent.collisionActive,
 			function(matterEngine:MatterWalkerEngine,eventType:MatterEvent,event: Matter.IEventCollision<Matter.Engine>):void{
-				let containerDest:Matter.Body =  matterWalker.getCurrentMaterDestination(matterEngine).getWalkerContainer();				
+				let containerDest:Matter.Body =  matterWalker.getCurrentMaterDestination(walker,matterEngine).getWalkerContainer();				
 				let isWalkerInisdeContainer:boolean = Matter.Vertices.contains(
 					containerDest.vertices,matterWalker.getAreaWalker().position);
 				
@@ -133,7 +143,6 @@ export class MatterWalker  {
 			});
 	}
 
- 
 	public getAreaWalker():Matter.Body {
 		return(this.walkerBody);
 	}
@@ -157,18 +166,5 @@ export class MatterWalker  {
 
 	public set walkerBody(value: Matter.Body) {
 		this._walkerBody = value;
-	}
-
-
-	public get walker(): Walker {
-		return this._walker;
-	}
-
-	public set walker(value: Walker) {
-		this._walker = value;
-	}
-	
-
-	
-    
+	}    
 }

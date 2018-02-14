@@ -2,7 +2,6 @@ import { Walker } from "../walkerworld/walker";
 import { Junction } from "../walkerworld/junction";
 import { Destination } from "../walkerworld/destination";
 import { WorldPosition } from "../world/worldposition";
-
 import { Path } from "../walkerworld/path";
 import { WalkerEngine } from "../walkerworld/walkerengine";
 import { WalkerWorld } from "../walkerworld/walkerworld";
@@ -11,6 +10,10 @@ import { MatterDestination } from "./matterdestination";
 import { MatterWalker } from "./matterwalker";
 import { MatterEngine } from "./matterengine";
 import { MatterTools } from "./mattertools";
+import { CircleEngineShape } from "../engine/shapes/circleengineshape";
+import { MatterCircle } from "./shapes/mattercircle";
+
+
 //import { MatterEvent } from "./matterevent";
 
 import * as Matter from "matter-js";
@@ -63,6 +66,14 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
       
   
     }
+
+    public getNewCircleEngineShape(shapeName:string,radius:number,worldPosition:WorldPosition):CircleEngineShape {
+      let options:any =  {render:{fillStyle:"blue",strokeStyle:"white"}};
+      let curvePoints:number = 8;
+      return( new MatterCircle(shapeName,radius,curvePoints,worldPosition,options) );
+
+    }
+
     
 
     public addPath(walkerWorld:WalkerWorld,path:Path):void {    
@@ -103,7 +114,7 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
       let matterWalker:MatterWalker = this.walkers.get(walker.worldId.id);
 
       matterWalker.getWalker2DestinationSpring().bodyB =  
-          matterWalker.getCurrentMaterDestination(this).getSpatialBody();;
+          matterWalker.getCurrentMaterDestination(walker,this).getSpatialBody();;
 
       matterWalker.walkerTravelingTotDestination(walkerWorld,this);
     }       
@@ -113,7 +124,7 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
       {
         let matterWalker:MatterWalker = new MatterWalker(walkerWorld,this,walker);
         this.walkers.set(walker.worldId.id,matterWalker);
-        matterWalker.addToEngine(walkerWorld,this);
+        matterWalker.addToEngine(walker,walkerWorld,this);
       }
     }
 

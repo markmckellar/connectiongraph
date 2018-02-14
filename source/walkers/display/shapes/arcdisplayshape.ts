@@ -7,42 +7,9 @@ export class ArcDisplayShape extends WorldShape
 {
 	constructor(shapeName:string,endAngle:number,startAngle:number,radius:number,curvePoints:number,offsetFromOrigin:WorldPosition)
 	{
-		super(
-			shapeName,
-			ArcDisplayShape.getCirclePositionList(endAngle,startAngle,radius,curvePoints),
-			offsetFromOrigin
-		);
-		
+		super(shapeName);		
 	}
 
-	public static getCirclePositionList(endAngle:number,startAngle:number,radius:number,curvePoints:number):Array<WorldPosition> {
-		let pointList = new Array<WorldPosition>();
-		
-		// bug durring the port to javascript... it was just expecting one arg so probably endAngle was used
-		let angle:number = Math.abs(endAngle-startAngle);
-		let angleInc:number = angle / curvePoints;
-		
-		pointList.push(new WorldPosition(0,0));
-		for(let angle=startAngle;
-			angle<=endAngle && angleInc>0;
-			angle=angle+angleInc)
-		{
-			if( (angle+angleInc) > endAngle )
-			{
-				if(angle!=endAngle) angle = endAngle ;
-			}
-			var rads = angle * (Math.PI/180);
-			pointList.push(
-					new WorldPosition(
-							radius*Math.cos(rads),
-							radius*Math.sin(rads))
-					);	
-		}
-		
-		pointList.push(new WorldPosition(0,0));
-		
-		return(pointList);
-	}
 	
 	public drawShape(worldObjectDisplay:WorldObjectDisplay,walkerWorld:WalkerWorld,context:CanvasRenderingContext2D,):void
 	{

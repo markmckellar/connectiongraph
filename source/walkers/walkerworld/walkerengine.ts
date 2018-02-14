@@ -4,6 +4,7 @@ import { Destination } from "../walkerworld/destination";
 import { Path } from "../walkerworld/path";
 import { WalkerWorld } from "../walkerworld/walkerworld";
 import { WorldPosition } from "../world/worldposition";
+import { CircleEngineShape } from "../engine/shapes/circleengineshape";
 
 
 export interface WalkerEngine {
@@ -22,6 +23,9 @@ export interface WalkerEngine {
     createBounds(width:number,height:number):void; 
     changeWalkerDestination(walkerWorld:WalkerWorld,walker:Walker,destination:Destination):void;
     isWalkerAtDestination(walkerWorld:WalkerWorld,walker:Walker):void;       
+
+
+    getNewCircleEngineShape(shapeName:string,radius:number,worldPosition:WorldPosition):CircleEngineShape;
 
    // public abstract doesWalkerExist(world:World,walker:Walker):boolean;
     //public abstract doesJunctionExist(world:World,junction:Junction):boolean;
