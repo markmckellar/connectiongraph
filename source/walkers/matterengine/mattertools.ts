@@ -1,6 +1,6 @@
 import * as Matter from "matter-js";
 import { MatterWalkerEngine } from "./matterwalkerengine";
-import { WorldPosition } from "../world/worldposition";
+import { WorldPosition } from "../../world/worldposition";
 
 export class MatterTools  {
 

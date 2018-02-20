@@ -1,5 +1,5 @@
 import { Junction } from "./junction";
-import { WorldId } from "../world/worldid";
+import { WorldId } from "../../world/worldid";
 import { Walker } from "./walker";
 import { Destination } from "./destination";
 

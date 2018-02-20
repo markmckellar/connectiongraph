@@ -6,20 +6,21 @@ export class MouseStatus
 	private _isDown:boolean;
 	private _startPosition:WorldPosition;
 	private _position:WorldPosition;
-	private _worldObject:WorldObject;
+	//private _worldObject:WorldObject;
 	//private _objectStartPosition:WorldPosition;
-	private _offset:WorldPosition;
-	private _lastWorldObject:WorldObject;
+	private _clickOffset:WorldPosition;
+	//private _lastWorldObject:WorldObject;
 	
 	
 	
 
-	constructor(isDown:boolean,startPosition:WorldPosition,position:WorldPosition)
+	constructor()
 	{
-		this.isDown = isDown;
-		this.startPosition = startPosition;
-		this.position = position;
-		this.worldObject = null;
+		this.isDown = false;
+		this.startPosition = new WorldPosition(0,0);
+		this.position = new WorldPosition(0,0);
+		this.clickOffset = new WorldPosition(0,0);
+
 		//this.objectStartPosition = null
 	}
 // 			nodeCanvasMouse.mouseStatus = new MouseStatus(false,new Position(0,0),new Position(0,0),null,null);
@@ -50,29 +51,15 @@ export class MouseStatus
 		this._position = value;
 	}
 
-	public get worldObject(): WorldObject {
-		return this._worldObject;
+	public get clickOffset(): WorldPosition {
+		return this._clickOffset;
 	}
 
-	public set worldObject(value: WorldObject) {
-		this._worldObject = value;
+	public set clickOffset(value: WorldPosition) {
+		this._clickOffset = value;
 	}
 
 
-	public get offset(): WorldPosition {
-		return this._offset;
-	}
 
-	public set offset(value: WorldPosition) {
-		this._offset = value;
-	}
-
-	public get lastWorldObject(): WorldObject {
-		return this._lastWorldObject;
-	}
-
-	public set lastWorldObject(value: WorldObject) {
-		this._lastWorldObject = value;
-	}
 	
 }

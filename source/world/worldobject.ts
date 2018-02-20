@@ -4,19 +4,25 @@ import { WorldPosition } from "./worldposition";
 import { WorldObjectDisplay } from "../display/worldobjectdisplay";
 
 
-export class WorldObject {
+export abstract class WorldObject {
 	
 	private _worldId : WorldId;  
 	private _worldObjectDisplayArray:Array<WorldObjectDisplay>;
 	private _isAnimated:boolean;
 	private _isSelected:boolean;
-	private _worldPosition:WorldPosition;
+	//private _worldPosition:WorldPosition;
     
     public constructor(worldId:WorldId) {
 		this.worldId = worldId;   
 		this.worldObjectDisplayArray = new Array<WorldObjectDisplay>();
         //console.log("WorldObject:"+this.worldId.id);
-    }
+	}
+
+	
+	public abstract setWorldPosition(worldPosition:WorldPosition):void;
+
+	public abstract getWorldPosition():WorldPosition;
+
 
 
 	public get worldId(): WorldId {
@@ -53,13 +59,7 @@ export class WorldObject {
 		this._isSelected = value;
 	}
 
-	public get worldPosition(): WorldPosition {
-		return this._worldPosition;
-	}
 
-	public set worldPosition(value: WorldPosition) {
-		this._worldPosition = value;
-	}
 
 	
 }

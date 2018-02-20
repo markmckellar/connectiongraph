@@ -1,6 +1,6 @@
 //import { WorldShape } from "./shapes/worldshape";
 //import { WorldObject } from "../world/worldobject";
-import { WalkerWorld } from "../walkerworld/walkerworld";
+import { WalkerWorld } from "../walkers/walkerworld/walkerworld";
 //import { WorldPosition } from "../world/worldposition";
 
 

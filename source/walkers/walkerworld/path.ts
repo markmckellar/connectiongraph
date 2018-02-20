@@ -1,6 +1,6 @@
 import { Junction } from "./junction";
-import { WorldObject } from "../world/worldobject";
-import { WorldId } from "../world/worldid";
+import { WorldObject } from "../../world/worldobject";
+import { WorldId } from "../../world/worldid";
 
 
 export class Path extends WorldObject {

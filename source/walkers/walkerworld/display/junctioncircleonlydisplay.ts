@@ -4,7 +4,7 @@ import { WalkerWorld } from "../../walkerworld/walkerworld";
 //import { WorldObjectDisplay } from "../../display/worldobjectdisplay";
 import { JunctionOneCircle } from "../../engine/engineobjects/junctiononecircle";
 //import { Junction } from "../../walkerworld/junction";
-import { CircleDisplayShape } from "../../display/shapes/circledisplayshape";
+import { CircleDisplayShape } from "../../../display/shapes/circledisplayshape";
 
 
 

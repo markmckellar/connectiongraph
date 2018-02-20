@@ -4,7 +4,7 @@ import { MatterEvent } from "../events/matterevent";
 import { MatterDestination } from "./matterdestination";
 import { WalkerWorld } from "../../walkerworld/walkerworld";
 import { MatterObject } from "./matterobject";
-import { WorldPosition } from "../../world/worldposition";
+import { WorldPosition } from "../../../world/worldposition";
 import { MatterTools } from "../mattertools";
 import * as Matter from "matter-js";
 import { MatterEngine } from "../matterengine";

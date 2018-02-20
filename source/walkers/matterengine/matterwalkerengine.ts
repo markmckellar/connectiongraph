@@ -1,7 +1,9 @@
 import { Walker } from "../walkerworld/walker";
 import { Junction } from "../walkerworld/junction";
 import { Destination } from "../walkerworld/destination";
-import { WorldPosition } from "../world/worldposition";
+import { WorldPosition } from "../../world/worldposition";
+import { WorldObject } from "../../world/worldobject";
+
 import { Path } from "../walkerworld/path";
 import { WalkerEngine } from "../walkerworld/walkerengine";
 import { WalkerWorld } from "../walkerworld/walkerworld";
@@ -14,6 +16,7 @@ import { MatterTools } from "./mattertools";
 //import { MatterCircle } from "./shapes/mattercircle";
 import { JunctionOneCircle } from "../engine/engineobjects/junctiononecircle";
 import { MatterJunctionOneCircle } from "./engineobjects/matterjunctiononecirle";
+import { DisplayHolder } from "../../display/displayholder";
 
 
 
@@ -21,7 +24,7 @@ import { MatterJunctionOneCircle } from "./engineobjects/matterjunctiononecirle"
 
 import * as Matter from "matter-js";
 
-export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
+export class MatterWalkerEngine extends MatterEngine implements WalkerEngine,DisplayHolder {
     private _junctions : Map<string,MatterJunction>;
     private _destinations : Map<string,MatterDestination>;
     private _walkers : Map<string,MatterWalker>;
@@ -45,6 +48,10 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
         this.walkers = new Map<string,MatterWalker>(); 
         
         this.registerWalkerEvents();
+    }
+
+    public getWorldObjectContainingPosition(worldPosition:WorldPosition):WorldObject {
+      return(null);
     }
 
     public registerWalkerEvents():void {

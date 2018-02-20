@@ -1,7 +1,7 @@
 
 import { MatterEvent } from "./events/matterevent";
 import * as Matter from "matter-js";
-import { WorldId } from "../world/worldid";
+import { WorldId } from "../../world/worldid";
 
 
 

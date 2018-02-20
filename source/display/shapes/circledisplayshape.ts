@@ -1,8 +1,8 @@
 import { WorldShape } from "../shapes/worldshape";
 import { WorldPosition } from "../../world/worldposition";
-import { WalkerWorld } from "../../walkerworld/walkerworld";
+import { WalkerWorld } from "../../walkers/walkerworld/walkerworld";
 import { WorldDisplay } from "../worlddisplay";
-import { CircleEngineShape } from "../../engine/shapes/circleengineshape";
+import { CircleEngineShape } from "../../walkers/engine/shapes/circleengineshape";
 //import { WalkerEngine } from "../../walkerworld/walkerengine";
 
 

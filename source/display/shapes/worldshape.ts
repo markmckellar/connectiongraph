@@ -1,5 +1,5 @@
 //import { WorldPosition } from "../../world/worldposition";
-import { WalkerWorld } from "../../walkerworld/walkerworld";
+import { WalkerWorld } from "../../walkers/walkerworld/walkerworld";
 //import { WorldObjectDisplay } from "../worldobjectdisplay";
 
 

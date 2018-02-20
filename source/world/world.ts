@@ -3,14 +3,17 @@
 //import { MatterEvent } from "../matterengine/matterevent";
 //import { MatterCollisionEvent } from "../matterengine/mattercollisionevent";
 import { DisplayHolder } from "../display/displayholder";
+import { WorldEngine } from "../walkers/engine/worldengine";
 
 
-export abstract class World {
+export class World {
 
     private _displayHolder:DisplayHolder;
+	private _worldEngine:WorldEngine;
 
-    constructor(displayHolder:DisplayHolder){
-        this.displayHolder = displayHolder;
+    constructor(displayHolder:DisplayHolder,worldEngine:WorldEngine){
+		this.displayHolder = displayHolder;
+		this.worldEngine = worldEngine;
     }
 
 	public get displayHolder(): DisplayHolder {
@@ -19,6 +22,14 @@ export abstract class World {
 
 	public set displayHolder(value: DisplayHolder) {
 		this._displayHolder = value;
+	}
+
+	public get worldEngine(): WorldEngine {
+		return this._worldEngine;
+	}
+
+	public set worldEngine(value: WorldEngine) {
+		this._worldEngine = value;
 	}
     
 }

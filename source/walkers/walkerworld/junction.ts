@@ -1,9 +1,9 @@
 //import { Path } from "./path";
 //import { Walker } from "./walker";
-import { WorldObject } from "../world/worldobject";
+import { WorldObject } from "../../world/worldobject";
 import { Destination } from "./destination";
 import { Walker } from "./walker";
-import { WorldId } from "../world/worldid";
+import { WorldId } from "../../world/worldid";
 
 
 

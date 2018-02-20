@@ -1,11 +1,11 @@
 import { WalkerWorld } from "./walkerworld";
-import { WorldId } from "../world/worldid";
+import { WorldId } from "../../world/worldid";
 import { Junction } from "./junction";
 import { DefaultJunction } from "./defaultjunction";
 import { Walker } from "./walker";
 import { Path } from "./path";
-import { WorldPosition } from "../world/worldposition";
-import { WorldObjectDisplayFactory } from "../display/worldobjetdisplayfactory";
+import { WorldPosition } from "../../world/worldposition";
+import { WorldObjectDisplayFactory } from "../../display/worldobjetdisplayfactory";
 
 
 

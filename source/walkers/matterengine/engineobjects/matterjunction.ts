@@ -1,6 +1,6 @@
 //import { Junction } from "../../walkerworld/junction";
-import { WorldPosition } from "../../world/worldposition";
-import { WorldId } from "../../world/worldid";
+import { WorldPosition } from "../../../world/worldposition";
+import { WorldId } from "../../../world/worldid";
 //import { WorldObjectDisplay } from "../../display/worldobjectdisplay";
 import { MatterWalkerEngine } from "../matterwalkerengine";
 import { MatterObject } from "./matterobject";

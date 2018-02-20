@@ -1,8 +1,8 @@
 import { Junction } from "./junction";
 import { Walker } from "./walker";
-import { WorldObject } from "../world/worldobject";
+import { WorldObject } from "../../world/worldobject";
 import { WalkerWorld } from "./walkerworld";
-import { WorldId } from "../world/worldid";
+import { WorldId } from "../../world/worldid";
 //import { WorldObjectDisplay } from "../display/worldobjectdisplay";
 
 

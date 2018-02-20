@@ -1,20 +1,26 @@
+import { CanvasHolder } from "./canvasholder";
+import { World } from "../../world/world";
+import { CanvasMouse } from "./canvasmouse";
+import { MouseEventHandlerWorldObject } from "./mouseEventhandlerworldobject";
 
-export class CanvasHolder
+
+export class CanvasHolderHTML implements CanvasHolder
 {
-	private _isCanvasVisable:boolean;
-	private _isCanvasDrawable:boolean;
-	private _canvasName:string;
+	private _isVisable:boolean;
+	private _isDrawable:boolean;
+	private _canvasName:string;s
 	private _canvas:HTMLCanvasElement;
 	private _context:CanvasRenderingContext2D;
+	private _canvasMouse:CanvasMouse;
 	
-	
-	constructor(canvasName)
+	constructor(canvasName:string,world:World)
 	{
 		this.canvasName = canvasName;
-		this.isCanvasVisable = true;
-		this.isCanvasDrawable = true;
+		this.isVisable = true;
+		this.isDrawable = true;
 		this.canvas = <HTMLCanvasElement>document.getElementById(this.canvasName);			
 		this.context = this.canvas.getContext("2d");
+		this.canvasMouse = new CanvasMouse(world,this,new MouseEventHandlerWorldObject());
 		/*if (typeof document !== 'undefined')
 		{
 			this.canvas = document.getElementById(this.canvasName);			
@@ -22,6 +28,88 @@ export class CanvasHolder
 		}*/
 	}
 	
+	public getWidth():number
+	{
+		return(this.canvas.width);
+	}
+	
+	public getHeight():number
+	{
+		return(this.canvas.height);
+	}
+
+	public isCanvasVisable(): boolean {
+		return this._isVisable;
+	}
+
+	public isCanvasDrawable(): boolean {
+		return this._isDrawable;
+	}
+
+	public get canvasName(): string {
+		return this._canvasName;
+	}
+
+	public set canvasName(value: string) {
+		this._canvasName = value;
+	}
+
+
+	public get canvas(): HTMLCanvasElement {
+		return this._canvas;
+	}
+
+	public set canvas(value: HTMLCanvasElement) {
+		this._canvas = value;
+	}
+
+	public get context(): CanvasRenderingContext2D {
+		return this._context;
+	}
+
+	public set context(value: CanvasRenderingContext2D) {
+		this._context = value;
+	}
+
+	public get isVisable(): boolean {
+		return this._isVisable;
+	}
+
+	public set isVisable(value: boolean) {
+		this._isVisable = value;
+	}
+
+	public get isDrawable(): boolean {
+		return this._isDrawable;
+	}
+
+	public set isDrawable(value: boolean) {
+		this._isDrawable = value;
+	}
+
+	public get canvasMouse(): CanvasMouse {
+		return this._canvasMouse;
+	}
+
+	public set canvasMouse(value: CanvasMouse) {
+		this._canvasMouse = value;
+	}
+	
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 	/*
 	static createCanvasHolderFromClientJson(worldDef,json)
 	{
@@ -125,11 +213,12 @@ export class CanvasHolder
 		return(graphData);
 	}
 	*/
+	/*
 	clone(origin)
 	{
-		var canvasHolder = new CanvasHolder(this.canvasName);
+		var canvasHolder = new CanvasHolderHTML(this.canvasName);
 		//canvasHolder.origin = origin;
-		/*
+		
 		var canvasHolder = new Object();
 		canvasHolder.origin = origin;
 		
@@ -144,63 +233,8 @@ export class CanvasHolder
 		canvasHolder.getHeight = this.getHeight;
 		canvasHolder.worldDef = this.worldDef;
 		canvasHolder.getGraphData = this.getGraphData;
-		*/
+		
 		
 		return(canvasHolder);
 	}
-	
-	public getWidth()
-	{
-		return(this.canvas.width);
-	}
-	
-	public getHeight()
-	{
-		return(this.canvas.height);
-	}
-
-
-	public get isCanvasVisable(): boolean {
-		return this._isCanvasVisable;
-	}
-
-	public set isCanvasVisable(value: boolean) {
-		this._isCanvasVisable = value;
-	}
-
-	public get isCanvasDrawable(): boolean {
-		return this._isCanvasDrawable;
-	}
-
-	public set isCanvasDrawable(value: boolean) {
-		this._isCanvasDrawable = value;
-	}
-
-	public get canvasName(): string {
-		return this._canvasName;
-	}
-
-	public set canvasName(value: string) {
-		this._canvasName = value;
-	}
-
-
-	public get canvas(): HTMLCanvasElement {
-		return this._canvas;
-	}
-
-	public set canvas(value: HTMLCanvasElement) {
-		this._canvas = value;
-	}
-
-	public get context(): CanvasRenderingContext2D {
-		return this._context;
-	}
-
-	public set context(value: CanvasRenderingContext2D) {
-		this._context = value;
-	}
-
-	
-	
-}
+	*/

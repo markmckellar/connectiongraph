@@ -4,13 +4,14 @@ import { Destination } from "../walkerworld/destination";
 import { Path } from "../walkerworld/path";
 import { WalkerWorld } from "../walkerworld/walkerworld";
 //import { WorldId } from "../world/worldid";
-import { WorldPosition } from "../world/worldposition";
+import { WorldPosition } from "../../world/worldposition";
 
 //import { CircleEngineShape } from "../engine/shapes/circleengineshape";
 import { JunctionOneCircle } from "../engine/engineobjects/junctiononecircle";
+import { WorldEngine } from "../engine/worldengine";
 
 
-export interface WalkerEngine {
+export interface WalkerEngine extends WorldEngine {
 
     
     //public constructor() {

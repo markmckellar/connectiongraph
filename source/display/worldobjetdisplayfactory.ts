@@ -1,12 +1,12 @@
 //import { WorldShape } from "./shapes/worldshape";
-import { WalkerWorld } from "../walkerworld/walkerworld";
-import { Junction } from "../walkerworld/junction";
+import { WalkerWorld } from "../walkers/walkerworld/walkerworld";
+import { Junction } from "../walkers/walkerworld/junction";
 
 import { WorldObjectDisplay } from "./worldobjectdisplay";
 //import { CircleDisplayShape } from "./shapes/circledisplayshape";
 import { WorldPosition } from "../world/worldposition";
 //import { WorldObject } from "../world/worldobject";
-import { JunctionCircleOnlyDisplay } from "../walkerworld/display/junctioncircleonlydisplay";
+import { JunctionCircleOnlyDisplay } from "../walkers/walkerworld/display/junctioncircleonlydisplay";
 
 
 export class WorldObjectDisplayFactory {

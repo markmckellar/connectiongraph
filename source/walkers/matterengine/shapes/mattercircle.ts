@@ -1,5 +1,5 @@
 import { CircleEngineShape } from "../../engine/shapes/circleengineshape";
-import { WorldPosition } from "../../world/worldposition";
+import { WorldPosition } from "../../../world/worldposition";
 import { MatterTools } from "../mattertools";
 
 import * as Matter from "matter-js";
