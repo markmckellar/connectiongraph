@@ -34,9 +34,7 @@ export class WalkerWorld  extends World {
 		this.walkerEngine =  walkerEngine;
 	}
 
-	public getContext() {
-		this
-	}
+
 
 	public addPath(path:Path):void {
 		//console.log("world.addPath:path="+JSON.stringify(path));	
@@ -60,7 +58,7 @@ export class WalkerWorld  extends World {
 		if(!this.hasJunction(junction.worldId))
 		{
 			this.junctions.set(junction.worldId.id,junction);
-			this.walkerEngine.addJunction(this,junction,position);
+			//this.walkerEngine.addJunction(this,junction,position);
 			this.addDestination(junction.defaultDestination);
 		}
 	}
@@ -114,6 +112,20 @@ export class WalkerWorld  extends World {
 
 	public addWorldUpdate(worldUpdate:WorldUpdate):void {
 		this.worldUpdateQueue.addToWorldUpdateQueue(worldUpdate);
+	}
+
+	public drawWorld():void {
+		let walkerWorld = this;
+		let context = walkerWorld.displayHolder.get2DGraphicsContext();
+		
+		this.junctions.forEach((junction: Junction, key: string) => {
+			for(let i=0;i<junction.worldObjectDisplayArray.length;i++)
+			{
+				//console.log("WalkerWorld.drawWorld:junction="+junction.worldId.id+":i="+i+" of "+junction.worldObjectDisplayArray.length);
+				
+				junction.worldObjectDisplayArray[i].drawObject(walkerWorld,context);
+			}
+		});
 	}
 
 	public processWorldUpdates():void {

@@ -1,5 +1,5 @@
-import { WorldId } from "../world/worldid";
-import { WorldPosition } from "../world/worldposition";
+import { WorldId } from "../../world/worldid";
+import { WorldPosition } from "../../world/worldposition";
 //import { WorldObjectDisplay } from "../display/worldobjectdisplay";
 
 

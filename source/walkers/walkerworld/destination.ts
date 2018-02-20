@@ -3,7 +3,7 @@ import { Walker } from "./walker";
 import { WorldObject } from "../world/worldobject";
 import { WalkerWorld } from "./walkerworld";
 import { WorldId } from "../world/worldid";
-import { WorldObjectDisplay } from "../display/worldobjectdisplay";
+//import { WorldObjectDisplay } from "../display/worldobjectdisplay";
 
 
 export abstract class Destination extends WorldObject {
@@ -13,8 +13,8 @@ export abstract class Destination extends WorldObject {
 
     private  _junctionWorldId:WorldId;
 
-    public constructor(worldId:WorldId,junction:Junction,worldObjectDisplay:WorldObjectDisplay)  {
-        super(worldId,worldObjectDisplay);
+    public constructor(worldId:WorldId,junction:Junction)  {
+        super(worldId);
         this.junctionWorldId=junction.worldId;
     }
 

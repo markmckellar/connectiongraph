@@ -1,5 +1,7 @@
 //import { WorldShape } from "./shapes/worldshape";
 import { WalkerWorld } from "../walkerworld/walkerworld";
+import { Junction } from "../walkerworld/junction";
+
 import { WorldObjectDisplay } from "./worldobjectdisplay";
 //import { CircleDisplayShape } from "./shapes/circledisplayshape";
 import { WorldPosition } from "../world/worldposition";
@@ -13,7 +15,7 @@ export class WorldObjectDisplayFactory {
     public constructor() {
     }
 
-    public static getWorldObjectDisplay(someKinaTag:string,worldPosition:WorldPosition,walkerWorld:WalkerWorld):WorldObjectDisplay {
+    public static geJunctionWorldObjectDisplay(someKinaTag:string,junction:Junction,worldPosition:WorldPosition,walkerWorld:WalkerWorld):WorldObjectDisplay {
 
         someKinaTag = "junction";
         /*
@@ -41,8 +43,7 @@ export class WorldObjectDisplayFactory {
 
         //let shapes:Map<string,WorldShape> = new Map<string,WorldShape>();
         //shapes.set("junctionBody",new CircleDisplayShape("junctionBody",40,worldPosition,walkerWorld.walkerEngine) );
-
-        let wod:WorldObjectDisplay = new JunctionCircleOnlyDisplay(worldPosition,walkerWorld);
+        let wod:WorldObjectDisplay = new JunctionCircleOnlyDisplay(walkerWorld.walkerEngine.getJunctionOneCircle(junction,worldPosition,walkerWorld));
         /*
         new(class extends WorldObjectDisplay {
             public drawObject(walkerWorld:WalkerWorld,worldObject:WorldObject,context:CanvasRenderingContext2D):void{   

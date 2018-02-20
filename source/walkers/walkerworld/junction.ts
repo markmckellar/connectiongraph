@@ -4,7 +4,6 @@ import { WorldObject } from "../world/worldobject";
 import { Destination } from "./destination";
 import { Walker } from "./walker";
 import { WorldId } from "../world/worldid";
-import { WorldObjectDisplay } from "../display/worldobjectdisplay";
 
 
 
@@ -16,8 +15,8 @@ export abstract class Junction extends WorldObject {
     private _destinationList: Array<Destination>;
     private _defaultDestination: Destination;
 
-    public constructor(worldId:WorldId,worldObjectDisplay:WorldObjectDisplay)  {
-        super(worldId,worldObjectDisplay);
+    public constructor(worldId:WorldId)  {
+        super(worldId);
         this.destinations = new Map<string,Destination>();
         this.destinationList = Array<Destination>();
         this._defaultDestination = this.getNewDefaultDestination();

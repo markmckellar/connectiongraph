@@ -1,9 +1,9 @@
-import { Destination } from "../walkerworld/destination";
-import { MatterWalkerEngine } from "./matterwalkerengine";
+import { Destination } from "../../walkerworld/destination";
+import { MatterWalkerEngine } from "../matterwalkerengine";
 import { MatterJunction } from "./matterjunction";
-import { MatterTools } from "./mattertools";
+import { MatterTools } from "../mattertools";
 
-import { WalkerWorld } from "../walkerworld/walkerworld";
+import { WalkerWorld } from "../../walkerworld/walkerworld";
 
 import * as Matter from "matter-js";
 
@@ -16,7 +16,7 @@ export class MatterDestination  {
 
     public constructor(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine,destination:Destination) {
 		this.destination = destination;
-		let j:Matter.Body = this.getMatterJunction(walkerWorld,matterEngine).getBoundryJunction();;
+		let j:Matter.Body = this.getMatterJunction(walkerWorld,matterEngine).getBoundryJunction();
 		//this.spatialBody = this.getMatterJunction(world,matterEngine).getBoundryJunction();
 		this.spatialBody = Matter.Bodies.circle(j.position.x,j.position.y,40,
 			{

@@ -1,40 +1,60 @@
-import { Junction } from "../walkerworld/junction";
-import { WorldPosition } from "../world/worldposition";
-import { MatterWalkerEngine } from "./matterwalkerengine";
-import { MatterTools } from "./mattertools";
-import { MatterObject } from "./matterobject";
-import { WalkerWorld } from "../walkerworld/walkerworld";
-import { MatterEngine } from "./matterengine";
-import { MatterEvent } from "./events/matterevent";
-import { MatterCircle } from "./shapes/mattercircle";
+//import { Junction } from "../../walkerworld/junction";
+import { WorldPosition } from "../../world/worldposition";
+import { MatterWalkerEngine } from "../matterwalkerengine";
+import { MatterTools } from "../mattertools";
+import { WalkerWorld } from "../../walkerworld/walkerworld";
+import { WorldId } from "../../world/worldid";
+//import { WorldObjectDisplay } from "../../display/worldobjectdisplay";
+//import { MatterEngine } from "../matterengine";
+//import { MatterEvent } from "../events/matterevent";
+import { MatterCircle } from "../shapes/mattercircle";
+import { MatterJunction } from "./matterjunction";
+import { JunctionOneCircle } from "../../engine/engineobjects/junctiononecircle";
+import { EngineObject } from "../../engine/engineobjects/engineobject";
+import { CircleEngineShape } from "../../engine/shapes/circleengineshape";
+
+
 import * as Matter from "matter-js";
 //import { MatterTools } from "./mattertools";
 
 
 
-export class MatterJunction  extends MatterObject {
-    private _junction:Junction;
-    private _spacerBody:Matter.Body;
-    private _junctionBody:Matter.Body;
+export class MatterJunctionOneCircle  extends MatterJunction implements JunctionOneCircle{
+	private _spacerBody:Matter.Body;
+	private _junctionBody:Matter.Body;
+	private _circle:MatterCircle;
 
-    public constructor(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine,junction:Junction,worldPosition:WorldPosition,matterCircle:MatterCircle) {
-		super(junction.worldId);
+	public constructor(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine,worldId:WorldId,worldPosition:WorldPosition) {
+		super(walkerWorld,matterEngine,worldId);
 		let position = MatterTools.getVectorFromWorldPostion(worldPosition);
 		
-		this.junction = junction;
-
+		let options:any =  {};//{render:{fillStyle:"blue",strokeStyle:"white"}};
+		let curvePoints:number = 8;
+		this.circle = new MatterCircle("junctionBody",20,curvePoints,worldPosition,{render:{visable:false}}) ;
+		this.circle.circleBody.render.visible = false;
 		
-		this.junctionBody = matterCircle.circleBody;					
-		//this.junctionBody = Matter.Bodies.circle(position.x,position.y,30,{render:{fillStyle:"blue",strokeStyle:"white"}},8);					
+		this.junctionBody = this.circle.circleBody;
 		this.junctionBody.collisionFilter.category = MatterWalkerEngine.junctionFilter;
 		this.junctionBody.collisionFilter.mask = MatterWalkerEngine.junctionFilter|MatterWalkerEngine.boundsFilter;		
 
-		this.spacerBody = Matter.Bodies.circle(position.x,position.y,60,{render:{fillStyle:"transparent",strokeStyle:"white"}},8);
+		this.spacerBody = Matter.Bodies.circle(position.x,position.y,30,{render:{fillStyle:"transparent",strokeStyle:"white"}},8);
 		this.spacerBody.collisionFilter.category = MatterWalkerEngine.junctionSpacerFilter;
 		this.spacerBody.collisionFilter.mask = MatterWalkerEngine.junctionSpacerFilter|MatterWalkerEngine.boundsFilter;
 
-		this.registerRenderer(walkerWorld,matterEngine,junction);
+		///this.registerRenderer(walkerWorld,matterEngine,junction.worldId,junction.worldObjectDisplay);
+
+		this.addToEngine(walkerWorld,matterEngine);
+		
 	}
+
+	public getEngineObject():EngineObject {
+		return(this);
+	}
+
+	public getCircle(): CircleEngineShape {
+		return(this.circle);
+	}
+
 
 	public getWorldPosition():WorldPosition {
 		return( MatterTools.bodyPostion2WorldPosition(this.junctionBody) );
@@ -45,18 +65,22 @@ export class MatterJunction  extends MatterObject {
 		Matter.Body.translate(this.spacerBody,MatterTools.getVectorFromWorldPostion(worldPosition));
 	}
 
-	public registerRenderer(walkerWorld:WalkerWorld,matterEngine:MatterEngine,junction:Junction):void {
-		//let matterJunction:MatterJunction = this;	
+	/****** 
+	public registerRenderer(walkerWorld:WalkerWorld,matterEngine:MatterEngine,worldId:WorldId,worldObjectDisplay:WorldObjectDisplay):void {
+	//let matterJunction:MatterJunction = this;	
+
+
 		matterEngine.registerTimestampedEvent(
-			junction.worldId.id,
+			worldId.id,
 			MatterEvent.afterRender,
 			function(matterEngine:MatterEngine,eventType:MatterEvent,event: Matter.IEventTimestamped<Matter.Engine>):void{
 			  //console.log("afterRender!!!!!!!!!!!!!!!!!!!!");	
 			  //walker.worldObjectDisplay.drawObject();
 			  let context:CanvasRenderingContext2D = matterEngine.render.context;
-			  junction.worldObjectDisplay.drawObject(walkerWorld,junction,context);		  		
+			  worldObjectDisplay.drawObject(walkerWorld,context);		  		
 			});    
 	}
+	***********/
 
 	public addToEngine(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine):void {
 		Matter.World.add(matterEngine.engine.world,[this.spacerBody,this.junctionBody]);
@@ -74,14 +98,6 @@ export class MatterJunction  extends MatterObject {
 		return(this.junctionBody);
 	}
 
-	public get junction(): Junction {
-		return this._junction;
-	}
-
-	public set junction(value: Junction) {
-		this._junction = value;
-	}
-
 	private get spacerBody(): Matter.Body {
 		return this._spacerBody;
 	}
@@ -90,13 +106,22 @@ export class MatterJunction  extends MatterObject {
 		this._spacerBody = value;
 	}
 
-	private get junctionBody(): Matter.Body {
+	public get junctionBody(): Matter.Body {
 		return this._junctionBody;
 	}
 
-	private set junctionBody(value: Matter.Body) {
+	public set junctionBody(value: Matter.Body) {
 		this._junctionBody = value;
 	}
+
+	public get circle(): MatterCircle {
+		return this._circle;
+	}
+
+	public set circle(value: MatterCircle) {
+		this._circle = value;
+	}
+	
     
 }
 

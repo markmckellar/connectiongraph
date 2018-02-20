@@ -42,10 +42,11 @@ export class MatterEngine  implements DisplayHolder {
               hasBounds:false,
               height:600,
               width:800,
-              wireframes:false,    
+              wireframes:false, 
+              
+              
             },
-          });
-
+          }); 
         this.enableEvents();
     }
 

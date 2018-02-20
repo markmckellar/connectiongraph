@@ -5,13 +5,16 @@ import { WorldPosition } from "../world/worldposition";
 import { Path } from "../walkerworld/path";
 import { WalkerEngine } from "../walkerworld/walkerengine";
 import { WalkerWorld } from "../walkerworld/walkerworld";
-import { MatterJunction } from "./matterjunction";
-import { MatterDestination } from "./matterdestination";
-import { MatterWalker } from "./matterwalker";
+import { MatterJunction } from "./engineobjects/matterjunction";
+import { MatterDestination } from "./engineobjects/matterdestination";
+import { MatterWalker } from "./engineobjects/matterwalker";
 import { MatterEngine } from "./matterengine";
 import { MatterTools } from "./mattertools";
-import { CircleEngineShape } from "../engine/shapes/circleengineshape";
-import { MatterCircle } from "./shapes/mattercircle";
+//import { CircleEngineShape } from "../engine/shapes/circleengineshape";
+//import { MatterCircle } from "./shapes/mattercircle";
+import { JunctionOneCircle } from "../engine/engineobjects/junctiononecircle";
+import { MatterJunctionOneCircle } from "./engineobjects/matterjunctiononecirle";
+
 
 
 //import { MatterEvent } from "./matterevent";
@@ -67,12 +70,15 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
   
     }
 
+    /*
     public getNewCircleEngineShape(shapeName:string,radius:number,worldPosition:WorldPosition):CircleEngineShape {
       let options:any =  {render:{fillStyle:"blue",strokeStyle:"white"}};
       let curvePoints:number = 8;
       return( new MatterCircle(shapeName,radius,curvePoints,worldPosition,options) );
 
     }
+*/
+    //     public constructor(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine,junction:Junction,worldPosition:WorldPosition,matterCircle:MatterCircle) {
 
     
 
@@ -89,9 +95,17 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
           //let endPosition:Matter.Vector = (this.hasJunction(world,path.endJunction)) ? null : null;
           //this.addJunction(world,path.startJunction,);
           let matterStartJunction:Matter.Body = this.junctions.get(path.startJunction.worldId.id).getAreaJunction();
+          /*
+             getJunctionOneCircle(junction:Junction,worldPosition:WorldPosition,walkerWorld:WalkerWorld):JunctionOneCircle {
+              let matterJunctionOneCircle:MatterJunctionOneCircle = new MatterJunctionOneCircle(walkerWorld,this,junction,worldPosition);
+                this.addJunction(walkerWorld,junction,matterJunctionOneCircle);
+              return(matterJunctionOneCircle);
+            }
+            */
           
-          this.addJunction(walkerWorld,path.endJunction,
-            MatterTools.getWorldPostionFromVector(matterStartJunction.position));
+          
+          //this.addJunction(walkerWorld,path.endJunction,
+          //  MatterTools.getWorldPostionFromVector(matterStartJunction.position));
 
           let matterEndJunction:Matter.Body = this.junctions.get(path.endJunction.worldId.id).getAreaJunction();
           
@@ -114,7 +128,7 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
       let matterWalker:MatterWalker = this.walkers.get(walker.worldId.id);
 
       matterWalker.getWalker2DestinationSpring().bodyB =  
-          matterWalker.getCurrentMaterDestination(walker,this).getSpatialBody();;
+          matterWalker.getCurrentMaterDestination(walker,this).getSpatialBody();
 
       matterWalker.walkerTravelingTotDestination(walkerWorld,this);
     }       
@@ -160,17 +174,28 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine {
       return( new WorldPosition(vector.x,vector.y));
     }
 
-    public addJunction(walkerWorld:WalkerWorld,junction:Junction,position:WorldPosition):void {
+
+    getJunctionOneCircle(junction:Junction,worldPosition:WorldPosition,walkerWorld:WalkerWorld):JunctionOneCircle {
+      let matterJunctionOneCircle:MatterJunctionOneCircle = new MatterJunctionOneCircle(walkerWorld,this,junction.worldId,worldPosition);
+      this.addJunction(walkerWorld,junction,matterJunctionOneCircle);
+      return(matterJunctionOneCircle);
+    }
+    
+    
+    public addJunction(walkerWorld:WalkerWorld,junction:Junction,matterJunction:MatterJunction):void {
       //this.addJunctionMatterPosition(walkerWorld,junction,Matter.Vector.create(position.x,position.y));                       
 
       if(!this.hasJunction(junction))
       {
-              let matterJunction = new MatterJunction(walkerWorld,this,junction,position);      
+              //let matterJunction = new MatterJunction(walkerWorld,this,junction,position);    
+              
               this.junctions.set(junction.worldId.id,matterJunction);
+
               matterJunction.addToEngine(walkerWorld,this);                       
       }
   
     }
+    
     
 /*
     public addJunctionMatterPosition(walkerWorld:WalkerWorld,junction:Junction,position:Matter.Vector):void {

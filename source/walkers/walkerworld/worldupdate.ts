@@ -53,10 +53,9 @@ export class WorldUpdate {
 			if(updateWalkerExists) startPosition = walkerWorld.walkerEngine.getJunctionPosition(
 					walkerWorld.getWalker(this.walkerWorldId).getCurrentJunction(walkerWorld));
 			
-			junction = new DefaultJunction(
-						this.junctionWorldId,
-						WorldObjectDisplayFactory.getWorldObjectDisplay("junction",startPosition,walkerWorld),
-					);
+			junction = new DefaultJunction(this.junctionWorldId);
+			//let sf  = WorldObjectDisplayFactory.geJunctionWorldObjectDisplay("junction",startPosition,walkerWorld),
+			junction.worldObjectDisplayArray.push(WorldObjectDisplayFactory.geJunctionWorldObjectDisplay("junction",junction,startPosition,walkerWorld));
 
 			walkerWorld.addJunction(junction,startPosition);
 		} 
@@ -66,13 +65,13 @@ export class WorldUpdate {
 
 	public getWalker(walkerWorld:WalkerWorld,junction:Junction):Walker {
 		let walker:Walker = null;
-		let startPosition:WorldPosition = new WorldPosition(0,0);						
+		//let startPosition:WorldPosition = new WorldPosition(0,0);						
 
 		if(!walkerWorld.hasWalker(this.walkerWorldId)) {
 			walker = new Walker(
 				this.walkerWorldId,
 				junction,
-				WorldObjectDisplayFactory.getWorldObjectDisplay("walker",startPosition,walkerWorld)
+				//WorldObjectDisplayFactory.getWorldObjectDisplay("walker",startPosition,walkerWorld)
 			);
 			walkerWorld.addWalker(walker);
 		} 
@@ -82,13 +81,14 @@ export class WorldUpdate {
 
 	public getPath(walkerWorld:WalkerWorld,startJunction:Junction,endJunction:Junction):Path {
 		let path:Path = null;
-		let startPosition:WorldPosition = new WorldPosition(0,0);						
+		//let startPosition:WorldPosition = new WorldPosition(0,0);						
 
 		if(!walkerWorld.hasPath(startJunction,endJunction)) {
 			path = new Path(
 				startJunction,
 				endJunction,
-				WorldObjectDisplayFactory.getWorldObjectDisplay("path",startPosition,walkerWorld));
+				//WorldObjectDisplayFactory.getWorldObjectDisplay("path",startPosition,walkerWorld)
+			);
 			walkerWorld.addPath(path);
 		} 
 		path = walkerWorld.getPath(startJunction,endJunction);

@@ -1,15 +1,20 @@
 import { WorldId } from "./worldid";
+import { WorldPosition } from "./worldposition";
+
 import { WorldObjectDisplay } from "../display/worldobjectdisplay";
 
 
 export class WorldObject {
 	
 	private _worldId : WorldId;  
-	private _worldObjectDisplay:WorldObjectDisplay; 
+	private _worldObjectDisplayArray:Array<WorldObjectDisplay>;
+	private _isAnimated:boolean;
+	private _isSelected:boolean;
+	private _worldPosition:WorldPosition;
     
-    public constructor(worldId:WorldId,worldObjectDisplay:WorldObjectDisplay) {
-		this.worldId = worldId;          
-		this.worldObjectDisplay = worldObjectDisplay;
+    public constructor(worldId:WorldId) {
+		this.worldId = worldId;   
+		this.worldObjectDisplayArray = new Array<WorldObjectDisplay>();
         //console.log("WorldObject:"+this.worldId.id);
     }
 
@@ -22,12 +27,39 @@ export class WorldObject {
 		this._worldId = value;
 	}
 
-	public get worldObjectDisplay(): WorldObjectDisplay {
-		return this._worldObjectDisplay;
+
+	public get worldObjectDisplayArray(): Array<WorldObjectDisplay> {
+		return this._worldObjectDisplayArray;
 	}
 
-	public set worldObjectDisplay(value: WorldObjectDisplay) {
-		this._worldObjectDisplay = value;
+	public set worldObjectDisplayArray(value: Array<WorldObjectDisplay>) {
+		this._worldObjectDisplayArray = value;
 	}
+
+
+	public get isAnimated(): boolean {
+		return this._isAnimated;
+	}
+
+	public set isAnimated(value: boolean) {
+		this._isAnimated = value;
+	}
+
+	public get isSelected(): boolean {
+		return this._isSelected;
+	}
+
+	public set isSelected(value: boolean) {
+		this._isSelected = value;
+	}
+
+	public get worldPosition(): WorldPosition {
+		return this._worldPosition;
+	}
+
+	public set worldPosition(value: WorldPosition) {
+		this._worldPosition = value;
+	}
+
 	
 }

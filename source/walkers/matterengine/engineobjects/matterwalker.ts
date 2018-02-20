@@ -1,13 +1,13 @@
-import { Walker } from "../walkerworld/walker";
-import { MatterWalkerEngine } from "./matterwalkerengine";
-import { MatterEvent } from "./events/matterevent";
+import { Walker } from "../../walkerworld/walker";
+import { MatterWalkerEngine } from "../matterwalkerengine";
+import { MatterEvent } from "../events/matterevent";
 import { MatterDestination } from "./matterdestination";
-import { WalkerWorld } from "../walkerworld/walkerworld";
+import { WalkerWorld } from "../../walkerworld/walkerworld";
 import { MatterObject } from "./matterobject";
-import { WorldPosition } from "../world/worldposition";
-import { MatterTools } from "./mattertools";
+import { WorldPosition } from "../../world/worldposition";
+import { MatterTools } from "../mattertools";
 import * as Matter from "matter-js";
-import { MatterEngine } from "./matterengine";
+import { MatterEngine } from "../matterengine";
 
 
 
@@ -23,7 +23,7 @@ export class MatterWalker  extends MatterObject {
 		let position:Matter.Vector = this.getCurrentMaterDestination(walker,matterEngine).getSpatialBody().position;
 		
 		this.walkerBody = Matter.Bodies.circle(position.x,position.y,10,
-			{render:{fillStyle:"blue",strokeStyle:"blue"},density:junctionDensity/1000},8);
+			{render:{fillStyle:"transparent",strokeStyle:"transparent"},density:junctionDensity/1000},8);
 		
 		this.walkerBody.restitution = 0.0;
         this.walkerBody.collisionFilter.category = MatterWalkerEngine.walkerTravleing;
@@ -36,6 +36,7 @@ export class MatterWalker  extends MatterObject {
 			MatterWalkerEngine.boundrySpatialFilter;
   
 		this.walkerBody.frictionAir = 0.5;
+		this.walkerBody.render.visible = false;
 
 		this.walker2DestinationSpring = Matter.Constraint.create({
             bodyA: this.getAreaWalker(),
@@ -62,7 +63,7 @@ export class MatterWalker  extends MatterObject {
 			  //walker.worldObjectDisplay.drawObject();
 			  let context:CanvasRenderingContext2D = matterEngine.render.context;
 			  		
-			  context.fillStyle = MatterTools.getColorFromString("ffffffff");
+			  context.fillStyle = MatterTools.getColorFromString("ff0000ff");
 			  context.strokeStyle = MatterTools.getColorFromString("0000ffff");
 
 			  context.beginPath();

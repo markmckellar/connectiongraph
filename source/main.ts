@@ -130,6 +130,7 @@ setInterval(doDraw,interval);
 function doDraw()
 {
   //console.log(".");
+  walkerWorld.drawWorld();
 	walkerWorld.processWorldUpdates();
 }
 

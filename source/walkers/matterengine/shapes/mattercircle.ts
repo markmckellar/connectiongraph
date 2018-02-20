@@ -7,21 +7,27 @@ import * as Matter from "matter-js";
 //import { World } from "../../walkerworld/world";
 //import { WorldObjectDisplay } from "../worldobjectdisplay";
 
-export class MatterCircle extends CircleEngineShape
+export class MatterCircle implements CircleEngineShape
 {
 	private _circleBody:Matter.Body;
 	private _curvePoints:number;
+	private _radius:number;
+	
 
 	constructor(shapeName:string,radius:number,curvePoints:number,position:WorldPosition,options:any)
 	{
-		super(shapeName,radius);
-		
+		//super(shapeName,radius);
+		this.radius = radius;
 		this.curvePoints = curvePoints;
         this.circleBody = Matter.Bodies.circle(
             position.x,position.y,
-            radius,
+            this.radius,
             options,
-            curvePoints);					
+            this.curvePoints);					
+	}
+
+	public getRadius():number {
+		return(this.radius);
 	}
 
     public getWorldPosition():WorldPosition {
@@ -44,6 +50,14 @@ export class MatterCircle extends CircleEngineShape
 		this._curvePoints = value;
 	}
 	
+
+	public get radius(): number {
+		return this._radius;
+	}
+
+	public set radius(value: number) {
+		this._radius = value;
+	}
 
 
 }

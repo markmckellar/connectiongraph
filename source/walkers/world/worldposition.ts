@@ -24,5 +24,25 @@ export class WorldPosition {
 		this._y = value;
 	}
 
+	public clone():WorldPosition {
+		return(new WorldPosition(this.x,this.y));
+	}
+
+	public getDeltaY(worldPosition:WorldPosition):number
+	{
+			return(this.y-worldPosition.y);
+	}
+
+	public getDeltaX(worldPosition:WorldPosition):number
+	{
+			return(this.x-worldPosition.x);
+	}
+
+	public getDelta(worldPosition:WorldPosition):WorldPosition
+	{
+			return(new WorldPosition(this.getDeltaX(worldPosition),this.getDeltaY(worldPosition)));
+	}
+
+
 
 }
