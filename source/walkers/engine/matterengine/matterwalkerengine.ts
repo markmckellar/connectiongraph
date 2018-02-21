@@ -1,22 +1,22 @@
-import { Walker } from "../walkerworld/walker";
-import { Junction } from "../walkerworld/junction";
-import { Destination } from "../walkerworld/destination";
-import { WorldPosition } from "../../world/worldposition";
-import { WorldObject } from "../../world/worldobject";
+import { Walker } from "../../walkerworld/walker";
+import { Junction } from "../../walkerworld/junction";
+import { Destination } from "../../walkerworld/destination";
+import { WorldPosition } from "../../../world/worldposition";
+import { WorldObject } from "../../../world/worldobject";
 
-import { Path } from "../walkerworld/path";
-import { WalkerEngine } from "../walkerworld/walkerengine";
-import { WalkerWorld } from "../walkerworld/walkerworld";
+import { Path } from "../../walkerworld/path";
+import { WalkerEngine } from "../../walkerworld/walkerengine";
+import { WalkerWorld } from "../../walkerworld/walkerworld";
 import { MatterJunction } from "./engineobjects/matterjunction";
 import { MatterDestination } from "./engineobjects/matterdestination";
 import { MatterWalker } from "./engineobjects/matterwalker";
-import { MatterEngine } from "./matterengine";
-import { MatterTools } from "./mattertools";
+import { MatterEngine } from "../../../engine/matterengine/matterengine";
+import { MatterTools } from "../../../engine/matterengine/mattertools";
 //import { CircleEngineShape } from "../engine/shapes/circleengineshape";
 //import { MatterCircle } from "./shapes/mattercircle";
-import { JunctionOneCircle } from "../engine/engineobjects/junctiononecircle";
+import { JunctionOneCircle } from "../../engine/engineobjects/junctiononecircle";
 import { MatterJunctionOneCircle } from "./engineobjects/matterjunctiononecirle";
-import { DisplayHolder } from "../../display/displayholder";
+import { DisplayHolder } from "../../../display/displayholder";
 
 
 

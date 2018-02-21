@@ -1,5 +1,3 @@
-import { MouseStatus } from "./mousestatus";
-import { WorldObject } from "../../world/worldobject";
 import { World } from "../../world/world";
 
 

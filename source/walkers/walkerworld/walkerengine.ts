@@ -8,7 +8,7 @@ import { WorldPosition } from "../../world/worldposition";
 
 //import { CircleEngineShape } from "../engine/shapes/circleengineshape";
 import { JunctionOneCircle } from "../engine/engineobjects/junctiononecircle";
-import { WorldEngine } from "../engine/worldengine";
+import { WorldEngine } from "../../engine/worldengine";
 
 
 export interface WalkerEngine extends WorldEngine {

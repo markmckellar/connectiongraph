@@ -6,8 +6,8 @@ import { Path } from "../walkerworld/path";
 import { World } from "../walkerworld/world";
 import { WorldPosition } from "../world/worldposition";
 */
-import { WorldPosition } from "../../world/worldposition";
-import { WorldObject } from "../../world/worldobject";
+import { WorldPosition } from "../world/worldposition";
+import { WorldObject } from "../world/worldobject";
 
 
 export interface WorldEngine {

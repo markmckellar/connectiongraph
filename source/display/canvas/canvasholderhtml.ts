@@ -8,7 +8,7 @@ export class CanvasHolderHTML implements CanvasHolder
 {
 	private _isVisable:boolean;
 	private _isDrawable:boolean;
-	private _canvasName:string;s
+	private _canvasName:string;
 	private _canvas:HTMLCanvasElement;
 	private _context:CanvasRenderingContext2D;
 	private _canvasMouse:CanvasMouse;

@@ -1,4 +1,4 @@
-import { CircleEngineShape } from "../../engine/shapes/circleengineshape";
+import { CircleEngineShape } from "../../shapes/circleengineshape";
 import { WorldPosition } from "../../../world/worldposition";
 import { MatterTools } from "../mattertools";
 

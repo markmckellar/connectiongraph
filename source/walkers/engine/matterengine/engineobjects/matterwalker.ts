@@ -1,13 +1,15 @@
-import { Walker } from "../../walkerworld/walker";
+import { Walker } from "../../../walkerworld/walker";
 import { MatterWalkerEngine } from "../matterwalkerengine";
-import { MatterEvent } from "../events/matterevent";
 import { MatterDestination } from "./matterdestination";
-import { WalkerWorld } from "../../walkerworld/walkerworld";
+import { WalkerWorld } from "../../../walkerworld/walkerworld";
 import { MatterObject } from "./matterobject";
-import { WorldPosition } from "../../../world/worldposition";
-import { MatterTools } from "../mattertools";
+import { WorldPosition } from "../../../../world/worldposition";
+import { MatterTools } from "../../../../engine/matterengine/mattertools";
+import { MatterEngine } from "../../../../engine/matterengine/matterengine";
+import { MatterEvent } from "../../../../engine/matterengine/events/matterevent";
+
 import * as Matter from "matter-js";
-import { MatterEngine } from "../matterengine";
+
 
 
 

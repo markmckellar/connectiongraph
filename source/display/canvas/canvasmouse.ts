@@ -1,4 +1,3 @@
-import { MouseStatus } from "./mousestatus";
 import { WorldPosition } from "../../world/worldposition";
 import { CanvasHolderHTML } from "./canvasholderhtml";
 import { MouseEventHandler } from "./mouseeventhandler";

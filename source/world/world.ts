@@ -3,7 +3,7 @@
 //import { MatterEvent } from "../matterengine/matterevent";
 //import { MatterCollisionEvent } from "../matterengine/mattercollisionevent";
 import { DisplayHolder } from "../display/displayholder";
-import { WorldEngine } from "../walkers/engine/worldengine";
+import { WorldEngine } from "../engine/worldengine";
 
 
 export class World {

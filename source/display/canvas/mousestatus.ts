@@ -1,5 +1,4 @@
 import { WorldPosition } from "../../world/worldposition";
-import { WorldObject } from "../../world/worldobject";
 
 export class MouseStatus
 {

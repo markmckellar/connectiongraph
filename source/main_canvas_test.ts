@@ -1,5 +1,5 @@
 //import { World } from "./walkers/walkerworld/world";
-import { MatterWalkerEngine } from "./walkers/matterengine/matterwalkerengine";
+import { MatterWalkerEngine } from "./walkers/engine/matterengine/matterwalkerengine";
 import * as Matter from "matter-js";
 import { WorldUpdate } from "./walkers/walkerworld/worldupdate";
 //import { WalkerRenderer } from "./walkers/renderer/walkerrederer";

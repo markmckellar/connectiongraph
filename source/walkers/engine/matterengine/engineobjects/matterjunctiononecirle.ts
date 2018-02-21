@@ -1,17 +1,17 @@
 //import { Junction } from "../../walkerworld/junction";
-import { WorldPosition } from "../../../world/worldposition";
+import { WorldPosition } from "../../../../world/worldposition";
 import { MatterWalkerEngine } from "../matterwalkerengine";
-import { MatterTools } from "../mattertools";
-import { WalkerWorld } from "../../walkerworld/walkerworld";
-import { WorldId } from "../../../world/worldid";
+import { MatterTools } from "../../../../engine/matterengine/mattertools";
+import { WalkerWorld } from "../../../walkerworld/walkerworld";
+import { WorldId } from "../../../../world/worldid";
 //import { WorldObjectDisplay } from "../../display/worldobjectdisplay";
 //import { MatterEngine } from "../matterengine";
 //import { MatterEvent } from "../events/matterevent";
-import { MatterCircle } from "../shapes/mattercircle";
+import { MatterCircle } from "../../../../engine/matterengine/shapes/mattercircle";
 import { MatterJunction } from "./matterjunction";
-import { JunctionOneCircle } from "../../engine/engineobjects/junctiononecircle";
-import { EngineObject } from "../../engine/engineobjects/engineobject";
-import { CircleEngineShape } from "../../engine/shapes/circleengineshape";
+import { JunctionOneCircle } from "../../engineobjects/junctiononecircle";
+import { EngineObject } from "../../../../engine/engineobjects/engineobject";
+import { CircleEngineShape } from "../../../../engine/shapes/circleengineshape";
 
 
 import * as Matter from "matter-js";
@@ -28,7 +28,7 @@ export class MatterJunctionOneCircle  extends MatterJunction implements Junction
 		super(walkerWorld,matterEngine,worldId);
 		let position = MatterTools.getVectorFromWorldPostion(worldPosition);
 		
-		let options:any =  {};//{render:{fillStyle:"blue",strokeStyle:"white"}};
+		////////////let options:any =  {};//{render:{fillStyle:"blue",strokeStyle:"white"}};
 		let curvePoints:number = 8;
 		this.circle = new MatterCircle("junctionBody",20,curvePoints,worldPosition,{render:{visable:false}}) ;
 		this.circle.circleBody.render.visible = false;

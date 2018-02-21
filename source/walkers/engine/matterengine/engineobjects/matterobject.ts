@@ -1,4 +1,4 @@
-import { EngineObject } from "../../engine/engineobjects/engineobject";
+import { EngineObject } from "../../../../engine/engineobjects/engineobject";
 
 //import { MatterEngine } from "./matterengine";
 //import { WorldId } from "../world/worldid";

@@ -46,13 +46,11 @@ export class WorldUpdate {
 		let updateJunctionExists:boolean = walkerWorld.hasJunction(this.junctionWorldId);
 		
 		if(!updateJunctionExists) {
-			
-
 			let updateWalkerExists:boolean = walkerWorld.hasWalker(this.walkerWorldId);
 			let startPosition:WorldPosition = walkerWorld.getNewJunctionPosition();						
-			if(updateWalkerExists) startPosition = walkerWorld.walkerEngine.getJunctionPosition(
-					walkerWorld.getWalker(this.walkerWorldId).getCurrentJunction(walkerWorld));
 			
+			if(updateWalkerExists) startPosition = walkerWorld.walkerEngine.getJunctionPosition(walkerWorld.getWalker(this.walkerWorldId).getCurrentJunction(walkerWorld));
+
 			junction = new DefaultJunction(this.junctionWorldId);
 			//let sf  = WorldObjectDisplayFactory.geJunctionWorldObjectDisplay("junction",startPosition,walkerWorld),
 			junction.worldObjectDisplayArray.push(WorldObjectDisplayFactory.geJunctionWorldObjectDisplay("junction",junction,startPosition,walkerWorld));

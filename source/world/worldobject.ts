@@ -1,5 +1,5 @@
 import { WorldId } from "./worldid";
-import { WorldPosition } from "./worldposition";
+//import { WorldPosition } from "./worldposition";
 
 import { WorldObjectDisplay } from "../display/worldobjectdisplay";
 
@@ -19,9 +19,7 @@ export abstract class WorldObject {
 	}
 
 	
-	public abstract setWorldPosition(worldPosition:WorldPosition):void;
 
-	public abstract getWorldPosition():WorldPosition;
 
 
 

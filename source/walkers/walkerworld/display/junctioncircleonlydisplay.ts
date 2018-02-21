@@ -1,7 +1,7 @@
-//import { WorldPosition } from "../../world/worldposition";
+import { WorldPosition } from "../../../world/worldposition";
 //import { WorldObject } from "../../world/worldobject";
 import { WalkerWorld } from "../../walkerworld/walkerworld";
-//import { WorldObjectDisplay } from "../../display/worldobjectdisplay";
+import { WorldObjectDisplay } from "../../../display/worldobjectdisplay";
 import { JunctionOneCircle } from "../../engine/engineobjects/junctiononecircle";
 //import { Junction } from "../../walkerworld/junction";
 import { CircleDisplayShape } from "../../../display/shapes/circledisplayshape";
@@ -13,7 +13,7 @@ import { CircleDisplayShape } from "../../../display/shapes/circledisplayshape";
 //import { JunctionOneCircle } from "../../walkerworld/di";
 
 
-export class JunctionCircleOnlyDisplay {
+export class JunctionCircleOnlyDisplay implements WorldObjectDisplay{
 
     private _junctionOneCircle:JunctionOneCircle;
     private _junctionDisplayCircle:CircleDisplayShape;
@@ -27,6 +27,7 @@ export class JunctionCircleOnlyDisplay {
         //new JunctionOneCircle(junction.worldId,worldPosition,walkerWorld);
 
     }
+
 
     public drawObject(walkerWorld:WalkerWorld,context:CanvasRenderingContext2D):void{   
 

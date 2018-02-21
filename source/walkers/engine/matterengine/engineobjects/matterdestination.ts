@@ -1,10 +1,8 @@
-import { Destination } from "../../walkerworld/destination";
+import { Destination } from "../../../walkerworld/destination";
 import { MatterWalkerEngine } from "../matterwalkerengine";
 import { MatterJunction } from "./matterjunction";
-import { MatterTools } from "../mattertools";
-
-import { WalkerWorld } from "../../walkerworld/walkerworld";
-
+import { MatterTools } from "../../../../engine/matterengine/mattertools";
+import { WalkerWorld } from "../../../walkerworld/walkerworld";
 import * as Matter from "matter-js";
 
 
@@ -25,7 +23,9 @@ export class MatterDestination  {
 				render:{fillStyle:"transparent",strokeStyle:"red"},
 			},8);
 		this.boundryBody = MatterTools.createBoundObject(this.spatialBody,1.05,1.5);
-		
+		this.boundryBody.collisionFilter.category = MatterWalkerEngine.boundsFilter;
+
+
 		//this.spatialBody.render.fillStyle="red";
 		this.spatialBody.collisionFilter.category = MatterWalkerEngine.boundrySpatialFilter;
 		this.spatialBody.collisionFilter.mask = MatterWalkerEngine.boundsFilter|MatterWalkerEngine.walkerTravleing;
