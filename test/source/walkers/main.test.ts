@@ -1,7 +1,7 @@
 import { WalkerWorld } from "../../../source/walkers/walkerworld/walkerworld";
 import { WorldUpdate } from "../../../source/walkers/walkerworld/worldupdate";
 
-import { MatterWalkerEngine } from "../../../source/walkers/matterengine/matterwalkerengine";
+import { MatterWalkerEngine } from "../../../source/walkers/engine/matterengine/matterwalkerengine";
 import * as Matter from "matter-js";
 // import * as $ from "jquery";
 // import Greeter from "./entities/greeter";

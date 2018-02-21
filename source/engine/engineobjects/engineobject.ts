@@ -1,27 +1,34 @@
 import { WorldId } from "../../world/worldid";
 import { WorldPosition } from "../../world/worldposition";
+import { WorldObject } from "../../world/worldobject";
+import { EngineShape } from "../shapes/engineshape";
+
 //import { WorldObjectDisplay } from "../display/worldobjectdisplay";
 
 
-export abstract class EngineObject {
-	
-	private _worldId : WorldId;  
+export abstract class EngineObject extends WorldObject {
     
     public constructor(worldId:WorldId) {
-		this.worldId = worldId;          
-    }
+		super(worldId);  
+		//this.worldId = worldId;        
+	}
+	
+	public abstract getEngineShape():EngineShape;	
 
-    public abstract getWorldPosition():WorldPosition;
-    public abstract translate(worldPosition:WorldPosition):void;
-    //public abstract scale(xScale:number,yScale:number):void;
+	public getWorldPosition() {
+		return(this.getEngineShape().getWorldPosition());
+	}
+	public translate(worldPosition:WorldPosition):void {
+		this.getEngineShape().translate(worldPosition);
 
+	}
+	public setWorldPosition(worldPosition:WorldPosition) {
+		this.getEngineShape().setWorldPosition(worldPosition);
 
-	public get worldId(): WorldId {
-		return this._worldId;
+	}
+	public containsWorldPosition(worldPosition:WorldPosition):boolean {
+		return(this.getEngineShape().containsWorldPosition(worldPosition));
 	}
 
-	public set worldId(value: WorldId) {
-		this._worldId = value;
-	}
 	
 }

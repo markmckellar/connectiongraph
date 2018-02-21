@@ -1,5 +1,4 @@
 import { MatterTools } from "./mattertools";
-import { DisplayHolder } from "../../display/displayholder";
 import { MatterEvent } from "./events/matterevent";
 import { MatterCollisionEvent } from "./events/mattercollisionevent";
 import { MatterCompositeEvent } from "./events/mattercompositeevent";
@@ -7,8 +6,9 @@ import { MatterTimestampedEvent } from "./events/mattertimestampedevent";
 
 
 import * as Matter from "matter-js";
+import { WorldEngine } from "../worldengine";
 
-export class MatterEngine  implements DisplayHolder {
+export class MatterEngine  implements WorldEngine {
     private _matterTools:MatterTools ;
     private _collisionEventHandlers : Map<string,MatterCollisionEvent>;
     private _compositeEventHandlers : Map<string,MatterCompositeEvent>;

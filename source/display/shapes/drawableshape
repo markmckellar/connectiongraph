@@ -4,8 +4,8 @@ import { WalkerWorld } from "../../walkers/walkerworld/walkerworld";
 
 
 
-export interface WorldShape {
+export interface DrawableShape {
 
-	drawShape(walkerWorld:WalkerWorld,context:CanvasRenderingContext2D,):void;
+	drawShape(context:CanvasRenderingContext2D,):void;
 	
 };

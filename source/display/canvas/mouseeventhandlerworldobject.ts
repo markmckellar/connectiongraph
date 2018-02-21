@@ -28,7 +28,7 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
    
     public pointerDownEvent(world:World,event:MouseEvent):void
 	{
-		var eventPosition = new WorldPosition(event.pageX,event.pageY);
+		var eventPosition:WorldPosition = new WorldPosition(event.pageX,event.pageY);
 		//this.hideCurrentNodeInfo();
 	
 		this.mouseStatus.isDown = true;
@@ -41,16 +41,20 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 			this.currentWorldObject = null;
 		}
 		
-		let clickWorldObject =  world.worldEngine.getWorldObjectContainingPosition(eventPosition);
+		let clickWorldObject =  world.getWorldObjectContainingPosition(eventPosition);
 	
 		if(clickWorldObject!=null && clickWorldObject!=this.lastWorldObject)
 		{
 			this.currentWorldObject = clickWorldObject;
-			this.mouseStatus.startPosition = this.currentWorldObject.getWorldPosition().clone();
+
+			this.mouseStatus.startPosition = eventPosition.clone();
+
 			this.currentWorldObject.isSelected = true;
-			this.mouseStatus.clickOffset = clickWorldObject.getWorldPosition().getDelta(eventPosition);
+			this.mouseStatus.clickOffset = this.currentWorldObject.getWorldPosition().getDelta(eventPosition);
+
+			/////////////////this.mouseStatus.clickOffset = clickWorldObject.getWorldPosition().getDelta(eventPosition);
 			//this.mouseEventHandler.pointerDown(this.mouseStatus);			
-			this.worldObjectSelected(world,event,this.currentWorldObject,);
+			this.worldObjectSelected(world,event,this.currentWorldObject);
 		}
 		
 		if(clickWorldObject==null)

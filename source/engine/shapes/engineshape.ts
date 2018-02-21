@@ -1,4 +1,5 @@
 import { WorldPosition } from "../../world/worldposition";
+import { Drawable } from "../../display/drawable";
 //import { WorldObjectDisplay } from "../worldobjectdisplay";
 
 
@@ -11,7 +12,12 @@ export interface EngineShape {
 	//	this.shapeName = shapeName;
 	//}	
 	
-    getWorldPosition():WorldPosition;
+	getWorldPosition():WorldPosition;
+	translate(worldPosition:WorldPosition):void;
+	setWorldPosition(worldPosition:WorldPosition):void;
+	containsWorldPosition(worldPosition:WorldPosition):boolean;
+	getDrawable():Drawable;
+
 
 	//public get shapeName(): string {
 	//	return this._shapeName;

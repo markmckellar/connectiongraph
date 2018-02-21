@@ -18,6 +18,14 @@ export class CanvasHolderVirtual implements CanvasHolder
 		this.isDrawable = false;
 	}
 
+	public getCanvas():HTMLCanvasElement {
+		throw new Error("Virtual canvas holder, no canvas");
+	}
+
+	public getContext():CanvasRenderingContext2D {
+		throw new Error("Virtual canvas holder, no context");
+	}
+
 	public getWidth():number
 	{
 		return(this.virtualWidth);

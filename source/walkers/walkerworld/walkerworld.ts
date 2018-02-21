@@ -8,7 +8,7 @@ import { WorldUpdate } from "./worldupdate";
 import { WorldUpdateQueue } from "./worldupdatequeue";
 import { WorldId } from "../../world/worldid";
 import { World } from "../../world/world";
-import { DisplayHolder } from "../../display/displayholder";
+import { CanvasHolder } from "../../display/canvas/canvasholder";
 
 
 
@@ -24,8 +24,8 @@ export class WalkerWorld  extends World {
 	
 	
 
-    public constructor(displayHolder:DisplayHolder,walkerEngine:WalkerEngine) {
-		super(displayHolder,walkerEngine);
+    public constructor(walkerEngine:WalkerEngine) {
+		super(walkerEngine);
 		this.walkers = new Map<string,Walker>();
 		this.junctions = new Map<string,Junction>();	
 		this.paths = new Map<string,Path>();	
@@ -114,18 +114,16 @@ export class WalkerWorld  extends World {
 		this.worldUpdateQueue.addToWorldUpdateQueue(worldUpdate);
 	}
 
-	public drawWorld():void {
-		let walkerWorld = this;
-		let context = walkerWorld.displayHolder.get2DGraphicsContext();
-		
-		this.junctions.forEach((junction: Junction, key: string) => {
-			for(let i=0;i<junction.worldObjectDisplayArray.length;i++)
-			{
+	public drawWorld(canvasHolder:CanvasHolder):void {
+		if(canvasHolder.isCanvasDrawable())
+		{
+			let context = canvasHolder.getContext();
+			
+			this.junctions.forEach((junction: Junction, key: string) => {
 				//console.log("WalkerWorld.drawWorld:junction="+junction.worldId.id+":i="+i+" of "+junction.worldObjectDisplayArray.length);
-				
-				junction.worldObjectDisplayArray[i].drawObject(walkerWorld,context);
-			}
-		});
+					junction.drawable.draw(context);
+			});
+		}
 	}
 
 	public processWorldUpdates():void {

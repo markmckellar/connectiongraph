@@ -2,27 +2,27 @@
 //import { World } from "../walkerworld/world";
 //import { MatterEvent } from "../matterengine/matterevent";
 //import { MatterCollisionEvent } from "../matterengine/mattercollisionevent";
-import { DisplayHolder } from "../display/displayholder";
+//import { DisplayHolder } from "../display/displayholder";
 import { WorldEngine } from "../engine/worldengine";
+import { WorldPosition } from "./worldposition";
+import { WorldObject } from "./worldobject";
+import { CanvasHolder } from "../display/canvas/canvasholder";
 
 
-export class World {
+export abstract class World {
 
-    private _displayHolder:DisplayHolder;
+   // private _displayHolder:DisplayHolder;
 	private _worldEngine:WorldEngine;
 
-    constructor(displayHolder:DisplayHolder,worldEngine:WorldEngine){
-		this.displayHolder = displayHolder;
+    constructor(worldEngine:WorldEngine){
 		this.worldEngine = worldEngine;
-    }
-
-	public get displayHolder(): DisplayHolder {
-		return this._displayHolder;
+	}
+	
+	public getWorldObjectContainingPosition(worldPosition:WorldPosition):WorldObject {
+		return(null);
 	}
 
-	public set displayHolder(value: DisplayHolder) {
-		this._displayHolder = value;
-	}
+	public abstract drawWorld(canvasHolder:CanvasHolder):void;
 
 	public get worldEngine(): WorldEngine {
 		return this._worldEngine;

@@ -11,7 +11,7 @@ export class Walker extends WorldObject {
 	private _currentDestination: Destination;
 	private _travelingToDestination:boolean;
 
-    public constructor(worldId:WorldId,junction:Junction) {
+    public constructor(worldId:WorldId,junction:Junctions) {
 		super(worldId);
 		this.travelingToDestination = true;
 		this.currentDestination = junction.getWalkerDestination(this);

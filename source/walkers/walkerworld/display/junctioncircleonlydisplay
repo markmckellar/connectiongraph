@@ -1,7 +1,7 @@
-import { WorldPosition } from "../../../world/worldposition";
+//import { WorldPosition } from "../../../world/worldposition";
 //import { WorldObject } from "../../world/worldobject";
 import { WalkerWorld } from "../../walkerworld/walkerworld";
-import { WorldObjectDisplay } from "../../../display/worldobjectdisplay";
+//import { WorldObjectDisplay } from "../../../display/worldobjectdisplay";
 import { JunctionOneCircle } from "../../engine/engineobjects/junctiononecircle";
 //import { Junction } from "../../walkerworld/junction";
 import { CircleDisplayShape } from "../../../display/shapes/circledisplayshape";

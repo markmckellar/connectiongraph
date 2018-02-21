@@ -1,12 +1,12 @@
-import { WorldShape } from "../shapes/worldshape";
+import { Drawable } from "../drawable";
 import { WorldPosition } from "../../world/worldposition";
-import { WalkerWorld } from "../../walkers/walkerworld/walkerworld";
+//import { WalkerWorld } from "../../walkers/walkerworld/walkerworld";
 import { WorldDisplay } from "../worlddisplay";
 import { CircleEngineShape } from "../../engine/shapes/circleengineshape";
 //import { WalkerEngine } from "../../walkerworld/walkerengine";
 
 
-export class CircleDisplayShape implements WorldShape
+export class CircleDisplayShape implements Drawable
 {
 	private _circleEngineShape:CircleEngineShape;
 
@@ -24,7 +24,7 @@ export class CircleDisplayShape implements WorldShape
 	}
 	
 	
-	public drawShape(walkerWorld:WalkerWorld,context:CanvasRenderingContext2D):void
+	public draw(context:CanvasRenderingContext2D):void
 	{
 		//super.drawConnector(canvasHolder,node);
 		/*

@@ -5,24 +5,25 @@ import { CircleEngineShape } from "../../../engine/shapes/circleengineshape";
 //import { WalkerWorld } from "../../walkerworld/walkerworld";
 import { WorldObject } from "../../../world/worldobject";
 import { WorldId } from "../../../world/worldid";
+import { RectangleEngineShape } from "../../../engine/shapes/rectangleengineshape";
 
 //import { WorldObjectDisplay } from "../display/worldobjectdisplay";
 
 
-export class JunctionOneCircle extends WorldObject {
+export class JunctionCircleAndText extends WorldObject {
 
+    private _circleEngineShape:CircleEngineShape;
+    private _rectangleEngineShape:RectangleEngineShape;
 
-	private _circleEngineShape:CircleEngineShape;
-
-    public constructor(worldId:WorldId,circleEngineShape:CircleEngineShape) {
+    public constructor(worldId:WorldId,circleEngineShape:CircleEngineShape,rectangleEngineShape:RectangleEngineShape) {
 		super(worldId);
-		this.circleEngineShape = circleEngineShape;
+        this.circleEngineShape = circleEngineShape;
+        this.rectangleEngineShape = rectangleEngineShape;
 	}
 
 	public getWorldPosition() {
 		return(this.circleEngineShape.getWorldPosition());
 	}
-	
 	public translate(worldPosition:WorldPosition):void {
 		this.circleEngineShape.translate(worldPosition);
 
@@ -32,12 +33,10 @@ export class JunctionOneCircle extends WorldObject {
 
 	}
 	public containsWorldPosition(worldPosition:WorldPosition):boolean {
-		return(this.circleEngineShape.containsWorldPosition(worldPosition));
-	}
-
-
-	public drawObject(context:CanvasRenderingContext2D):void {
-		this.circleEngineShape.getDrawable().draw(context);
+		return(
+            this.circleEngineShape.containsWorldPosition(worldPosition) ||
+            this.rectangleEngineShape.containsWorldPosition(worldPosition)
+        );
 	}
 
 	public get circleEngineShape(): CircleEngineShape {
@@ -46,6 +45,21 @@ export class JunctionOneCircle extends WorldObject {
 
 	public set circleEngineShape(value: CircleEngineShape) {
 		this._circleEngineShape = value;
+	}
+    
+
+	public get rectangleEngineShape(): RectangleEngineShape {
+		return this._rectangleEngineShape;
+	}
+
+	public set rectangleEngineShape(value: RectangleEngineShape) {
+		this._rectangleEngineShape = value;
+	}
+
+
+	public drawObject(context:CanvasRenderingContext2D):void {
+        this.circleEngineShape.getDrawable().draw(context);
+        this.rectangleEngineShape.getDrawable().draw(context);
 	}
 
 	

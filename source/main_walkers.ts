@@ -3,8 +3,7 @@ import { MatterWalkerEngine } from "./walkers/engine/matterengine/matterwalkeren
 import * as Matter from "matter-js";
 import { WorldUpdate } from "./walkers/walkerworld/worldupdate";
 //import { WalkerRenderer } from "./walkers/renderer/walkerrederer";
-import { CanvasHolderHTML } from "./display/canvas/canvasholderhtml";
-import { World } from "./world/world";
+import { WalkerWorld } from "./walkers/walkerworld/walkerworld";
 
 //////////////////////////////////////////////////
 // somehow there is a way to make those anoying 
@@ -30,8 +29,6 @@ import { World } from "./world/world";
 // import * as jsdom from "jsdom";
 // import { jsdom } from "jsdom";
 // const document = jsdom("");
-let world:World = new World();
-let canvasHolderHTML:CanvasHolderHTML = new CanvasHolderHTML("worldCanvas",world);
 
 // let canvas = document.getElementById("world");
 let matterEngine = new MatterWalkerEngine();

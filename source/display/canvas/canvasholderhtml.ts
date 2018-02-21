@@ -27,6 +27,14 @@ export class CanvasHolderHTML implements CanvasHolder
 			this.context = this.canvas.getContext('2d');
 		}*/
 	}
+
+	public getCanvas():HTMLCanvasElement {
+		return(this.canvas);
+	}
+
+	public getContext():CanvasRenderingContext2D {
+		return(this.context);
+	}
 	
 	public getWidth():number
 	{

@@ -1,10 +1,10 @@
 //import { WorldShape } from "./shapes/worldshape";
 //import { WorldObject } from "../world/worldobject";
-import { WalkerWorld } from "../walkers/walkerworld/walkerworld";
+//import { WalkerWorld } from "../walkers/walkerworld/walkerworld";
 //import { WorldPosition } from "../world/worldposition";
 
 
-export interface WorldObjectDisplay {
+export interface Drawable {
 	//private _shapes:Map<string,WorldShape>;
 	//private _position:WorldPosition;
 	
@@ -12,7 +12,7 @@ export interface WorldObjectDisplay {
     //constructor(position:WorldPosition) {
 
 
-	drawObject(walkerWorld:WalkerWorld,context:CanvasRenderingContext2D):void;
+	draw(context:CanvasRenderingContext2D):void;
 
 
 	
