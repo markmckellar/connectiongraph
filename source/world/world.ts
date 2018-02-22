@@ -18,9 +18,7 @@ export abstract class World {
 		this.worldEngine = worldEngine;
 	}
 	
-	public getWorldObjectContainingPosition(worldPosition:WorldPosition):WorldObject {
-		return(null);
-	}
+	public abstract getWorldObjectContainingPosition(worldPosition:WorldPosition):WorldObject;
 
 	public abstract drawWorld(canvasHolder:CanvasHolder):void;
 

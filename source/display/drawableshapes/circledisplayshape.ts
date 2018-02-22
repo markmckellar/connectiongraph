@@ -36,7 +36,7 @@ export class CircleDisplayShape implements Drawable
 		super.drawNode(canvasHolder,node);
 
 		*/
-		console.log("CircleDisplayShape.drawShape");
+		//console.log("CircleDisplayShape.drawShape");
 
 		context.fillStyle = WorldDisplay.getColorFromString("ff0000ff");
 		context.strokeStyle = WorldDisplay.getColorFromString("0000ffff");

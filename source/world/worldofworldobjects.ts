@@ -7,6 +7,7 @@ import { WorldEngine } from "../engine/worldengine";
 import { WorldObject } from "./worldobject";
 import { World } from "./world";
 import { CanvasHolder } from "../display/canvas/canvasholder";
+import { WorldPosition } from "./worldposition";
 
 
 export class WorldOfWorldObjects extends World{
@@ -21,12 +22,22 @@ export class WorldOfWorldObjects extends World{
 	
 	public drawWorld(canvasHolder:CanvasHolder):void {
         let context = canvasHolder.getContext();
-
+        canvasHolder.clearCanvas();
         for(let i=0;i<this.worldObjectArray.length;i++) {
             let worldObject:WorldObject = this.worldObjectArray[i];
-            worldObject.drawable.draw(context);
+            worldObject.drawObject(context);
         }
     }
+
+    public getWorldObjectContainingPosition(worldPosition:WorldPosition):WorldObject {
+        let foundObject:WorldObject = null;
+        for(let i=0;i<this.worldObjectArray.length;i++) {
+            let worldObject:WorldObject = this.worldObjectArray[i];
+            if(worldObject.containsWorldPosition(worldPosition)) foundObject = worldObject;
+        }
+        return(foundObject);
+    }
+
 
 	public get worldObjectArray(): Array<WorldObject> {
 		return this._worldObjectArray;

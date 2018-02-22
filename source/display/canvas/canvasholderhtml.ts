@@ -2,6 +2,7 @@ import { CanvasHolder } from "./canvasholder";
 import { World } from "../../world/world";
 import { CanvasMouse } from "./canvasmouse";
 import { MouseEventHandlerWorldObject } from "./mouseEventhandlerworldobject";
+import { WorldDisplay } from "../worlddisplay";
 
 
 export class CanvasHolderHTML implements CanvasHolder
@@ -26,6 +27,15 @@ export class CanvasHolderHTML implements CanvasHolder
 			this.canvas = document.getElementById(this.canvasName);			
 			this.context = this.canvas.getContext('2d');
 		}*/
+	}
+
+	public clearCanvas():void {
+		if(this.isVisable && this.isDrawable)
+		{
+			this.context.clearRect(0, 0, this.getWidth(), this.getHeight());
+			this.context.fillStyle = WorldDisplay.getColorFromString("ffffff"+"ff");
+			this.context.fillRect(0, 0, this.getWidth(), this.getHeight());
+		}
 	}
 
 	public getCanvas():HTMLCanvasElement {

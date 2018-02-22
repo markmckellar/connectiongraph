@@ -10,7 +10,7 @@ export abstract class WorldObject {
 	//private _worldObjectDisplayArray:Array<WorldObjectDisplay>;
 	private _isAnimated:boolean;
 	private _isSelected:boolean;
-	private _drawable:Drawable;
+	//private _drawable:Drawable;
 	//private _worldPosition:WorldPosition;
 	////private _engineObject:EngineObject;
     
@@ -63,7 +63,7 @@ export abstract class WorldObject {
 		this._isSelected = value;
 	}
 
-
+/*
 	public get drawable(): Drawable {
 		return this._drawable;
 	}
@@ -71,7 +71,7 @@ export abstract class WorldObject {
 	public set drawable(value: Drawable) {
 		this._drawable = value;
 	}
-
+*/
 
 
 	

@@ -2,21 +2,27 @@ import { WorldPosition } from "../../../world/worldposition";
 
 import { EngineShape } from "../../shapes/engineshape";
 import { Drawable } from "../../../display/drawable";
+import { WorldObject } from "../../../world/worldobject";
+import { WorldId } from "../../../world/worldid";
 
 //import { World } from "../../walkerworld/world";
 //import { WorldObjectDisplay } from "../worldobjectdisplay";
 
-export abstract class MockShape implements EngineShape
+export abstract class MockShape extends WorldObject implements EngineShape
 {
 	private _drawable:Drawable;
 	private _position:WorldPosition;
 
-    constructor(drawable:Drawable,position:WorldPosition) {
+    constructor(worldId:WorldId,drawable:Drawable,position:WorldPosition) {
+		super(worldId);
 		this.drawable = drawable;
 		this.position = position;
 		drawable.init(this,{});
     }
-    
+	
+	public drawObject(context:CanvasRenderingContext2D):void {
+		this.drawable.draw(context);
+	}
 
     public getWorldPosition():WorldPosition {
 		return(this.position );

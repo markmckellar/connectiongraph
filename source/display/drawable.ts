@@ -1,4 +1,4 @@
-import { CircleEngineShape } from "../engine/shapes/circleengineshape";
+import { EngineShape } from "../engine/shapes/engineshape";
 
 //import { WorldShape } from "./shapes/worldshape";
 //import { WorldObject } from "../world/worldobject";
@@ -15,7 +15,7 @@ export interface Drawable {
 
 
 	draw(context:CanvasRenderingContext2D):void;
-	init(circleEngineShape:CircleEngineShape,options:any):void;
+	init(engineShape:EngineShape,options:any):void;
 	
 
 	

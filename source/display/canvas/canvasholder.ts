@@ -7,5 +7,5 @@ export interface CanvasHolder
     isCanvasDrawable(): boolean;    
     getCanvas():HTMLCanvasElement;
 	getContext():CanvasRenderingContext2D;
-	
+	clearCanvas():void;    
 }

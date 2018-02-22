@@ -28,6 +28,7 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
    
     public pointerDownEvent(world:World,event:MouseEvent):void
 	{
+		console.log("pointerDownEvent:"+JSON.stringify(event));;
 		var eventPosition:WorldPosition = new WorldPosition(event.pageX,event.pageY);
 		//this.hideCurrentNodeInfo();
 	
@@ -41,10 +42,12 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 			this.currentWorldObject = null;
 		}
 		
-		let clickWorldObject =  world.getWorldObjectContainingPosition(eventPosition);
+		let clickWorldObject:WorldObject =  world.getWorldObjectContainingPosition(eventPosition);
 	
 		if(clickWorldObject!=null && clickWorldObject!=this.lastWorldObject)
 		{
+			console.log("pointerDownEvent:clickWorldObject="+clickWorldObject.worldId.id);
+
 			this.currentWorldObject = clickWorldObject;
 
 			this.mouseStatus.startPosition = eventPosition.clone();
@@ -74,10 +77,11 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
     
 
     public pointerMoveEvent(world:World,event:MouseEvent):void {
-    
 		var eventPosition = new WorldPosition(event.pageX,event.pageY);
             if(this.mouseStatus.isDown)
             {
+				////////////console.log("pointerMoveEvent:"+event);
+
                 this.worldObjectDeselected(world,event);
         
                 if(this.currentWorldObject!=null)
@@ -131,6 +135,8 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
             
 
     public pointerUpEvent(world:World,event:MouseEvent):void 	{
+		console.log("pointerUpEvent:"+JSON.stringify(event));
+
 		if(this.currentWorldObject!=null)
 		{
 			///this.nodeCanvas.pointerUp(this.mouseStatus.node);

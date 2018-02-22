@@ -18,6 +18,10 @@ export class CanvasHolderVirtual implements CanvasHolder
 		this.isDrawable = false;
 	}
 
+	public clearCanvas():void {		
+	}
+
+
 	public getCanvas():HTMLCanvasElement {
 		throw new Error("Virtual canvas holder, no canvas");
 	}

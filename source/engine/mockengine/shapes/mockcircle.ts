@@ -1,13 +1,8 @@
 import { CircleEngineShape } from "../../shapes/circleengineshape";
 import { WorldPosition } from "../../../world/worldposition";
-
-import * as Matter from "matter-js";
 import { Drawable } from "../../../display/drawable";
 import { MockShape } from "./mockshape";
-import { CircleDisplayShape } from "../../../display/shapes/circledisplayshape";
-
-//import { World } from "../../walkerworld/world";
-//import { WorldObjectDisplay } from "../worldobjectdisplay";
+import { WorldId } from "../../../world/worldid";
 
 export class MockCircle extends MockShape implements CircleEngineShape
 {
@@ -15,18 +10,18 @@ export class MockCircle extends MockShape implements CircleEngineShape
 	private _radius:number;
 	
 
-	constructor(drawable:Drawable,radius:number,curvePoints:number,position:WorldPosition)
+	constructor(worldId:WorldId,drawable:Drawable,radius:number,curvePoints:number,position:WorldPosition)
 	{
-		super(new CircleDisplayShape(),position);
+		super(worldId,drawable,position);
 		//super(shapeName,radius);
 		this.radius = radius;
 		this.curvePoints = curvePoints;					
 	}
 
 	public containsWorldPosition(worldPosition:WorldPosition):boolean {
-		return(false);
+		let distance = this.getWorldPosition().getDistance(worldPosition);
+		return(distance<=this.radius);
 	}
-
 
 	public getRadius():number {
 		return(this.radius);
