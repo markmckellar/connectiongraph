@@ -4,15 +4,18 @@ import { MatterTools } from "../mattertools";
 import * as Matter from "matter-js";
 import { EngineShape } from "../../shapes/engineshape";
 import { Drawable } from "../../../display/drawable";
+import { WorldObject } from "../../../world/worldobject";
+import { WorldId } from "../../../world/worldid";
 
 //import { World } from "../../walkerworld/world";
 //import { WorldObjectDisplay } from "../worldobjectdisplay";
 
-export abstract class MatterShape implements EngineShape
+export abstract class MatterShape  extends WorldObject implements EngineShape
 {
     private _drawable:Drawable;
 
-    constructor(drawable:Drawable) {
+    constructor(worldId:WorldId,drawable:Drawable) {
+		super(worldId);
         this.drawable = drawable;
     }
     
@@ -26,13 +29,12 @@ export abstract class MatterShape implements EngineShape
 		Matter.Body.translate( this.getBody(),
 			MatterTools.getVectorFromWorldPostion(worldPosition));
 	}
-
 	
 	public setWorldPosition(worldPosition:WorldPosition):void {
 		Matter.Body.translate( this. getBody(),
 			MatterTools.getVectorFromWorldPostion(worldPosition));
 	}
-
+	
 	public containsWorldPosition(worldPosition:WorldPosition):boolean {
 
 		return( Matter.Vertices.contains( this. getBody().vertices, MatterTools.getVectorFromWorldPostion(worldPosition)) );

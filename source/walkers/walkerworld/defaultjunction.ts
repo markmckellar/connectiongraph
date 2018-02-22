@@ -2,12 +2,13 @@ import { Junction } from "./junction";
 import { WorldId } from "../../world/worldid";
 import { Destination } from "./destination";
 import { DefaultDestination } from "./defaultdestination";
+import { WorldObject } from "../../world/worldobject";
 
 
 export class DefaultJunction extends Junction {
 
-    public constructor(worldId:WorldId)  {
-        super(worldId);
+    public constructor(junctionWorldObject:WorldObject)  {
+        super(junctionWorldObject);
     }
 
     public getNewDefaultDestination() : Destination{

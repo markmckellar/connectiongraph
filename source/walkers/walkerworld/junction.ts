@@ -4,10 +4,11 @@ import { WorldObject } from "../../world/worldobject";
 import { Destination } from "./destination";
 import { Walker } from "./walker";
 import { WorldId } from "../../world/worldid";
+import { WorldObjectWrapper } from "../../world/worldobjectwrapper";
 
 
 
-export abstract class Junction extends WorldObject {
+export abstract class Junction extends WorldObjectWrapper {
 
     static junctionBody:string = "junctionBody";
    
@@ -15,8 +16,8 @@ export abstract class Junction extends WorldObject {
     private _destinationList: Array<Destination>;
     private _defaultDestination: Destination;
 
-    public constructor(worldId:WorldId)  {
-        super(worldId);
+    public constructor(junctionWorldObject:WorldObject)  {
+        super(junctionWorldObject);
         this.destinations = new Map<string,Destination>();
         this.destinationList = Array<Destination>();
         this._defaultDestination = this.getNewDefaultDestination();

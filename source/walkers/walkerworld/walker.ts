@@ -1,18 +1,18 @@
 import { Destination } from "./destination";
 import { WorldObject } from "../../world/worldobject";
 import { Junction } from "./junction";
-import { WorldId } from "../../world/worldid";
 import {WalkerWorld } from "./walkerworld";
+import { WorldObjectWrapper } from "../../world/worldobjectwrapper";
 
 
 
 
-export class Walker extends WorldObject {
+export class Walker extends WorldObjectWrapper {
 	private _currentDestination: Destination;
 	private _travelingToDestination:boolean;
 
-    public constructor(worldId:WorldId,junction:Junctions) {
-		super(worldId);
+    public constructor(junction:Junction,walkerWorldObject:WorldObject) {
+		super(walkerWorldObject);
 		this.travelingToDestination = true;
 		this.currentDestination = junction.getWalkerDestination(this);
 	}

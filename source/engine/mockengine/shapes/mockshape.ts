@@ -20,10 +20,6 @@ export abstract class MockShape extends WorldObject implements EngineShape
 		drawable.init(this,{});
     }
 	
-	public drawObject(context:CanvasRenderingContext2D):void {
-		this.drawable.draw(context);
-	}
-
     public getWorldPosition():WorldPosition {
 		return(this.position );
 	}

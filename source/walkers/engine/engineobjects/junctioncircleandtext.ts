@@ -1,16 +1,12 @@
-//import { WorldId } from "../../world/worldid";
 import { WorldPosition } from "../../../world/worldposition";
-//import { EngineObject } from "./engineobject";
 import { CircleEngineShape } from "../../../engine/shapes/circleengineshape";
-//import { WalkerWorld } from "../../walkerworld/walkerworld";
 import { WorldObject } from "../../../world/worldobject";
 import { WorldId } from "../../../world/worldid";
 import { RectangleEngineShape } from "../../../engine/shapes/rectangleengineshape";
+import { Drawable } from "../../../display/drawable";
+import { EngineShape } from "../../../engine/shapes/engineshape";
 
-//import { WorldObjectDisplay } from "../display/worldobjectdisplay";
-
-
-export class JunctionCircleAndText extends WorldObject {
+export class JunctionCircleAndText extends WorldObject implements Drawable {
 
     private _circleEngineShape:CircleEngineShape;
     private _rectangleEngineShape:RectangleEngineShape;
@@ -56,10 +52,16 @@ export class JunctionCircleAndText extends WorldObject {
 		this._rectangleEngineShape = value;
 	}
 
+	public getDrawable():Drawable {
+		return( this );	
+	}
 
-	public drawObject(context:CanvasRenderingContext2D):void {
+	public draw(context:CanvasRenderingContext2D):void {
         this.circleEngineShape.getDrawable().draw(context);
         this.rectangleEngineShape.getDrawable().draw(context);
+	}
+
+	public init(engineShape:EngineShape,options:any):void {
 	}
 
 	

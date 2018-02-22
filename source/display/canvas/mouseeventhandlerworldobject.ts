@@ -4,7 +4,6 @@ import { MouseEventHandler } from "./mouseeventhandler";
 import { WorldPosition } from "../../world/worldposition";
 import { World } from "../../world/world";
 import { CanvasMouse } from "./canvasmouse";
-import { CanvasMouse } from "./canvasmouse";
 
 
 
@@ -117,7 +116,7 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 
     public pointerUpEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent):void 	{
 		//console.log("pointerUpEvent:"+JSON.stringify(event));
-		var eventPosition:WorldPosition = this.getWorldPositionFromMouseEvent(world,canvasMouse,event);
+		//var eventPosition:WorldPosition = this.getWorldPositionFromMouseEvent(world,canvasMouse,event);
 
 		if(this.currentWorldObject!=null)
 		{

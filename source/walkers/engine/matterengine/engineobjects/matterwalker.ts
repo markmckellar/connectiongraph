@@ -25,7 +25,8 @@ export class MatterWalker  extends MatterObject {
 		let position:Matter.Vector = this.getCurrentMaterDestination(walker,matterEngine).getSpatialBody().position;
 		
 		this.walkerBody = Matter.Bodies.circle(position.x,position.y,10,
-			{render:{fillStyle:"transparent",strokeStyle:"transparent"},density:junctionDensity/1000},8);
+			{},//{render:{fillStyle:"transparent",strokeStyle:"transparent"},density:junctionDensity/1000},
+			8);
 		
 		this.walkerBody.restitution = 0.0;
         this.walkerBody.collisionFilter.category = MatterWalkerEngine.walkerTravleing;
@@ -51,33 +52,6 @@ export class MatterWalker  extends MatterObject {
 		  });
 		this.walker2DestinationSpring.render.visible=false;
 		this.walkerTravelingTotDestination(walkerWorld,matterEngine);	
-
-		this.registerRenderer(matterEngine,walker);
-	}
-
-	public registerRenderer(matterEngine:MatterEngine,walker:Walker):void {
-		let matterWalker:MatterWalker = this;
-		matterEngine.registerTimestampedEvent(
-			walker.worldId.id,
-			MatterEvent.afterRender,
-			function(matterEngine:MatterEngine,eventType:MatterEvent,event: Matter.IEventTimestamped<Matter.Engine>):void{
-			  //console.log("afterRender!!!!!!!!!!!!!!!!!!!!");	
-			  //walker.worldObjectDisplay.drawObject();
-			  let context:CanvasRenderingContext2D = matterEngine.render.context;
-			  		
-			  context.fillStyle = MatterTools.getColorFromString("ff0000ff");
-			  context.strokeStyle = MatterTools.getColorFromString("0000ffff");
-
-			  context.beginPath();
-			  context.arc(matterWalker.walkerBody.position.x,
-				matterWalker.walkerBody.position.y,
-				10,
-				0,Math.PI * 2, false);
-			  context.closePath();
-			  context.fill();
-			  context.lineWidth = 1;
-			  context.stroke();
-			});    
 	}
 
 	public translate(worldPosition:WorldPosition):void {
@@ -107,19 +81,14 @@ export class MatterWalker  extends MatterObject {
 		//console.log("walkerArrivedAtDestination:walker="+this.walker.worldId.id+":arrived!");
 		this.getAreaWalker().collisionFilter.category  = MatterWalkerEngine.walkerArrived;
 		this.getWalker2DestinationSpring().stiffness = 0.0;
-		//this.getAreaWalker().collisionFilter.category  |= ~MatterEngine.walkerArrived;
-		
-		
+		//this.getAreaWalker().collisionFilter.category  |= ~MatterEngine.walkerArrived;				
 	}
 
 	public walkerTravelingTotDestination(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine) : void {
 		//console.log("walkerTravelingTotDestination:walker="+this.walker.worldId.id+":arrived!");
 		this.getAreaWalker().collisionFilter.category  = MatterWalkerEngine.walkerTravleing;
-		this.getWalker2DestinationSpring().stiffness = 0.01;
-		
-		//this.getAreaWalker().collisionFilter.category  |= ~MatterEngine.walkerTravleing;
-		
-		
+		this.getWalker2DestinationSpring().stiffness = 0.01;		
+		//this.getAreaWalker().collisionFilter.category  |= ~MatterEngine.walkerTravleing;	
 	}
 
 	public enableWalkerEvents(walker:Walker,walkerWorld:WalkerWorld,matterWalkerEngine:MatterWalkerEngine):void {
@@ -171,3 +140,40 @@ export class MatterWalker  extends MatterObject {
 		this._walkerBody = value;
 	}    
 }
+
+
+
+
+
+
+
+
+
+
+
+	/***
+	public registerRenderer(matterEngine:MatterEngine,walker:Walker):void {
+		let matterWalker:MatterWalker = this;
+		matterEngine.registerTimestampedEvent(
+			walker.worldId.id,
+			MatterEvent.afterRender,
+			function(matterEngine:MatterEngine,eventType:MatterEvent,event: Matter.IEventTimestamped<Matter.Engine>):void{
+			  //console.log("afterRender!!!!!!!!!!!!!!!!!!!!");	
+			  //walker.worldObjectDisplay.drawObject();
+			  let context:CanvasRenderingContext2D = matterEngine.render.context;
+			  		
+			  context.fillStyle = MatterTools.getColorFromString("ff0000ff");
+			  context.strokeStyle = MatterTools.getColorFromString("0000ffff");
+
+			  context.beginPath();
+			  context.arc(matterWalker.walkerBody.position.x,
+				matterWalker.walkerBody.position.y,
+				10,
+				0,Math.PI * 2, false);
+			  context.closePath();
+			  context.fill();
+			  context.lineWidth = 1;
+			  context.stroke();
+			});    
+	}
+***/

@@ -7,6 +7,7 @@ import { MatterTimestampedEvent } from "./events/mattertimestampedevent";
 
 import * as Matter from "matter-js";
 import { WorldEngine } from "../worldengine";
+import { MatterWalkerEngine } from "../../walkers/engine/matterengine/matterwalkerengine";
 
 export class MatterEngine  implements WorldEngine {
     private _matterTools:MatterTools ;
@@ -48,6 +49,15 @@ export class MatterEngine  implements WorldEngine {
             },
           }); 
         this.enableEvents();
+    }
+
+    public createBounds(width:number,height:number):void {
+      let wallBoundsRect = Matter.Bodies.rectangle(width/2,height/2,width,height,{});
+      let walls:Matter.Body = MatterTools.createBoundObject(wallBoundsRect,1,10);
+      walls.collisionFilter.category = MatterWalkerEngine.boundsFilter;
+      walls.restitution = 1.0;
+      Matter.Body.setStatic(walls,true);
+      Matter.World.add(this.engine.world, [walls]);
     }
 
     public get2DGraphicsContext():CanvasRenderingContext2D {

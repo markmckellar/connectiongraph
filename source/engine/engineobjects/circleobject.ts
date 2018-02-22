@@ -1,17 +1,10 @@
-//import { WorldId } from "../../world/worldid";
-import { WorldPosition } from "../../world/worldposition";
-//import { EngineObject } from "./engineobject";
 import { CircleEngineShape } from "../../engine/shapes/circleengineshape";
-//import { WalkerWorld } from "../../walkerworld/walkerworld";
 import { WorldId } from "../../world/worldid";
 import { EngineObject } from "./engineobject";
 import { EngineShape } from "../shapes/engineshape";
-
-//import { WorldObjectDisplay } from "../display/worldobjectdisplay";
-
+import { Drawable } from "../../display/drawable";
 
 export class CircleObject extends EngineObject {
-	//getCircle(): CircleEngineShape;
 
 	private _circleEngineShape:CircleEngineShape;
 
@@ -24,17 +17,16 @@ export class CircleObject extends EngineObject {
 		return(this.circleEngineShape);
 	}
 
-	
+	public getDrawable():Drawable {
+		return( this.circleEngineShape.getDrawable() );	
+	}
+
 	public get circleEngineShape(): CircleEngineShape {
-		return this.circleEngineShape;
+		return this._circleEngineShape;
 	}
 
 	public set circleEngineShape(value: CircleEngineShape) {
-		this.circleEngineShape = value;
-	}
-
-	public drawObject(context:CanvasRenderingContext2D):void {
-		this.circleEngineShape.getDrawable().draw(context);
+		this._circleEngineShape = value;
 	}
 
 	

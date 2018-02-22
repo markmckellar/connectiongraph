@@ -4,6 +4,8 @@ import { WorldPosition } from "../../../world/worldposition";
 import * as Matter from "matter-js";
 import { MatterShape } from "./mattershape";
 import { Drawable } from "../../../display/drawable";
+import { WorldId } from "../../../world/worldid";
+import { MatterWalkerEngine } from "../../../walkers/engine/matterengine/matterwalkerengine";
 
 //import { World } from "../../walkerworld/world";
 //import { WorldObjectDisplay } from "../worldobjectdisplay";
@@ -15,9 +17,9 @@ export class MatterCircle extends MatterShape implements CircleEngineShape
 	private _radius:number;
 	
 
-	constructor(drawable:Drawable,radius:number,curvePoints:number,position:WorldPosition,options:any)
+	constructor(worldId:WorldId,drawable:Drawable,radius:number,curvePoints:number,position:WorldPosition,options:any)
 	{
-		super(drawable);
+		super(worldId,drawable);
 		//super(shapeName,radius);
 		this.radius = radius;
 		this.curvePoints = curvePoints;
@@ -25,7 +27,9 @@ export class MatterCircle extends MatterShape implements CircleEngineShape
             position.x,position.y,
             this.radius,
             options,
-            this.curvePoints);					
+			this.curvePoints);	
+			this.circleBody.collisionFilter.category = MatterWalkerEngine.boundsFilter;
+							
 	}
 
 	public getRadius():number {

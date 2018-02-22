@@ -1,13 +1,13 @@
 import { Junction } from "./junction";
-import { WorldId } from "../../world/worldid";
 import { Walker } from "./walker";
 import { Destination } from "./destination";
+import { WorldObject } from "../../world/worldobject";
 
 
 export class DefaultDestination extends Destination {
 
-    public constructor(worldId:WorldId,junction:Junction)  {
-        super(worldId,junction);
+    public constructor(destinationWorldObject:WorldObject,junction:Junction)  {
+        super(destinationWorldObject,junction);
     }
 
     public isDestination(walker:Walker):boolean {

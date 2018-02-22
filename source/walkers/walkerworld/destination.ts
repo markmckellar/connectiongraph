@@ -3,18 +3,19 @@ import { Walker } from "./walker";
 import { WorldObject } from "../../world/worldobject";
 import { WalkerWorld } from "./walkerworld";
 import { WorldId } from "../../world/worldid";
+import { WorldObjectWrapper } from "../../world/worldobjectwrapper";
 //import { WorldObjectDisplay } from "../display/worldobjectdisplay";
 
 
-export abstract class Destination extends WorldObject {
+export abstract class Destination extends WorldObjectWrapper {
     //private _inPathList: Array<Path>;
     //private _outPathList: Array<Path>;
     //private _walkerList: Array<Walker>;
 
     private  _junctionWorldId:WorldId;
 
-    public constructor(worldId:WorldId,junction:Junction)  {
-        super(worldId);
+    public constructor(destinationWorldObject:WorldObject,junction:Junction)  {
+        super(destinationWorldObject);
         this.junctionWorldId=junction.worldId;
     }
 

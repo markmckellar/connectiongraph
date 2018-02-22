@@ -65,23 +65,6 @@ export class MatterJunctionOneCircle  extends MatterJunction implements Junction
 		Matter.Body.translate(this.spacerBody,MatterTools.getVectorFromWorldPostion(worldPosition));
 	}
 
-	/****** 
-	public registerRenderer(walkerWorld:WalkerWorld,matterEngine:MatterEngine,worldId:WorldId,worldObjectDisplay:WorldObjectDisplay):void {
-	//let matterJunction:MatterJunction = this;	
-
-
-		matterEngine.registerTimestampedEvent(
-			worldId.id,
-			MatterEvent.afterRender,
-			function(matterEngine:MatterEngine,eventType:MatterEvent,event: Matter.IEventTimestamped<Matter.Engine>):void{
-			  //console.log("afterRender!!!!!!!!!!!!!!!!!!!!");	
-			  //walker.worldObjectDisplay.drawObject();
-			  let context:CanvasRenderingContext2D = matterEngine.render.context;
-			  worldObjectDisplay.drawObject(walkerWorld,context);		  		
-			});    
-	}
-	***********/
-
 	public addToEngine(walkerWorld:WalkerWorld,matterEngine:MatterWalkerEngine):void {
 		Matter.World.add(matterEngine.engine.world,[this.spacerBody,this.junctionBody]);
 		matterEngine.pin(this.spacerBody,this.junctionBody);

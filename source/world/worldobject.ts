@@ -1,5 +1,6 @@
 import { WorldId } from "./worldid";
 import { WorldPosition } from "./worldposition";
+import { Drawable } from "../display/drawable";
 //import { WorldObjectDisplay } from "../display/worldobjectdisplay";
 //import { EngineObject } from "../engine/engineobjects/engineobject";
 
@@ -24,7 +25,7 @@ export abstract class WorldObject {
 	public abstract translate(worldPosition:WorldPosition):void;
 	public abstract setWorldPosition(worldPosition:WorldPosition):void;
 	public abstract containsWorldPosition(worldPosition:WorldPosition):boolean;
-	public abstract drawObject(context:CanvasRenderingContext2D):void;
+	public abstract getDrawable():Drawable;
 
 
 

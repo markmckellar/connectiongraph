@@ -25,7 +25,7 @@ export class WorldOfWorldObjects extends World{
         canvasHolder.clearCanvas();
         for(let i=0;i<this.worldObjectArray.length;i++) {
             let worldObject:WorldObject = this.worldObjectArray[i];
-            worldObject.drawObject(context);
+            worldObject.getDrawable().draw(context);
         }
     }
 
