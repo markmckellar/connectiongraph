@@ -17,7 +17,7 @@ export class MockCircle extends MockShape implements CircleEngineShape
 
 	constructor(drawable:Drawable,radius:number,curvePoints:number,position:WorldPosition)
 	{
-		super(new CircleDisplayShape(this),position);
+		super(new CircleDisplayShape(),position);
 		//super(shapeName,radius);
 		this.radius = radius;
 		this.curvePoints = curvePoints;					

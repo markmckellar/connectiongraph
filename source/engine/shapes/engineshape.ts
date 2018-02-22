@@ -12,6 +12,7 @@ export interface EngineShape {
 	//	this.shapeName = shapeName;
 	//}	
 	
+	
 	getWorldPosition():WorldPosition;
 	translate(worldPosition:WorldPosition):void;
 	setWorldPosition(worldPosition:WorldPosition):void;

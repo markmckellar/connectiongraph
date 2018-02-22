@@ -10,10 +10,15 @@ export class CircleDisplayShape implements Drawable
 {
 	private _circleEngineShape:CircleEngineShape;
 
-	constructor(circleEngineShape:CircleEngineShape)
+	constructor()
 	{
-		this.circleEngineShape = circleEngineShape;
+		this.circleEngineShape = null;
 	}
+
+	public init(circleEngineShape:CircleEngineShape,options:any):void {
+		this.circleEngineShape = circleEngineShape;		
+	}
+	
 
 	public get circleEngineShape(): CircleEngineShape {
 		return this._circleEngineShape;

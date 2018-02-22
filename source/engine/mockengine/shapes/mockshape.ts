@@ -14,6 +14,7 @@ export abstract class MockShape implements EngineShape
     constructor(drawable:Drawable,position:WorldPosition) {
 		this.drawable = drawable;
 		this.position = position;
+		drawable.init(this,{});
     }
     
 
