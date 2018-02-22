@@ -240,7 +240,7 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine,Dis
   
     }
 
-    public get junctions(): Map<string,MatterJunction> {
+  public get junctions(): Map<string,MatterJunction> {
 		return this._junctions;
 	}
 
@@ -273,8 +273,4 @@ export class MatterWalkerEngine extends MatterEngine implements WalkerEngine,Dis
 		this._destinations = value;
 	}
   
-    
-  
-
-    
 }

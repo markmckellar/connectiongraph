@@ -44,8 +44,6 @@ export class MatterEngine  implements WorldEngine {
               height:600,
               width:800,
               wireframes:false, 
-              
-              
             },
           }); 
         this.enableEvents();
