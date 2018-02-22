@@ -1,6 +1,5 @@
 import { WorldId } from "./worldid";
 import { WorldPosition } from "./worldposition";
-import { Drawable } from "../display/drawable";
 //import { WorldObjectDisplay } from "../display/worldobjectdisplay";
 //import { EngineObject } from "../engine/engineobjects/engineobject";
 

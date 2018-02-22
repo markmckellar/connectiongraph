@@ -20,9 +20,9 @@ export class CanvasMouse
 			//this.offset = NodeCanvasMouse.getCanvasOffset(this.canvasholder.canvas);
 			this.offset = this.getCanvasOffset();		
 			var self = this;
-			this.canvasholderHTML.canvas.addEventListener("pointerdown", function(event) { self.pointerDownEvent(world,event) }, false);
-			this.canvasholderHTML.canvas.addEventListener("pointermove",function(event) { self.pointerMoveEvent(world,event) }, false);
-			this.canvasholderHTML.canvas.addEventListener("pointerup",function(event) { self.pointerUpEvent(world,event) }, false);
+			this.canvasholderHTML.canvas.addEventListener("pointerdown", function(event) { self.pointerDownEvent(world,self,event) }, false);
+			this.canvasholderHTML.canvas.addEventListener("pointermove",function(event) { self.pointerMoveEvent(world,self,event) }, false);
+			this.canvasholderHTML.canvas.addEventListener("pointerup",function(event) { self.pointerUpEvent(world,self,event) }, false);
 			//this.nodeMouseMovment = {};
 		}
 	}
@@ -51,18 +51,18 @@ export class CanvasMouse
 	    return( new WorldPosition(offsetLeft,offsetTop) );
 	}
 
-	public pointerDownEvent(world:World,event:MouseEvent) {
-		this.mouseEventHandler.pointerDownEvent(world,event);
+	public pointerDownEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent) {
+		this.mouseEventHandler.pointerDownEvent(world,canvasMouse,event);
 	}
 	
-	public pointerMoveEvent(world:World,event:MouseEvent)	{
-		this.mouseEventHandler.pointerMoveEvent(world,event);
+	public pointerMoveEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent)	{
+		this.mouseEventHandler.pointerMoveEvent(world,canvasMouse,event);
 
 	}
 	
-	public pointerUpEvent(world:World,event:MouseEvent)
+	public pointerUpEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent)
 	{
-		this.mouseEventHandler.pointerUpEvent(world,event);
+		this.mouseEventHandler.pointerUpEvent(world,canvasMouse,event);
 
 	}
 	
