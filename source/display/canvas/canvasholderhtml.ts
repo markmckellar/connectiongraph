@@ -1,7 +1,7 @@
 import { CanvasHolder } from "./canvasholder";
 import { World } from "../../world/world";
 import { CanvasMouse } from "./canvasmouse";
-import { MouseEventHandlerWorldObject } from "./mouseEventhandlerworldobject";
+import { MouseEventHandlerWorldObject } from "./mouseeventhandlerworldobject";
 import { WorldDisplay } from "../worlddisplay";
 
 

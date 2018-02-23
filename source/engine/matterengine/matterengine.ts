@@ -7,59 +7,46 @@ import { MatterTimestampedEvent } from "./events/mattertimestampedevent";
 
 import * as Matter from "matter-js";
 import { WorldEngine } from "../worldengine";
-import { MatterWalkerEngine } from "../../walkers/engine/matterengine/matterwalkerengine";
+//import { MatterWalkerEngine } from "../../walkers/engine/matterengine/matterwalkerengine";
 
-export class MatterEngine  implements WorldEngine {
+export  class MatterEngine  implements WorldEngine {
     private _matterTools:MatterTools ;
     private _collisionEventHandlers : Map<string,MatterCollisionEvent>;
     private _compositeEventHandlers : Map<string,MatterCompositeEvent>;
     private _timestampEventHandlers : Map<string,MatterTimestampedEvent>;
     
     private _engine : Matter.Engine;
-    private _render : Matter.Render;
-    
-    private _mouse:Matter.Mouse;
-    private _mouseConstraint:Matter.MouseConstraint;
 
+    public static boundsFilter:number = 1;//0x0001;
+    
     public constructor() {
+      
         this.matterTools = new MatterTools();
         this.collisionEventHandlers = new Map<string,MatterCollisionEvent>(); 
         this.compositeEventHandlers = new Map<string,MatterCompositeEvent>();
         this.timestampEventHandlers = new Map<string,MatterTimestampedEvent>();
 
         
+        // Matter.IEngineDefinition, options?: Matter.IEngineDefinition
+
         this.engine = Matter.Engine.create(); 
         
         this.engine.world.gravity.x = 0.0;
         this.engine.world.gravity.y = 0.0;
 
+        
 
-        //let x:Matter.IRenderDefinition = null;
-        this.render = Matter.Render.create({
-          //let render = WalkerRenderer.create({
-            element: document.body,
-            engine: this.engine,
-            options : {
-              hasBounds:false,
-              height:600,
-              width:800,
-              wireframes:false, 
-            },
-          }); 
         this.enableEvents();
+
     }
 
     public createBounds(width:number,height:number):void {
       let wallBoundsRect = Matter.Bodies.rectangle(width/2,height/2,width,height,{});
       let walls:Matter.Body = MatterTools.createBoundObject(wallBoundsRect,1,10);
-      walls.collisionFilter.category = MatterWalkerEngine.boundsFilter;
+      walls.collisionFilter.category = MatterEngine.boundsFilter;
       walls.restitution = 1.0;
       Matter.Body.setStatic(walls,true);
       Matter.World.add(this.engine.world, [walls]);
-    }
-
-    public get2DGraphicsContext():CanvasRenderingContext2D {
-      return( this.render.context );
     }
 
     private geTimestampedEventMapId(name:string,eventType:MatterEvent):string {
@@ -118,18 +105,6 @@ export class MatterEngine  implements WorldEngine {
       public getCollisionHandler(body:Matter.Body,eventType:MatterEvent):MatterCollisionEvent {
         return( this.collisionEventHandlers.get(this.getCollisionEventMapId(body,eventType)) );
       }
-
-      public initMouse(render:Matter.Render):void {
-        this.mouse = Matter.Mouse.create(render.canvas);
-        this.mouseConstraint = Matter.MouseConstraint.create(this.engine);
-        this.mouseConstraint.mouse = this.mouse;
-        this.mouseConstraint.constraint.render.visible = false;
-        this.mouseConstraint.constraint.stiffness = 0.2;
-        
-        Matter.World.add(this.engine.world, this.mouseConstraint);        
-        // keep the mouse in sync with rendering
-        render.controller.mouse = this.mouse;
-    }
 
     public initRendererEvents(render:Matter.Render):void {
       let me:MatterEngine = this;
@@ -256,25 +231,6 @@ export class MatterEngine  implements WorldEngine {
 		this._matterTools = value;
 	}
 
-
-	public get mouseConstraint(): Matter.MouseConstraint {
-		return this._mouseConstraint;
-	}
-
-	public set mouseConstraint(value: Matter.MouseConstraint) {
-		this._mouseConstraint = value;
-	}
-  
-
-	public get mouse(): Matter.Mouse {
-		return this._mouse;
-	}
-
-	public set mouse(value: Matter.Mouse) {
-		this._mouse = value;
-	}
-  
-
 	public get collisionEventHandlers(): Map<string,MatterCollisionEvent> {
 		return this._collisionEventHandlers;
 	}
@@ -301,13 +257,7 @@ export class MatterEngine  implements WorldEngine {
 		this._timestampEventHandlers = value;
 	}
 
-	public get render(): Matter.Render {
-		return this._render;
-	}
 
-	public set render(value: Matter.Render) {
-		this._render = value;
-	}
 
 
   

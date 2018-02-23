@@ -13,10 +13,10 @@ let world:WorldOfWorldObjects = new WorldOfWorldObjects(matterEngine);
 let canvasHolder:CanvasHolderHTML = new CanvasHolderHTML("worldCanvas",world);
 
 let circle1:MatterCircle = new MatterCircle(
-    new WorldId("circle1"),
-    new CircleDisplayShape(),
-    30,8,new WorldPosition(400,400),
-    {});
+      new WorldId("circle1"),
+      new CircleDisplayShape(),
+      30,8,new WorldPosition(400,400),
+      {});
 
     let circle2:MatterCircle = new MatterCircle(
       new WorldId("circle2"),
@@ -38,5 +38,3 @@ function doDraw()
 {
   world.drawWorld(canvasHolder);	
 }
-
-

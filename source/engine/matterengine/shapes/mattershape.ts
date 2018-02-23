@@ -26,13 +26,19 @@ export abstract class MatterShape  extends WorldObject implements EngineShape
 	}
 
 	public translate(worldPosition:WorldPosition):void {
-		Matter.Body.translate( this.getBody(),
-			MatterTools.getVectorFromWorldPostion(worldPosition));
+		let newX = worldPosition.x-this.getBody().position.x;
+		let newY = worldPosition.y-this.getBody().position.y;
+
+		Matter.Body.translate( this.getBody(),Matter.Vector.create(
+			newX,newY ));
 	}
 	
 	public setWorldPosition(worldPosition:WorldPosition):void {
-		Matter.Body.translate( this. getBody(),
-			MatterTools.getVectorFromWorldPostion(worldPosition));
+		let newX = worldPosition.x-this.getBody().position.x;
+		let newY = worldPosition.y-this.getBody().position.y;
+
+		Matter.Body.translate( this.getBody(),Matter.Vector.create(
+			newX,newY ));
 	}
 	
 	public containsWorldPosition(worldPosition:WorldPosition):boolean {

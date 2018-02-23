@@ -12,19 +12,11 @@ import { MatterDestination } from "./engineobjects/matterdestination";
 import { MatterWalker } from "./engineobjects/matterwalker";
 import { MatterEngine } from "../../../engine/matterengine/matterengine";
 import { MatterTools } from "../../../engine/matterengine/mattertools";
-//import { CircleEngineShape } from "../engine/shapes/circleengineshape";
-//import { MatterCircle } from "./shapes/mattercircle";
 import { JunctionOneCircle } from "../../engine/engineobjects/junctiononecircle";
 import { MatterJunctionOneCircle } from "./engineobjects/matterjunctiononecirle";
-import { DisplayHolder } from "../../../display/displayholder";
-
-
-
-//import { MatterEvent } from "./matterevent";
-
 import * as Matter from "matter-js";
 
-export class MatterWalkerEngine extends MatterEngine implements WalkerEngine,DisplayHolder {
+export class MatterWalkerEngine extends MatterEngine implements WalkerEngine  {
     private _junctions : Map<string,MatterJunction>;
     private _destinations : Map<string,MatterDestination>;
     private _walkers : Map<string,MatterWalker>;
