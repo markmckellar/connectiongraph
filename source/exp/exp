@@ -1,0 +1,10 @@
+export class Exp {
+
+    constructor() {
+        console.log("constructor");
+    }
+
+    public action(value: string): void {
+        console.log("action:" + value);
+    }
+}

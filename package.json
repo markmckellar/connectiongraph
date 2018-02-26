@@ -48,6 +48,7 @@
     "jquery": "^3.1.1",
     "matter-js": "^0.13.0",
     "poly-decomp": "^0.2.1",
-    "tsify": "^3.0.1"
+    "tsify": "^3.0.1",
+    "window-or-global": "^1.0.1"
   }
 }
