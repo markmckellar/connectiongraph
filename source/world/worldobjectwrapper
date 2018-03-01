@@ -3,12 +3,12 @@ import { WorldPosition } from "./worldposition";
 import { Drawable } from "../display/drawable";
 
 
-export class WorldObjectWrapper extends WorldObject
+export class WorldObjectWrapper implements WorldObject
 {
 	private _innerWorldObject:WorldObject;
 
   constructor(innerWorldObject:WorldObject) {
-		super(innerWorldObject.worldId);
+		super(innerWorldObject.getWorldId());
 		this.innerWorldObject = innerWorldObject;
     }
 	

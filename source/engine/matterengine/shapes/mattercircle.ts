@@ -17,9 +17,9 @@ export class MatterCircle extends MatterShape implements CircleEngineShape
 	private _radius:number;
 	
 
-	constructor(worldId:WorldId,drawable:Drawable,radius:number,curvePoints:number,position:WorldPosition,options:any)
+	constructor(worldId:WorldId,drawable:Drawable,radius:number,curvePoints:number,position:WorldPosition,options:any,matterEngine:MatterEngine)
 	{
-		super(worldId,drawable);
+		super(worldId,drawable,options,matterEngine);
 		//super(shapeName,radius);
 		this.radius = radius;
 		this.curvePoints = curvePoints;
@@ -29,7 +29,9 @@ export class MatterCircle extends MatterShape implements CircleEngineShape
             options,
 			this.curvePoints);	
 		this.circleBody.collisionFilter.category = MatterEngine.boundsFilter;
-		drawable.init(this,{});
+		drawable.init(this,options);
+		Matter.World.add(matterEngine.engine.world,[this.circleBody]);
+		
 		
 	}
 

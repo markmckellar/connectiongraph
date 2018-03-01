@@ -2,11 +2,11 @@
 import { WalkerWorld } from "../walkers/walkerworld/walkerworld";
 import { Junction } from "../walkers/walkerworld/junction";
 
-import { WorldObjectDisplay } from "./worldobjectdisplay";
+//import { WorldObjectDisplay } from "./worldobjectdisplay";
 //import { CircleDisplayShape } from "./shapes/circledisplayshape";
 import { WorldPosition } from "../world/worldposition";
 //import { WorldObject } from "../world/worldobject";
-import { JunctionCircleOnlyDisplay } from "../walkers/walkerworld/display/junctioncircleonlydisplay";
+//import { JunctionCircleOnlyDisplay } from "../walkers/walkerworld/display/junctioncircleonlydisplay";
 
 
 export class WorldObjectDisplayFactory {
@@ -15,7 +15,7 @@ export class WorldObjectDisplayFactory {
     public constructor() {
     }
 
-    public static geJunctionWorldObjectDisplay(someKinaTag:string,junction:Junction,worldPosition:WorldPosition,walkerWorld:WalkerWorld):WorldObjectDisplay {
+    public static geJunctionWorldObjectDisplay(someKinaTag:string,junction:Junction,worldPosition:WorldPosition,walkerWorld:WalkerWorld):void {
 
         someKinaTag = "junction";
         /*
@@ -43,7 +43,7 @@ export class WorldObjectDisplayFactory {
 
         //let shapes:Map<string,WorldShape> = new Map<string,WorldShape>();
         //shapes.set("junctionBody",new CircleDisplayShape("junctionBody",40,worldPosition,walkerWorld.walkerEngine) );
-        let wod:WorldObjectDisplay = new JunctionCircleOnlyDisplay(walkerWorld.walkerEngine.getJunctionOneCircle(junction,worldPosition,walkerWorld));
+        //let wod:WorldObjectDisplay = new JunctionCircleOnlyDisplay(walkerWorld.walkerEngine.getJunctionOneCircle(junction,worldPosition,walkerWorld));
         /*
         new(class extends WorldObjectDisplay {
             public drawObject(walkerWorld:WalkerWorld,worldObject:WorldObject,context:CanvasRenderingContext2D):void{   
@@ -53,7 +53,7 @@ export class WorldObjectDisplayFactory {
                 }
             } )(new WorldPosition(0,0),shapes);
     */
-        return(wod);
+        ///////////return(wod);
 
     }
 }

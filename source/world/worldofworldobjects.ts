@@ -32,7 +32,9 @@ export class WorldOfWorldObjects extends World{
     public getWorldObjectContainingPosition(worldPosition:WorldPosition):WorldObject {
         let foundObject:WorldObject = null;
         for(let i=0;i<this.worldObjectArray.length;i++) {
+            ////console.log("this.worldObjectArray.length="+this.worldObjectArray.length+":i="+i);
             let worldObject:WorldObject = this.worldObjectArray[i];
+            ////console.log("    worldObject.position="+worldObject.getWorldPosition());
             if(worldObject.containsWorldPosition(worldPosition)) foundObject = worldObject;
         }
         return(foundObject);

@@ -1,4 +1,3 @@
-
 import { CanvasHolderHTML } from "./display/canvas/canvasholderhtml";
 import { WorldOfWorldObjects } from "./world/worldofworldobjects";
 import { CircleDisplayShape } from "./display/drawableshapes/circledisplayshape";

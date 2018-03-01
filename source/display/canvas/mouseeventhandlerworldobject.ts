@@ -44,8 +44,8 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 		this.mouseStatus.position = eventPosition;
 		if(this.currentWorldObject!=null)
 		{
-			this.currentWorldObject.isAnimated = true;
-			this.currentWorldObject.isSelected = false;
+			this.currentWorldObject.setAnimated(true);
+			this.currentWorldObject.setSelected(false);
 			this.currentWorldObject = null;
 		}
 		
@@ -53,13 +53,13 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 	
 		if(clickWorldObject!=null && clickWorldObject!=this.lastWorldObject)
 		{
-			console.log("pointerDownEvent:clickWorldObject="+clickWorldObject.worldId.id);
+			console.log("pointerDownEvent:clickWorldObject="+clickWorldObject.getWorldId().id);
 
 			this.currentWorldObject = clickWorldObject;
 
 			this.mouseStatus.startPosition = eventPosition.clone();
 
-			this.currentWorldObject.isSelected = true;
+			this.currentWorldObject.setSelected(true);
 			this.mouseStatus.clickOffset = this.currentWorldObject.getWorldPosition().getDelta(eventPosition);
 
 			/////////////////this.mouseStatus.clickOffset = clickWorldObject.getWorldPosition().getDelta(eventPosition);
@@ -75,7 +75,7 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 		if(this.lastWorldObject)
 		{
 			this.worldObjectDeselected(world,event);
-			this.lastWorldObject.isSelected = false;
+			this.lastWorldObject.setSelected(false);
 			this.lastWorldObject = null;
 		}
 	
@@ -94,7 +94,7 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 
 			if(this.currentWorldObject!=null)
 			{
-				this.currentWorldObject.isAnimated = false;
+				this.currentWorldObject.setAnimated(false);
 				this.mouseStatus.position = eventPosition;
 				var deltaPosition = this.mouseStatus.startPosition.getDelta(eventPosition);
 
@@ -121,7 +121,7 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 		if(this.currentWorldObject!=null)
 		{
 			///this.nodeCanvas.pointerUp(this.mouseStatus.node);
-			this.currentWorldObject.isAnimated = true;
+			this.currentWorldObject.setAnimated(true);
 			//this.mouseStatus.node.isSelected = false;
 			this.lastWorldObject = this.currentWorldObject;
 	

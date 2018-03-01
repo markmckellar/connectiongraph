@@ -112,6 +112,57 @@ gulp.task("build", function() {
         .pipe(gulp.dest(outputFolder));
 });
 
+
+gulp.task("build_mock", function() {
+    
+      var libraryName = "test_mock";
+      var mainTsFilePath = "source/main_mock.ts";
+      var outputFolder   = "dist/";
+      var outputFileName = libraryName + ".min.js";
+  
+      var bundler = browserify({
+          debug: true,
+          standalone : libraryName
+      });
+      
+      return bundler
+          .add(mainTsFilePath)
+          .plugin(tsify, { noImplicitAny: true })
+          .bundle()
+          .on('error', function (error) { console.error(error.toString()); })
+          .pipe(source(outputFileName))
+          .pipe(buffer())
+          .pipe(sourcemaps.init({ loadMaps: true }))        
+          .pipe(uglify())
+          .pipe(sourcemaps.write("."))
+          .pipe(gulp.dest(outputFolder));
+  });
+
+
+  gulp.task("build_matter", function() {
+    
+      var libraryName = "test_matter";
+      var mainTsFilePath = "source/main_matter.ts";
+      var outputFolder   = "dist/";
+      var outputFileName = libraryName + ".min.js";
+  
+      var bundler = browserify({
+          debug: true,
+          standalone : libraryName
+      });
+      
+      return bundler
+          .add(mainTsFilePath)
+          .plugin(tsify, { noImplicitAny: true })
+          .bundle()
+          .on('error', function (error) { console.error(error.toString()); })
+          .pipe(source(outputFileName))
+          .pipe(buffer())
+          .pipe(sourcemaps.init({ loadMaps: true }))        
+          .pipe(uglify())
+          .pipe(sourcemaps.write("."))
+          .pipe(gulp.dest(outputFolder));
+  });
 //******************************************************************************
 //* DEV SERVER
 //******************************************************************************
@@ -129,5 +180,5 @@ gulp.task("watch", ["default"], function () {
 //* DEFAULT
 //******************************************************************************
 gulp.task("default", function (cb) {
-    runSequence("lint", "build-test", "test", "build", cb);
+    runSequence("lint", "build-test", "test", "build_matter", "build_mock", cb);
 });

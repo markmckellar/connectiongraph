@@ -7,6 +7,12 @@ import { MatterTimestampedEvent } from "./events/mattertimestampedevent";
 
 import * as Matter from "matter-js";
 import { WorldEngine } from "../worldengine";
+import { WorldId } from "../../world/worldid";
+//import { CircleDisplayShape } from "../../display/drawableshapes/circledisplayshape";
+import { MatterCircle } from "./shapes/mattercircle";
+import { WorldPosition } from "../../world/worldposition";
+import { CircleEngineShape } from "../shapes/circleengineshape";
+import { Drawable } from "../../display/drawable";
 //import { MatterWalkerEngine } from "../../walkers/engine/matterengine/matterwalkerengine";
 
 export  class MatterEngine  implements WorldEngine {
@@ -32,17 +38,29 @@ export  class MatterEngine  implements WorldEngine {
         this.engine = Matter.Engine.create(); 
         
         this.engine.world.gravity.x = 0.0;
-        this.engine.world.gravity.y = 0.0;
-
-        
+        this.engine.world.gravity.y = 1.0;
+      
 
         this.enableEvents();
 
     }
 
-    public createBounds(width:number,height:number):void {
+    public createCircle(worldId:WorldId,drawable:Drawable,radius:number,numberOfSides:number,worldPosition:WorldPosition,options:any):CircleEngineShape {
+      let circle:MatterCircle = new MatterCircle(
+        worldId,
+        drawable,
+        radius,numberOfSides,worldPosition,
+        {restitution:0.9},
+        this
+      );
+      return(circle);
+
+    }
+    
+
+    public createBounds(width:number,height:number,options:any):void {
       let wallBoundsRect = Matter.Bodies.rectangle(width/2,height/2,width,height,{});
-      let walls:Matter.Body = MatterTools.createBoundObject(wallBoundsRect,1,10);
+      let walls:Matter.Body = MatterTools.createBoundObject(wallBoundsRect,1,10,options);
       walls.collisionFilter.category = MatterEngine.boundsFilter;
       walls.restitution = 1.0;
       Matter.Body.setStatic(walls,true);

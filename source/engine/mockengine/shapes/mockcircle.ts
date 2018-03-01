@@ -3,6 +3,7 @@ import { WorldPosition } from "../../../world/worldposition";
 import { Drawable } from "../../../display/drawable";
 import { MockShape } from "./mockshape";
 import { WorldId } from "../../../world/worldid";
+import { MockEngine } from "../mockengine";
 
 export class MockCircle extends MockShape implements CircleEngineShape
 {
@@ -10,12 +11,12 @@ export class MockCircle extends MockShape implements CircleEngineShape
 	private _radius:number;
 	
 
-	constructor(worldId:WorldId,drawable:Drawable,radius:number,curvePoints:number,position:WorldPosition)
+	constructor(worldId:WorldId,drawable:Drawable,radius:number,curvePoints:number,position:WorldPosition,options:any,mockEngine:MockEngine)
 	{
-		super(worldId,drawable,position);
-		//super(shapeName,radius);
+		super(worldId,drawable,position,options);
 		this.radius = radius;
-		this.curvePoints = curvePoints;					
+		this.curvePoints = curvePoints;	
+		drawable.init(this,options);
 	}
 
 	public containsWorldPosition(worldPosition:WorldPosition):boolean {

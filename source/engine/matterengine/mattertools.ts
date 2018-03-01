@@ -99,7 +99,7 @@ export class MatterTools  {
     }
     */
 
-    public static createBoundObject(body:Matter.Body,scaleInner:number,scaleOuter:number):Matter.Body {     
+    public static createBoundObject(body:Matter.Body,scaleInner:number,scaleOuter:number,options:any):Matter.Body {     
         let pointsInner:Array<Matter.Vector> = this.cloneVerticies(body.vertices);
         Matter.Vertices.scale(pointsInner,scaleInner,scaleInner,body.position);
   
@@ -134,8 +134,9 @@ export class MatterTools  {
            
           bodies.push(newBody);
         }
+        options.parts = bodies;
   
-        let newBody:Matter.Body = Matter.Body.create({parts: bodies });        
+        let newBody:Matter.Body = Matter.Body.create(options);        
 
         newBody.restitution = 1.0; 
         return(newBody);

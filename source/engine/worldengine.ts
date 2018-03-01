@@ -1,3 +1,8 @@
+import { CircleEngineShape } from "./shapes/circleengineshape";
+import { WorldId } from "../world/worldid";
+import { WorldPosition } from "../world/worldposition";
+import { Drawable } from "../display/drawable";
+
 /*
 import { Walker } from "../walkerworld/walker";
 import { Junction } from "../walkerworld/junction";
@@ -12,6 +17,7 @@ import { WorldPosition } from "../world/worldposition";
 
 export interface WorldEngine {
 
+    createCircle(worldId:WorldId,drawable:Drawable,radius:number,numberOfSides:number,worldPosition:WorldPosition,options:any):CircleEngineShape;
     //getWorldObjectContainingPosition(worldPosition:WorldPosition):WorldObject;
     //public constructor() {
     //}

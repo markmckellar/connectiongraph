@@ -1,9 +1,3 @@
-import { MatterTools } from "./mattertools";
-import { MatterEvent } from "./events/matterevent";
-import { MatterCollisionEvent } from "./events/mattercollisionevent";
-import { MatterCompositeEvent } from "./events/mattercompositeevent";
-import { MatterTimestampedEvent } from "./events/mattertimestampedevent";
-import { WorldEngine } from "../worldengine";
 import { MatterEngine } from "./matterengine";
 import * as Matter from "matter-js";
 
