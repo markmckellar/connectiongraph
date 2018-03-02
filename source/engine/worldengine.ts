@@ -2,6 +2,8 @@ import { CircleEngineShape } from "./shapes/circleengineshape";
 import { WorldId } from "../world/worldid";
 import { WorldPosition } from "../world/worldposition";
 import { Drawable } from "../display/drawable";
+import { RectangleEngineShape } from "./shapes/rectangleengineshape";
+import { PolygonEngineShape } from "./shapes/polygonengineshape";
 
 /*
 import { Walker } from "../walkerworld/walker";
@@ -18,6 +20,10 @@ import { WorldPosition } from "../world/worldposition";
 export interface WorldEngine {
 
     createCircle(worldId:WorldId,drawable:Drawable,radius:number,numberOfSides:number,worldPosition:WorldPosition,options:any):CircleEngineShape;
+    createRectangle(worldId:WorldId,drawable:Drawable,width:number,height:number,worldPosition:WorldPosition,options:any):RectangleEngineShape;
+    createPolygon(worldId:WorldId,drawable:Drawable,numberOfSides:number,radius:number,worldPosition:WorldPosition,options:any):PolygonEngineShape;
+    
+    
     //getWorldObjectContainingPosition(worldPosition:WorldPosition):WorldObject;
     //public constructor() {
     //}

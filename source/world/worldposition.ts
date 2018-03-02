@@ -30,6 +30,16 @@ export class WorldPosition {
 		return(new WorldPosition(this.x,this.y));
 	}
 
+	public translate(worldPosition:WorldPosition):void {
+		this.x = this.x + worldPosition.x;
+		this.y = this.y + worldPosition.y;
+	}
+
+	public moveTo(worldPosition:WorldPosition):void {
+		this.x = worldPosition.y;
+		this.y = worldPosition.y;
+	}
+
 	public getDeltaY(worldPosition:WorldPosition):number
 	{
 			return(this.y-worldPosition.y);

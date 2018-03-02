@@ -31,6 +31,7 @@ export class CircleDisplayShape implements Drawable
 	
 	public draw(context:CanvasRenderingContext2D):void
 	{
+		if(!this.circleEngineShape) throw Error("CircleDisplayShape:CircleEngineShape is not set, was init called?")
 		//super.drawConnector(canvasHolder,node);
 		/*
 		super.drawNode(canvasHolder,node);

@@ -85,34 +85,8 @@ gulp.task("test", ["istanbul:hook"], function() {
 });
 
 //******************************************************************************
-//* BUILD DEV
+//* BUILDS
 //******************************************************************************
-gulp.task("build", function() {
-  
-    var libraryName = "walkers";
-    var mainTsFilePath = "source/main.ts";
-    var outputFolder   = "dist/";
-    var outputFileName = libraryName + ".min.js";
-
-    var bundler = browserify({
-        debug: true,
-        standalone : libraryName
-    });
-    
-    return bundler
-        .add(mainTsFilePath)
-        .plugin(tsify, { noImplicitAny: true })
-        .bundle()
-        .on('error', function (error) { console.error(error.toString()); })
-        .pipe(source(outputFileName))
-        .pipe(buffer())
-        .pipe(sourcemaps.init({ loadMaps: true }))        
-        .pipe(uglify())
-        .pipe(sourcemaps.write("."))
-        .pipe(gulp.dest(outputFolder));
-});
-
-
 gulp.task("build_mock", function() {
     
       var libraryName = "test_mock";

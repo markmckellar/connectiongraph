@@ -6,6 +6,10 @@ import { WorldId } from "./world/worldid";
 import { MatterEngine } from "./engine/matterengine/matterengine";
 import * as Matter from "matter-js";
 import { CircleEngineShape } from "./engine/shapes/circleengineshape";
+import { RectangleEngineShape } from "./engine/shapes/rectangleengineshape";
+import { RectangleDisplayShape } from "./display/drawableshapes/rectangledisplayshape";
+import { PolygonEngineShape } from "./engine/shapes/triangleengineshape";
+import { PolygonDisplayShape } from "./display/drawableshapes/polygondisplayshape";
 
 
 
@@ -31,9 +35,27 @@ let circle2:CircleEngineShape = world.worldEngine.createCircle(
 );
 
   
+let rectangle1:RectangleEngineShape = world.worldEngine.createRectangle(
+  new WorldId("rectangle1"),
+  new RectangleDisplayShape(),
+  40,40,
+  new WorldPosition(100,100),
+  {}
+);
+
+let polygon1:PolygonEngineShape = world.worldEngine.createPolygon(
+  new WorldId("rectangle1"),
+  new PolygonDisplayShape(),
+  5,40,
+  new WorldPosition(400,100),
+  {}
+);
       
 world.worldObjectArray.push(circle1);
 world.worldObjectArray.push(circle2);
+world.worldObjectArray.push(rectangle1);
+world.worldObjectArray.push(polygon1);
+
 
 matterEngine.createBounds(canvasHolder.getWidth(),canvasHolder.getHeight(),{restitution:0.9});
 let interval:number = 1000/30; //one millisecond over beat per second

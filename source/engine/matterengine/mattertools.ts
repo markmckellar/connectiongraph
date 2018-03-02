@@ -74,6 +74,13 @@ export class MatterTools  {
         return(newVeritice);
     }
 
+    public static getWorldPostionArrayFromVectorArray(vectorArray:Array<Matter.Vector>):Array<WorldPosition> {
+      let newWorldPositionArray:Array<WorldPosition> = new Array<WorldPosition>();
+      for(let i=0;i<vectorArray.length;i++) newWorldPositionArray.push( 
+        MatterTools.getWorldPostionFromVector(vectorArray[i]) );
+      return(newWorldPositionArray);
+    }
+
     public static getWorldPostionFromVector(vector:Matter.Vector):WorldPosition {
       let worldPosition:WorldPosition = new WorldPosition(vector.x,vector.y) ;
         return(worldPosition);

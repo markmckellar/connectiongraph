@@ -10,9 +10,14 @@ import { WorldEngine } from "../worldengine";
 import { WorldId } from "../../world/worldid";
 //import { CircleDisplayShape } from "../../display/drawableshapes/circledisplayshape";
 import { MatterCircle } from "./shapes/mattercircle";
+import { MatterRectangle } from "./shapes/matterrectangle";
+
 import { WorldPosition } from "../../world/worldposition";
 import { CircleEngineShape } from "../shapes/circleengineshape";
 import { Drawable } from "../../display/drawable";
+import { RectangleEngineShape } from "../shapes/rectangleengineshape";
+import { MatterPolygon } from "./shapes/matterpolygon";
+import { PolygonEngineShape } from "../shapes/triangleengineshape";
 //import { MatterWalkerEngine } from "../../walkers/engine/matterengine/matterwalkerengine";
 
 export  class MatterEngine  implements WorldEngine {
@@ -56,6 +61,29 @@ export  class MatterEngine  implements WorldEngine {
       return(circle);
 
     }
+
+    public createRectangle(worldId:WorldId,drawable:Drawable,width:number,height:number,worldPosition:WorldPosition,options:any):RectangleEngineShape {
+      let rectangle:MatterRectangle = new MatterRectangle (
+        worldId,
+        drawable,
+        width,height,worldPosition,
+        options,
+        this
+      );
+      return(rectangle);
+    }
+
+    public createPolygon(worldId:WorldId,drawable:Drawable,numberOfSides:number,radius:number,worldPosition:WorldPosition,options:any):PolygonEngineShape {
+      let ploygon:PolygonEngineShape = new MatterPolygon(
+        worldId,
+        drawable,
+        numberOfSides,
+        radius,
+        worldPosition,
+        options,
+        this); 
+      return(ploygon);
+    }   
     
 
     public createBounds(width:number,height:number,options:any):void {

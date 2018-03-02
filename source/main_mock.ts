@@ -5,6 +5,10 @@ import { CircleDisplayShape } from "./display/drawableshapes/circledisplayshape"
 import { WorldPosition } from "./world/worldposition";
 import { WorldId } from "./world/worldid";
 import { CircleEngineShape } from "./engine/shapes/circleengineshape";
+import { RectangleEngineShape } from "./engine/shapes/rectangleengineshape";
+import { RectangleDisplayShape } from "./display/drawableshapes/rectangledisplayshape";
+import { PolygonEngineShape } from "./engine/shapes/polygonengineshape";
+import { PolygonDisplayShape } from "./display/drawableshapes/polygondisplayshape";
 
 
 let mockEngine = new MockEngine();
@@ -26,9 +30,30 @@ let circle2:CircleEngineShape = world.worldEngine.createCircle(
   new WorldPosition(300,300),
   {}
 );
+
+let rectangle1:RectangleEngineShape = world.worldEngine.createRectangle(
+  new WorldId("rectangle1"),
+  new RectangleDisplayShape(),
+  40,40,
+  new WorldPosition(100,100),
+  {}
+);
+      
+
+let polygon1:PolygonEngineShape = world.worldEngine.createPolygon(
+  new WorldId("rectangle1"),
+  new PolygonDisplayShape(),
+  5,40,
+  new WorldPosition(400,100),
+  {}
+);
       
 world.worldObjectArray.push(circle1);
 world.worldObjectArray.push(circle2);
+world.worldObjectArray.push(rectangle1);
+world.worldObjectArray.push(polygon1);
+
+
 
 let interval:number = 1000/30; //one millisecond over beat per second
 

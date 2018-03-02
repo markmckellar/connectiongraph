@@ -18,6 +18,45 @@ export interface Drawable {
 	init(engineShape:EngineShape,options:any):void;
 	
 
+	/*
+	drawShape(canvasHolder,node,displayInfo)
+	{
+	    if(node.isSelected)
+	    {
+	    	canvasHolder.context.fillStyle = Common.getColorFromString(displayInfo.selectFillColor);
+	    	canvasHolder.context.strokeStyle = Common.getColorFromString(displayInfo.selectBorderColor);
+	    }
+	    else
+	    {
+	    	canvasHolder.context.fillStyle = Common.getColorFromString(displayInfo.fillColor);
+	    	canvasHolder.context.strokeStyle = Common.getColorFromString(displayInfo.borderColor);
+	    }
+	    
+	    canvasHolder.context.beginPath();
+	    for(var i=0;i<this.pointList.length;i++)
+	    {   	
+			var point = this.pointList[i].createByAdding(node.position);
+	    	if(i==0) canvasHolder.context.moveTo(point.getX(),point.getY());
+	    	else canvasHolder.context.lineTo(point.getX(),point.getY());
+	    }
+	    canvasHolder.context.closePath();
+	    
+	    canvasHolder.context.fill();
+	    canvasHolder.context.lineWidth = displayInfo.borderWidth;
+	    canvasHolder.context.stroke();
+	    
+	    if(this.drawCenterDot)
+	    {
+	    	var averageTrans = this.getAveragePointTransformed(node);
+	    	canvasHolder.context.fillStyle = Common.getColorFromString("000000ff");
+	    	canvasHolder.context.beginPath();
+	    	canvasHolder.context.arc(node.position.getX(),node.position.getY(),2,0,Math.PI * 2, false);
+	    	canvasHolder.context.closePath();
+	    	canvasHolder.context.fill();
+		}
+	}
+	*/
+
 	
 	/*
 	public getShape(worldObject:WorldObject,shapeName:string):WorldShape {
