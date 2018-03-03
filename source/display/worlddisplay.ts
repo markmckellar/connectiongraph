@@ -1,11 +1,5 @@
-//import { MatterTools } from "../matterengine/mattertools";
-//import { World } from "../walkerworld/world";
-//import { MatterEvent } from "../matterengine/matterevent";
-//import { MatterCollisionEvent } from "../matterengine/mattercollisionevent";
-//import { MatterCompositeEvent } from "../matterengine/mattercompositeevent";
-import { WorldPosition } from "../world/worldposition";
 
-//import * as Matter from "matter-js";
+import { WorldPosition } from "../world/worldposition";
 
 export class WorldDisplay  {
     /*
@@ -29,6 +23,23 @@ export class WorldDisplay  {
           parseInt(colorString.substring(6,8), 16)/255.0+")";
       
       return(color);
+	}
+
+
+	public static getPolygonPoints(startAngle:number,numberOfSides:number,radius:number,position:WorldPosition):Array<WorldPosition> {
+		let polygonPointArray = Array<WorldPosition>();	
+        let angle = 0
+        let angleIncrement = 2 * Math.PI / numberOfSides;
+    
+        for(let i=0;i < numberOfSides;i++) {
+            polygonPointArray.push(new WorldPosition(
+                position.x  + radius * Math.cos(angle),
+                position.y  + radius * Math.sin(angle)
+            ));
+            angle = angle + angleIncrement;
+                
+		}
+		return(polygonPointArray);
 	}
 	/**
 	 * Draws an outlined shape from an Array of WorldPosition objects. It is assumed that the fill color, 

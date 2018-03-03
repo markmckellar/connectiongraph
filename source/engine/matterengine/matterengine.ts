@@ -17,7 +17,7 @@ import { CircleEngineShape } from "../shapes/circleengineshape";
 import { Drawable } from "../../display/drawable";
 import { RectangleEngineShape } from "../shapes/rectangleengineshape";
 import { MatterPolygon } from "./shapes/matterpolygon";
-import { PolygonEngineShape } from "../shapes/triangleengineshape";
+import { PolygonEngineShape } from "../shapes/polygonengineshape";
 //import { MatterWalkerEngine } from "../../walkers/engine/matterengine/matterwalkerengine";
 
 export  class MatterEngine  implements WorldEngine {

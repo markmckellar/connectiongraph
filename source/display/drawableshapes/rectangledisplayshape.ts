@@ -1,10 +1,6 @@
 import { Drawable } from "../drawable";
-import { WorldPosition } from "../../world/worldposition";
-//import { WalkerWorld } from "../../walkers/walkerworld/walkerworld";
 import { WorldDisplay } from "../worlddisplay";
 import { RectangleEngineShape } from "../../engine/shapes/rectangleengineshape";
-//import { WalkerEngine } from "../../walkerworld/walkerengine";
-
 
 export class RectangleDisplayShape implements Drawable
 {
@@ -41,6 +37,13 @@ export class RectangleDisplayShape implements Drawable
 
 		context.fillStyle = WorldDisplay.getColorFromString("ff0000ff");
 		context.strokeStyle = WorldDisplay.getColorFromString("0000ffff");
+
+        context.lineWidth = 2;
+        
+        WorldDisplay.drawOutlinedShape(context,this.rectangleEngineShape.getShapePoints());
+
+		/*
+
 		let position:WorldPosition = this.rectangleEngineShape.getWorldPosition();
 
 
@@ -55,7 +58,7 @@ export class RectangleDisplayShape implements Drawable
 			(position.y-this.rectangleEngineShape.getHeight()/2), 
 			this.rectangleEngineShape.getWidth(), 
 			this.rectangleEngineShape.getHeight());
-
+		*/
 
 	}
 }

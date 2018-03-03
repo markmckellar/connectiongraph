@@ -26,9 +26,31 @@ export class MockRectangle extends MockShape implements RectangleEngineShape
 							(worldPosition.y-this.getHeight()/2)<=worldPosition.y &&
 							(worldPosition.y+this.getHeight()/2)>=worldPosition.y
 			)
-	);
-
+		);
 	}
+
+	public getShapePoints():Array<WorldPosition> {
+		//return( WorldDisplay.getPolygonPoints(Math.PI/4,4,this.getWidth()+this.get,this.getWorldPosition() ) ;
+		let polygonPointArray = Array<WorldPosition>();	
+
+
+		polygonPointArray.push( new WorldPosition(
+			this.getWorldPosition().x+this.getWidth()/2,
+			this.getWorldPosition().y+this.getHeight()/2 ) );
+
+		polygonPointArray.push( new WorldPosition(
+			this.getWorldPosition().x+this.getWidth()/2,
+			this.getWorldPosition().y-this.getHeight()/2 ) );
+
+		polygonPointArray.push( new WorldPosition(
+			this.getWorldPosition().x-this.getWidth()/2,
+			this.getWorldPosition().y-this.getHeight()/2 ) );
+
+		polygonPointArray.push( new WorldPosition(
+			this.getWorldPosition().x-this.getWidth()/2,
+			this.getWorldPosition().y+this.getHeight()/2 ) );
+
+		return(polygonPointArray);    }
 
 	public getWidth():number {
 		return(this.width);

@@ -8,8 +8,8 @@ import * as Matter from "matter-js";
 import { CircleEngineShape } from "./engine/shapes/circleengineshape";
 import { RectangleEngineShape } from "./engine/shapes/rectangleengineshape";
 import { RectangleDisplayShape } from "./display/drawableshapes/rectangledisplayshape";
-import { PolygonEngineShape } from "./engine/shapes/triangleengineshape";
 import { PolygonDisplayShape } from "./display/drawableshapes/polygondisplayshape";
+import { PolygonEngineShape } from "./engine/shapes/polygonengineshape";
 
 
 

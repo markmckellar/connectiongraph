@@ -4,6 +4,8 @@ import { MockShape } from "./mockshape";
 import { WorldId } from "../../../world/worldid";
 import { MockEngine } from "../mockengine";
 import { PolygonEngineShape } from "../../shapes/polygonengineshape";
+import { WorldDisplay } from "../../../display/worlddisplay";
+
 
 export class MockPolygon extends MockShape implements PolygonEngineShape
 {
@@ -15,21 +17,7 @@ export class MockPolygon extends MockShape implements PolygonEngineShape
     constructor(worldId:WorldId,drawable:Drawable,numberOfSides:number,radius:number,worldPosition:WorldPosition,options:any,mockEngine:MockEngine)    
 	{
 		super(worldId,drawable,worldPosition,options);
-        this.polygonPointArray = Array<WorldPosition>();	
-        this.numberOfSides = numberOfSides;
-        this.radius = radius;
-        let angle = 0
-        let angleIncrement = 2 * Math.PI / this.numberOfSides;
-    
-        for(let i=0;i < this.numberOfSides;i++) {
-            this.polygonPointArray.push(new WorldPosition(
-                worldPosition.x  + radius * Math.cos(angle),
-                worldPosition.y  + radius * Math.sin(angle)
-            ));
-            angle = angle + angleIncrement;
-                
-        }
-
+        this.polygonPointArray = WorldDisplay.getPolygonPoints(0,numberOfSides,radius,worldPosition);
 		drawable.init(this,options);
 	}
 
@@ -63,6 +51,10 @@ export class MockPolygon extends MockShape implements PolygonEngineShape
     public getNumberOfSides():number {
         return(this.numberOfSides);
     }
+
+    public 	getShapePoints():Array<WorldPosition> {
+        return(this.polygonPointArray);
+    }    
 
     public 	getPointList():Array<WorldPosition> {
         return(this.polygonPointArray);

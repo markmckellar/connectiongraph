@@ -28,6 +28,10 @@ export class MockCircle extends MockShape implements CircleEngineShape
 		return(this.radius);
 	}
 
+	public getShapePoints():Array<WorldPosition> {
+		//return( WorldDisplay.getPolygonPoints(Math.PI/4,4,this.getWidth()+this.get,this.getWorldPosition() ) ;
+		return(null);
+    }
 
 	public get curvePoints(): number {
 		return this._curvePoints;

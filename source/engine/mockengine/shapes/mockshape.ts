@@ -1,5 +1,4 @@
 import { WorldPosition } from "../../../world/worldposition";
-
 import { Drawable } from "../../../display/drawable";
 import { WorldObject } from "../../../world/worldobject";
 import { WorldId } from "../../../world/worldid";

@@ -49,6 +49,10 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 	public setSelected(selected:boolean): void { this.isObjectSelected = selected; }
 	public setVisable(visable:boolean):void { this.isObjectVisable = visable; }
 	
+
+	public getShapePoints():Array<WorldPosition> {
+        return( MatterTools.getWorldPostionArrayFromVectorArray(this.getBody().vertices) );     
+    }
 	
     public getWorldPosition():WorldPosition {
 		return( MatterTools.bodyPostion2WorldPosition( this. getBody() ) );

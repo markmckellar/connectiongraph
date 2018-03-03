@@ -7,8 +7,7 @@ import { RectangleEngineShape } from "../shapes/rectangleengineshape";
 import { MockCircle } from "./shapes/mockcircle";
 import { MockRectangle } from "./shapes/mockrectangle";
 import { MockPolygon } from "./shapes/mockpolygon";
-
-import { PolygonEngineShape } from "../shapes/triangleengineshape";
+import { PolygonEngineShape } from "../shapes/polygonengineshape";
 
 
 export class MockEngine implements WorldEngine {
