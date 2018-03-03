@@ -16,7 +16,9 @@ export class MockPolygon extends MockShape implements PolygonEngineShape
 
     constructor(worldId:WorldId,drawable:Drawable,numberOfSides:number,radius:number,worldPosition:WorldPosition,options:any,mockEngine:MockEngine)    
 	{
-		super(worldId,drawable,worldPosition,options);
+        super(worldId,drawable,worldPosition,options);
+        this.radius = radius;
+        this.numberOfSides = numberOfSides;
         this.polygonPointArray = WorldDisplay.getPolygonPoints(0,numberOfSides,radius,worldPosition);
 		drawable.init(this,options);
 	}
@@ -62,15 +64,21 @@ export class MockPolygon extends MockShape implements PolygonEngineShape
 
     public translate(worldPosition:WorldPosition):void {
         super.translate(worldPosition);
-        for(let i=0;i<this.polygonPointArray.length;i++) 
-            this.polygonPointArray[i].translate(worldPosition);
+        //this.polygonPointArray = WorldDisplay.getPolygonPoints(0,this.numberOfSides,this.radius,worldPosition);
+        
+            for(let i=0;i<this.polygonPointArray.length;i++) 
+                this.polygonPointArray[i].translate(this.getWorldPosition());
 	}
 
 	
 	public setWorldPosition(worldPosition:WorldPosition):void {
-        super.translate(worldPosition);
-        for(let i=0;i<this.polygonPointArray.length;i++) 
-            this.polygonPointArray[i].moveTo(worldPosition);
+       super.setWorldPosition(worldPosition);
+       this.polygonPointArray = WorldDisplay.getPolygonPoints(0,this.numberOfSides,this.radius,this.getWorldPosition());
+
+       // TODO this is not working becasue it moves all points to the same point... it should be getting the offset from the set
+       // position and moving each point by that amount
+      //  for(let i=0;i<this.polygonPointArray.length;i++) 
+      //    this.polygonPointArray[i].setWorldPosition(this.getWorldPosition());
 	}
 
 

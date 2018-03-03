@@ -43,14 +43,17 @@ export abstract class MockShape implements WorldObject
 	}
 
 	public translate(worldPosition:WorldPosition):void {
-		this.position.x = worldPosition.x;
-		this.position.y = worldPosition.y;
+		//this.position.x = worldPosition.x;
+		//this.position.y = worldPosition.y;
+		this.position.translate(worldPosition);
+		
 	}
 
 	
 	public setWorldPosition(worldPosition:WorldPosition):void {
-		this.position.x = worldPosition.x;
-		this.position.y = worldPosition.y;
+		//this.position.x = worldPosition.x;
+		//this.position.y = worldPosition.y;
+		this.position.setWorldPosition(worldPosition);
 	}
 
 	public abstract containsWorldPosition(worldPosition:WorldPosition):boolean;

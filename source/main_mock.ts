@@ -41,7 +41,7 @@ let rectangle1:RectangleEngineShape = world.worldEngine.createRectangle(
       
 
 let polygon1:PolygonEngineShape = world.worldEngine.createPolygon(
-  new WorldId("rectangle1"),
+  new WorldId("polygon1"),
   new PolygonDisplayShape(),
   5,40,
   new WorldPosition(400,100),

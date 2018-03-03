@@ -21,10 +21,10 @@ export class MockRectangle extends MockShape implements RectangleEngineShape
 	public containsWorldPosition(worldPosition:WorldPosition):boolean {
 		return(
 			(
-							(worldPosition.x-this.getWidth()/2)<=worldPosition.x &&
-							(worldPosition.x+this.getWidth()/2)>=worldPosition.x &&
-							(worldPosition.y-this.getHeight()/2)<=worldPosition.y &&
-							(worldPosition.y+this.getHeight()/2)>=worldPosition.y
+							(this.getWorldPosition().x-this.getWidth()/2)<=worldPosition.x &&
+							(this.getWorldPosition().x+this.getWidth()/2)>=worldPosition.x &&
+							(this.getWorldPosition().y-this.getHeight()/2)<=worldPosition.y &&
+							(this.getWorldPosition().y+this.getHeight()/2)>=worldPosition.y
 			)
 		);
 	}
