@@ -3,17 +3,12 @@ import { MatterEvent } from "./events/matterevent";
 import { MatterCollisionEvent } from "./events/mattercollisionevent";
 import { MatterCompositeEvent } from "./events/mattercompositeevent";
 import { MatterTimestampedEvent } from "./events/mattertimestampedevent";
-
-
 import * as Matter from "matter-js";
 import { WorldEngine } from "../worldengine";
 import { WorldId } from "../../world/worldid";
 import { World } from "../../world/world";
-
-//import { CircleDisplayShape } from "../../display/drawableshapes/circledisplayshape";
 import { MatterCircle } from "./shapes/mattercircle";
 import { MatterRectangle } from "./shapes/matterrectangle";
-
 import { WorldPosition } from "../../world/worldposition";
 import { CircleEngineShape } from "../shapes/circleengineshape";
 import { Drawable } from "../../display/drawable";
@@ -25,7 +20,6 @@ import { MouseEventHandler } from "../../display/canvas/mouseeventhandler";
 import { MatterShape } from "./shapes/mattershape";
 import { EngineShape } from "../shapes/engineshape";
 import { CircleDisplayShape } from "../../display/drawableshapes/circledisplayshape";
-//import { MatterWalkerEngine } from "../../walkers/engine/matterengine/matterwalkerengine";
 
 export  class MatterEngine  implements WorldEngine {
     private _matterTools:MatterTools ;
@@ -48,10 +42,6 @@ export  class MatterEngine  implements WorldEngine {
         this.timestampEventHandlers = new Map<string,MatterTimestampedEvent>();
         this.matterShapes = new Map<WorldId,MatterShape>();
         
-
-        
-        // Matter.IEngineDefinition, options?: Matter.IEngineDefinition
-
         this.engine = Matter.Engine.create(); 
         
         this.engine.world.gravity.x = 0.0;
@@ -60,34 +50,22 @@ export  class MatterEngine  implements WorldEngine {
         this.mouseAnchor = new MatterCircle(
           new WorldId("mouseAnchor"),
           new CircleDisplayShape(),
-          5,8,
+          5,8,          
           new WorldPosition(60,60),
-          {restitution:0.9},
+          {restitution:0.9,isSensor:true},
           this
         );
 
-        let mouseAnchorB = new MatterCircle(
-          new WorldId("mouseAnchor"),
-          new CircleDisplayShape(),
-          5,8,
-          new WorldPosition(60,60),
-          {restitution:0.9},
-          this
-        );
-      
+        
         Matter.Body.setStatic(this.mouseAnchor.getBody(),true);
         this.matterMouseConstraint = Matter.Constraint.create({
           label: 'Mouse Constraint', 
           bodyA:this.mouseAnchor.getBody(),      
-          //pointA: this.mouseAnchor.getBody().position,
-          bodyB:mouseAnchorB.getBody(),               
-          //pointB: mouseAnchorB.getBody().position, 
-          //pointB: { x: -0, y: -0. },
+          bodyB:this.mouseAnchor.getBody(),      
           pointA: { x: -0, y: -0. },
           pointB: { x: -0, y: -0. },
-
           length:0.1,
-          stiffness: 0.001,
+          stiffness: 0.1,
         });moveTo
 
         //Matter.World.add(this.engine.world,[this.matterMouseConstraint]);
@@ -111,9 +89,15 @@ export  class MatterEngine  implements WorldEngine {
     }
 
     public updateMouseConstraint(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void {
+      var newPosition = new WorldPosition(
+        //  event.x-mouseEventHandler.getMouseStatus().clickOffset.x,
+        //  event.y-mouseEventHandler.getMouseStatus().clickOffset.y
+        event.x- canvasMouse.offset.x,event.y- canvasMouse.offset.y
+      );
+      this.mouseAnchor.translate(newPosition);
+      //this.matterMouseConstraint.pointA.x = canvasMouse.offset.x;
+      //this.matterMouseConstraint.pointA.y = canvasMouse.offset.y;
       
-      this.matterMouseConstraint.pointA.x = mouseEventHandler.getMouseStatus().position.x;
-      this.matterMouseConstraint.pointA.y = mouseEventHandler.getMouseStatus().position.y;
       
       
       //console.log("updateMouseConstraint:x="+this.matterMouseConstraint.pointA.x+":y="+this.matterMouseConstraint.pointA.y);
@@ -129,49 +113,21 @@ export  class MatterEngine  implements WorldEngine {
           this.matterMouseConstraint.bodyB = bodyB;
           //this.matterMouseConstraint.pointB = bodyB.position;
           //this.matterMouseConstraint.pointB = { x: +this.matterMouseConstraint.pointA.x, y: +this.matterMouseConstraint.pointA.y };
-          this.matterMouseConstraint.pointB = { x:bodyB.position.x, y:bodyB.position.y };
-          
-          ////////////Matter.Sleeping.set(bodyB, false);
-          
+          //this.matterMouseConstraint.pointB = { x:bodyB.position.x, y:bodyB.position.y };
+          this.matterMouseConstraint.pointB =
+          { 
+            x:0,y:0,
+            //x:  event.x - bodyB.position.x - canvasMouse.offset.x,
+            //y:  event.y - bodyB.position.y - canvasMouse.offset.y
+          };
 
           console.log("-----updateMouseConstraint:getCurrentWorldObject="+mouseEventHandler.getCurrentWorldObject().getWorldId().id+
           ":Ax="+this.matterMouseConstraint.pointA.x+":Ay="+this.matterMouseConstraint.pointA.y+
-          //":Bx="+this.matterMouseConstraint.pointB.x+":By="+this.matterMouseConstraint.pointB.y
             "");
           console.log("-xx-------------:bodyB="+bodyB+":bodyB.position="+JSON.stringify(bodyB.position)+
             ":MSx="+matterShape.getWorldPosition().x+":MSy="+matterShape.getWorldPosition().y);
-          ///this.matterMouseConstraint.pointB = { 
-          //  x: this.matterMouseConstraint.pointA.x - bodyB.position.x ,
-          //  y: this.matterMouseConstraint.pointA.y - bodyB.position.y
-          //};
-          
-          
 
-          //this.matterMouseConstraint.pointA = mouse.position;
-        //  this.matterMouseConstraint.bodyB = this.matterShapes.get(mouseEventHandler.getCurrentWorldObject().getWorldId()).getBody();
-          //this.matterMouseConstraint.pointB = { x: mouse.position.x - body.position.x, y: mouse.position.y - body.position.y };
-         // this.matterMouseConstraint.pointB = { 
-         //   x: this.matterMouseConstraint.pointA.x - this.matterMouseConstraint.bodyB.position.x ,
-         //   y: this.matterMouseConstraint.pointA.y - this.matterMouseConstraint.bodyB.position.y
-         // };
-          
-          ///this.matterMouseConstraint.angleB = this.matterShapes.get(mouseEventHandler.getCurrentWorldObject().getWorldId()).getBody().angle;
         }
-        //Matter.Sleeping.set(this.matterMouseConstraint.bodyB, false);
-        
-        /************ 
-        var deltaPosition = mouseEventHandler.getMouseStatus().startPosition.getDelta(mouseEventHandler.getMouseStatus().position);
-     
-        let newX = mouseEventHandler.getMouseStatus().startPosition.x-
-            deltaPosition.x+
-            mouseEventHandler.getMouseStatus().clickOffset.x;
-        
-        let newY = mouseEventHandler.getMouseStatus().startPosition.y-
-            deltaPosition.y+
-            mouseEventHandler.getMouseStatus().clickOffset.y;
-  
-        mouseEventHandler.getCurrentWorldObject().setWorldPosition( new WorldPosition(newX,newY));
-        *************/
       }
       else if(mouseEventHandler.getCurrentWorldObject()==null)
       {
@@ -187,33 +143,6 @@ export  class MatterEngine  implements WorldEngine {
 
     public pointerMoveEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void {
       this.updateMouseConstraint(world,canvasMouse,event,mouseEventHandler);
-
-      //if(mouseEventHandler.getCurrentWorldObject()!=null)
-     // {
-       // if(this.matterShapes.has(mouseEventHandler.getCurrentWorldObject().getWorldId()) )
-        //{
-         // this.matterMouseConstraint.bodyB = this.matterShapes.get(mouseEventHandler.getCurrentWorldObject().getWorldId()).getBody();
-       // }
-        /************ 
-        var deltaPosition = mouseEventHandler.getMouseStatus().startPosition.getDelta(mouseEventHandler.getMouseStatus().position);
-  
-  
-            
-        let newX = mouseEventHandler.getMouseStatus().startPosition.x-
-            deltaPosition.x+
-            mouseEventHandler.getMouseStatus().clickOffset.x;
-        
-        let newY = mouseEventHandler.getMouseStatus().startPosition.y-
-            deltaPosition.y+
-            mouseEventHandler.getMouseStatus().clickOffset.y;
-  
-        mouseEventHandler.getCurrentWorldObject().setWorldPosition( new WorldPosition(newX,newY));
-        *************/
-      //}
-      //else{
-      //  this.matterMouseConstraint.bodyB = null;
-        
-     // }
     }
 
     public pointerUpEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void {
@@ -221,35 +150,6 @@ export  class MatterEngine  implements WorldEngine {
       
     }
 
-    /*
-      var constraint = Matter.Constraint.create({ 
-        label: 'Mouse Constraint',
-        pointA: { x: 0, y: 0 },
-        pointB: { x: 0, y: 0 },
-        length: 0.01, 
-        stiffness: 0.1,
-        angularStiffness: 1,
-        render: {
-            strokeStyle: '#90EE90',
-            lineWidth: 3
-        }
-    });
-*/
-/*
-    var defaults = {
-        type: 'mouseConstraint',
-        mouse: mouse,
-        element: null,
-        body: null,
-        constraint: constraint,
-        collisionFilter: {
-            category: 0x0001,
-            mask: 0xFFFFFFFF,
-            group: 0
-        }
-    };
-    }
-*/
     public createCircle(worldId:WorldId,drawable:Drawable,radius:number,numberOfSides:number,worldPosition:WorldPosition,options:any):CircleEngineShape {
       let circle:MatterCircle = new MatterCircle(
         worldId,
@@ -322,16 +222,6 @@ export  class MatterEngine  implements WorldEngine {
         this.timestampEventHandlers.delete(this.geTimestampedEventMapId(name,eventType));    
       }
   
-      /*
-      private hasCompositeHandler(name:string,eventType:MatterEvent):boolean {
-        return(this.compositeEventHandlers.has(this.getCompositeEventMapId(name,eventType)));
-      }
-  
-      private getCompositeHandler(name:string,eventType:MatterEvent):MatterCompositeEvent {
-        return( this.compositeEventHandlers.get(this.getCompositeEventMapId(name,eventType)) );
-      }      
-      */
-
       private getCollisionEventMapId(body:Matter.Body,eventType:MatterEvent):string {
         return(body.id+":"+eventType);
       }
@@ -416,15 +306,7 @@ export  class MatterEngine  implements WorldEngine {
             handler(this,eventType,event);
           }          
         }
-
-        /*
-        for(let name in this.compositeEventHandlers.keys){
-          console.log("MatterEngine:processCompositeEvent:name="+name);
-          let handler:MatterCompositeEvent = this.compositeEventHandlers.get(name);
-          handler(this,eventType,event);
-        } 
-        */
-        
+      
        }
   
        public enableEvents():void {
