@@ -8,6 +8,8 @@ import { MatterTimestampedEvent } from "./events/mattertimestampedevent";
 import * as Matter from "matter-js";
 import { WorldEngine } from "../worldengine";
 import { WorldId } from "../../world/worldid";
+import { World } from "../../world/world";
+
 //import { CircleDisplayShape } from "../../display/drawableshapes/circledisplayshape";
 import { MatterCircle } from "./shapes/mattercircle";
 import { MatterRectangle } from "./shapes/matterrectangle";
@@ -18,15 +20,23 @@ import { Drawable } from "../../display/drawable";
 import { RectangleEngineShape } from "../shapes/rectangleengineshape";
 import { MatterPolygon } from "./shapes/matterpolygon";
 import { PolygonEngineShape } from "../shapes/polygonengineshape";
+import { CanvasMouse } from "../../display/canvas/canvasmouse";
+import { MouseEventHandler } from "../../display/canvas/mouseeventhandler";
+import { MatterShape } from "./shapes/mattershape";
+import { EngineShape } from "../shapes/engineshape";
+import { CircleDisplayShape } from "../../display/drawableshapes/circledisplayshape";
 //import { MatterWalkerEngine } from "../../walkers/engine/matterengine/matterwalkerengine";
 
 export  class MatterEngine  implements WorldEngine {
     private _matterTools:MatterTools ;
+    private _matterShapes : Map<WorldId,MatterShape>;
     private _collisionEventHandlers : Map<string,MatterCollisionEvent>;
     private _compositeEventHandlers : Map<string,MatterCompositeEvent>;
     private _timestampEventHandlers : Map<string,MatterTimestampedEvent>;
-    
+    private _matterMouseConstraint:Matter.Constraint;
     private _engine : Matter.Engine;
+    private _mouseAnchor:MatterCircle;
+    
 
     public static boundsFilter:number = 1;//0x0001;
     
@@ -36,6 +46,8 @@ export  class MatterEngine  implements WorldEngine {
         this.collisionEventHandlers = new Map<string,MatterCollisionEvent>(); 
         this.compositeEventHandlers = new Map<string,MatterCompositeEvent>();
         this.timestampEventHandlers = new Map<string,MatterTimestampedEvent>();
+        this.matterShapes = new Map<WorldId,MatterShape>();
+        
 
         
         // Matter.IEngineDefinition, options?: Matter.IEngineDefinition
@@ -44,12 +56,200 @@ export  class MatterEngine  implements WorldEngine {
         
         this.engine.world.gravity.x = 0.0;
         this.engine.world.gravity.y = 1.0;
+
+        this.mouseAnchor = new MatterCircle(
+          new WorldId("mouseAnchor"),
+          new CircleDisplayShape(),
+          5,8,
+          new WorldPosition(60,60),
+          {restitution:0.9},
+          this
+        );
+
+        let mouseAnchorB = new MatterCircle(
+          new WorldId("mouseAnchor"),
+          new CircleDisplayShape(),
+          5,8,
+          new WorldPosition(60,60),
+          {restitution:0.9},
+          this
+        );
       
+        Matter.Body.setStatic(this.mouseAnchor.getBody(),true);
+        this.matterMouseConstraint = Matter.Constraint.create({
+          label: 'Mouse Constraint', 
+          bodyA:this.mouseAnchor.getBody(),      
+          //pointA: this.mouseAnchor.getBody().position,
+          bodyB:mouseAnchorB.getBody(),               
+          //pointB: mouseAnchorB.getBody().position, 
+          //pointB: { x: -0, y: -0. },
+          pointA: { x: -0, y: -0. },
+          pointB: { x: -0, y: -0. },
+
+          length:0.1,
+          stiffness: 0.001,
+        });moveTo
+
+        //Matter.World.add(this.engine.world,[this.matterMouseConstraint]);
+
+        Matter.World.addConstraint(this.engine.world, this.matterMouseConstraint)
+        
 
         this.enableEvents();
 
     }
 
+
+    public getMouseAnchor():EngineShape {
+      return(this.mouseAnchor);
+    }
+
+    public addMatterShape(matterShape:MatterShape):void {
+      this.matterShapes.set(matterShape.worldId,matterShape);
+      Matter.World.add(this.engine.world,[matterShape.getBody()]);
+      
+    }
+
+    public updateMouseConstraint(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void {
+      
+      this.matterMouseConstraint.pointA.x = mouseEventHandler.getMouseStatus().position.x;
+      this.matterMouseConstraint.pointA.y = mouseEventHandler.getMouseStatus().position.y;
+      
+      
+      //console.log("updateMouseConstraint:x="+this.matterMouseConstraint.pointA.x+":y="+this.matterMouseConstraint.pointA.y);
+      if(mouseEventHandler.getCurrentWorldObject()!=null && this.matterMouseConstraint.bodyB==null)
+      {
+        console.log("updateMouseConstraint:getCurrentWorldObject="+mouseEventHandler.getCurrentWorldObject().getWorldId().id+
+          ":Ax="+this.matterMouseConstraint.pointA.x+":Ay="+this.matterMouseConstraint.pointA.y);
+        
+        if(this.matterShapes.has(mouseEventHandler.getCurrentWorldObject().getWorldId()) )
+        {
+          let matterShape:MatterShape = this.matterShapes.get(mouseEventHandler.getCurrentWorldObject().getWorldId());
+          let bodyB =  matterShape.getBody();
+          this.matterMouseConstraint.bodyB = bodyB;
+          //this.matterMouseConstraint.pointB = bodyB.position;
+          //this.matterMouseConstraint.pointB = { x: +this.matterMouseConstraint.pointA.x, y: +this.matterMouseConstraint.pointA.y };
+          this.matterMouseConstraint.pointB = { x:bodyB.position.x, y:bodyB.position.y };
+          
+          ////////////Matter.Sleeping.set(bodyB, false);
+          
+
+          console.log("-----updateMouseConstraint:getCurrentWorldObject="+mouseEventHandler.getCurrentWorldObject().getWorldId().id+
+          ":Ax="+this.matterMouseConstraint.pointA.x+":Ay="+this.matterMouseConstraint.pointA.y+
+          //":Bx="+this.matterMouseConstraint.pointB.x+":By="+this.matterMouseConstraint.pointB.y
+            "");
+          console.log("-xx-------------:bodyB="+bodyB+":bodyB.position="+JSON.stringify(bodyB.position)+
+            ":MSx="+matterShape.getWorldPosition().x+":MSy="+matterShape.getWorldPosition().y);
+          ///this.matterMouseConstraint.pointB = { 
+          //  x: this.matterMouseConstraint.pointA.x - bodyB.position.x ,
+          //  y: this.matterMouseConstraint.pointA.y - bodyB.position.y
+          //};
+          
+          
+
+          //this.matterMouseConstraint.pointA = mouse.position;
+        //  this.matterMouseConstraint.bodyB = this.matterShapes.get(mouseEventHandler.getCurrentWorldObject().getWorldId()).getBody();
+          //this.matterMouseConstraint.pointB = { x: mouse.position.x - body.position.x, y: mouse.position.y - body.position.y };
+         // this.matterMouseConstraint.pointB = { 
+         //   x: this.matterMouseConstraint.pointA.x - this.matterMouseConstraint.bodyB.position.x ,
+         //   y: this.matterMouseConstraint.pointA.y - this.matterMouseConstraint.bodyB.position.y
+         // };
+          
+          ///this.matterMouseConstraint.angleB = this.matterShapes.get(mouseEventHandler.getCurrentWorldObject().getWorldId()).getBody().angle;
+        }
+        //Matter.Sleeping.set(this.matterMouseConstraint.bodyB, false);
+        
+        /************ 
+        var deltaPosition = mouseEventHandler.getMouseStatus().startPosition.getDelta(mouseEventHandler.getMouseStatus().position);
+     
+        let newX = mouseEventHandler.getMouseStatus().startPosition.x-
+            deltaPosition.x+
+            mouseEventHandler.getMouseStatus().clickOffset.x;
+        
+        let newY = mouseEventHandler.getMouseStatus().startPosition.y-
+            deltaPosition.y+
+            mouseEventHandler.getMouseStatus().clickOffset.y;
+  
+        mouseEventHandler.getCurrentWorldObject().setWorldPosition( new WorldPosition(newX,newY));
+        *************/
+      }
+      else if(mouseEventHandler.getCurrentWorldObject()==null)
+      {
+        this.matterMouseConstraint.bodyB = null        
+        this.matterMouseConstraint.pointB = null;   
+      }
+    }
+
+    public pointerDownEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void {
+      this.updateMouseConstraint(world,canvasMouse,event,mouseEventHandler);
+      
+    }
+
+    public pointerMoveEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void {
+      this.updateMouseConstraint(world,canvasMouse,event,mouseEventHandler);
+
+      //if(mouseEventHandler.getCurrentWorldObject()!=null)
+     // {
+       // if(this.matterShapes.has(mouseEventHandler.getCurrentWorldObject().getWorldId()) )
+        //{
+         // this.matterMouseConstraint.bodyB = this.matterShapes.get(mouseEventHandler.getCurrentWorldObject().getWorldId()).getBody();
+       // }
+        /************ 
+        var deltaPosition = mouseEventHandler.getMouseStatus().startPosition.getDelta(mouseEventHandler.getMouseStatus().position);
+  
+  
+            
+        let newX = mouseEventHandler.getMouseStatus().startPosition.x-
+            deltaPosition.x+
+            mouseEventHandler.getMouseStatus().clickOffset.x;
+        
+        let newY = mouseEventHandler.getMouseStatus().startPosition.y-
+            deltaPosition.y+
+            mouseEventHandler.getMouseStatus().clickOffset.y;
+  
+        mouseEventHandler.getCurrentWorldObject().setWorldPosition( new WorldPosition(newX,newY));
+        *************/
+      //}
+      //else{
+      //  this.matterMouseConstraint.bodyB = null;
+        
+     // }
+    }
+
+    public pointerUpEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void {
+      this.updateMouseConstraint(world,canvasMouse,event,mouseEventHandler);
+      
+    }
+
+    /*
+      var constraint = Matter.Constraint.create({ 
+        label: 'Mouse Constraint',
+        pointA: { x: 0, y: 0 },
+        pointB: { x: 0, y: 0 },
+        length: 0.01, 
+        stiffness: 0.1,
+        angularStiffness: 1,
+        render: {
+            strokeStyle: '#90EE90',
+            lineWidth: 3
+        }
+    });
+*/
+/*
+    var defaults = {
+        type: 'mouseConstraint',
+        mouse: mouse,
+        element: null,
+        body: null,
+        constraint: constraint,
+        collisionFilter: {
+            category: 0x0001,
+            mask: 0xFFFFFFFF,
+            group: 0
+        }
+    };
+    }
+*/
     public createCircle(worldId:WorldId,drawable:Drawable,radius:number,numberOfSides:number,worldPosition:WorldPosition,options:any):CircleEngineShape {
       let circle:MatterCircle = new MatterCircle(
         worldId,
@@ -304,7 +504,30 @@ export  class MatterEngine  implements WorldEngine {
 	}
 
 
+	public get matterMouseConstraint(): Matter.Constraint {
+		return this._matterMouseConstraint;
+	}
+
+	public set matterMouseConstraint(value: Matter.Constraint) {
+		this._matterMouseConstraint = value;
+	}
 
 
-  
+	public get matterShapes(): Map<WorldId,MatterShape> {
+		return this._matterShapes;
+	}
+
+	public set matterShapes(value: Map<WorldId,MatterShape>) {
+		this._matterShapes = value;
+	}
+
+  public get mouseAnchor(): MatterCircle {
+		return this._mouseAnchor;
+	}
+
+	public set mouseAnchor(value: MatterCircle) {
+		this._mouseAnchor = value;
+	}
+
+
 }

@@ -29,7 +29,7 @@ export class MatterCircle extends MatterShape implements CircleEngineShape
 			this.curvePoints);	
 		this.circleBody.collisionFilter.category = MatterEngine.boundsFilter;
 		drawable.init(this,options);
-		Matter.World.add(matterEngine.engine.world,[this.circleBody]);
+		matterEngine.addMatterShape(this);
 		
 		
 	}

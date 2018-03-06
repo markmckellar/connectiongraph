@@ -4,6 +4,7 @@ import { MouseEventHandler } from "./mouseeventhandler";
 import { WorldPosition } from "../../world/worldposition";
 import { World } from "../../world/world";
 import { CanvasMouse } from "./canvasmouse";
+import { WorldDisplay } from "../worlddisplay";
 
 
 
@@ -17,7 +18,11 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
         this.mouseStatus = new MouseStatus();
         this.currentWorldObject = null;
         this.lastWorldObject = null;
-    }
+	}
+	
+	public getMouseStatus():MouseStatus {
+		return(this.mouseStatus);
+	}
 
     public worldObjectSelected(world:World,event:MouseEvent,wWorldObject:WorldObject):void {
 
@@ -26,16 +31,22 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
     public worldObjectDeselected(world:World,event:MouseEvent):void {
 
 	}
+
+	public getCurrentWorldObject():WorldObject {
+		return(this.currentWorldObject);
+	}
 	
+	/*
 	public getWorldPositionFromMouseEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent):WorldPosition {
 		var eventPosition:WorldPosition = new WorldPosition(event.pageX-canvasMouse.offset.x,event.pageY-canvasMouse.offset.y);
 		return(eventPosition);
 	}
+	*/
    
     public pointerDownEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent):void
 	{
 		//console.log("pointerDownEvent:"+JSON.stringify(event));;
-		var eventPosition:WorldPosition = this.getWorldPositionFromMouseEvent(world,canvasMouse,event);
+		var eventPosition:WorldPosition = WorldDisplay.getWorldPositionFromMouseEvent(world,canvasMouse,event);
 		//this.hideCurrentNodeInfo();
 		console.log("pointerDownEvent:"+JSON.stringify(eventPosition));;
 
@@ -61,10 +72,10 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 
 			this.currentWorldObject.setSelected(true);
 			this.mouseStatus.clickOffset = this.currentWorldObject.getWorldPosition().getDelta(eventPosition);
-
+			this.currentWorldObject.setAnimated(false);
 			/////////////////this.mouseStatus.clickOffset = clickWorldObject.getWorldPosition().getDelta(eventPosition);
 			//this.mouseEventHandler.pointerDown(this.mouseStatus);			
-			this.worldObjectSelected(world,event,this.currentWorldObject);
+			this.worldObjectSelected(world,event,this.currentWorldObject);			
 		}
 		
 		if(clickWorldObject==null)
@@ -78,20 +89,56 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 			this.lastWorldObject.setSelected(false);
 			this.lastWorldObject = null;
 		}
+
+		world.worldEngine.pointerDownEngineEvent(world,canvasMouse,event,this);
+		////////////this.updateObjectPosition(eventPosition);
+
+		
+		
 	
-    }
-    
+	}
+/*
+	private updateObjectPosition():void {
+
+		if(this.currentWorldObject!=null)
+		{
+			this.currentWorldObject.setAnimated(false);
+			this.mouseStatus.position = this.mouseStatus.position;;
+			var deltaPosition = this.mouseStatus.startPosition.getDelta(this.mouseStatus.position);
+
+
+					
+			let newX = this.mouseStatus.startPosition.x-
+					deltaPosition.x+
+					this.mouseStatus.clickOffset.x;
+			
+			let newY = this.mouseStatus.startPosition.y-
+					deltaPosition.y+
+					this.mouseStatus.clickOffset.y;
+
+			this.currentWorldObject.setWorldPosition( new WorldPosition(newX,newY));
+		}
+	}
+  */  
     
 
     public pointerMoveEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {
+		var eventPosition:WorldPosition = WorldDisplay.getWorldPositionFromMouseEvent(world,canvasMouse,event);
+		this.mouseStatus.position = eventPosition;
+		
 		if(this.mouseStatus.isDown)
 		{
-			var eventPosition:WorldPosition = this.getWorldPositionFromMouseEvent(world,canvasMouse,event);
-
+			//var eventPosition:WorldPosition = WorldDisplay.getWorldPositionFromMouseEvent(world,canvasMouse,event);
+			//this.mouseStatus.position = eventPosition;
+			
 			////////////console.log("pointerMoveEvent:"+event);
 
 			this.worldObjectDeselected(world,event);
-
+			if(this.currentWorldObject!=null) this.currentWorldObject.setAnimated(false);
+			this.mouseStatus.position = this.mouseStatus.position;;
+			
+			//this.updateObjectPosition(eventPosition);
+			/*
 			if(this.currentWorldObject!=null)
 			{
 				this.currentWorldObject.setAnimated(false);
@@ -110,14 +157,18 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 
 				this.currentWorldObject.setWorldPosition( new WorldPosition(newX,newY));
 			}
+			*/
 		}
+		world.worldEngine.pointerMoveEngineEvent(world,canvasMouse,event,this);
     }
             
 
     public pointerUpEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent):void 	{
 		//console.log("pointerUpEvent:"+JSON.stringify(event));
 		//var eventPosition:WorldPosition = this.getWorldPositionFromMouseEvent(world,canvasMouse,event);
-
+		var eventPosition:WorldPosition = WorldDisplay.getWorldPositionFromMouseEvent(world,canvasMouse,event);
+		this.mouseStatus.position = eventPosition;
+		
 		if(this.currentWorldObject!=null)
 		{
 			///this.nodeCanvas.pointerUp(this.mouseStatus.node);
@@ -128,6 +179,8 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 			this.currentWorldObject = null;
 		}
 		this.mouseStatus.isDown = false;
+		world.worldEngine.pointerUpEngineEvent(world,canvasMouse,event,this);
+		
 	}
 
 	public get mouseStatus(): MouseStatus {

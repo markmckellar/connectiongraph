@@ -1,5 +1,7 @@
 
 import { WorldPosition } from "../world/worldposition";
+import { World } from "../world/world";
+import { CanvasMouse } from "./canvas/canvasmouse";
 
 export class WorldDisplay  {
     /*
@@ -23,6 +25,11 @@ export class WorldDisplay  {
           parseInt(colorString.substring(6,8), 16)/255.0+")";
       
       return(color);
+	}
+
+	public static getWorldPositionFromMouseEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent):WorldPosition {
+		var eventPosition:WorldPosition = new WorldPosition(event.pageX-canvasMouse.offset.x,event.pageY-canvasMouse.offset.y);
+		return(eventPosition);
 	}
 
 

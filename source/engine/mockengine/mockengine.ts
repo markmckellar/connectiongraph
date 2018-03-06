@@ -8,6 +8,9 @@ import { MockCircle } from "./shapes/mockcircle";
 import { MockRectangle } from "./shapes/mockrectangle";
 import { MockPolygon } from "./shapes/mockpolygon";
 import { PolygonEngineShape } from "../shapes/polygonengineshape";
+import { CanvasMouse } from "../../display/canvas/canvasmouse";
+import { MouseEventHandler } from "../../display/canvas/mouseeventhandler";
+import { World } from "../../world/world";
 
 
 export class MockEngine implements WorldEngine {
@@ -44,5 +47,31 @@ export class MockEngine implements WorldEngine {
         this); 
       return(ploygon);
     }   
+
+    public pointerDownEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void {
+          }
+      
+    public pointerMoveEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void {
+      if(mouseEventHandler.getCurrentWorldObject()!=null)
+      {
+        var deltaPosition = mouseEventHandler.getMouseStatus().startPosition.getDelta(mouseEventHandler.getMouseStatus().position);
+  
+  
+            
+        let newX = mouseEventHandler.getMouseStatus().startPosition.x-
+            deltaPosition.x+
+            mouseEventHandler.getMouseStatus().clickOffset.x;
+        
+        let newY = mouseEventHandler.getMouseStatus().startPosition.y-
+            deltaPosition.y+
+            mouseEventHandler.getMouseStatus().clickOffset.y;
+  
+            mouseEventHandler.getCurrentWorldObject().setWorldPosition( new WorldPosition(newX,newY));
+      }
+    }
+
+    public pointerUpEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void {
+
+    }
        
 }

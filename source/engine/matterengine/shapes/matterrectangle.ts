@@ -29,8 +29,7 @@ export class MatterRectangle extends MatterShape implements RectangleEngineShape
             options);	
 		this.rectangleBody.collisionFilter.category = MatterEngine.boundsFilter;
 		drawable.init(this,options);
-		Matter.World.add(matterEngine.engine.world,[this.rectangleBody]);
-		
+		matterEngine.addMatterShape(this);
 		
 	}
 

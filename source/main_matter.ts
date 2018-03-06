@@ -27,7 +27,7 @@ let circle1:CircleEngineShape = world.worldEngine.createCircle(
     );
     
 let circle2:CircleEngineShape = world.worldEngine.createCircle(
-  new WorldId("circle1"),
+  new WorldId("circle2"),
   new CircleDisplayShape(),
   40,8,
   new WorldPosition(300,300),
@@ -44,7 +44,7 @@ let rectangle1:RectangleEngineShape = world.worldEngine.createRectangle(
 );
 
 let polygon1:PolygonEngineShape = world.worldEngine.createPolygon(
-  new WorldId("rectangle1"),
+  new WorldId("polygon1"),
   new PolygonDisplayShape(),
   5,40,
   new WorldPosition(400,100),
@@ -55,6 +55,7 @@ world.worldObjectArray.push(circle1);
 world.worldObjectArray.push(circle2);
 world.worldObjectArray.push(rectangle1);
 world.worldObjectArray.push(polygon1);
+world.worldObjectArray.push(world.worldEngine.getMouseAnchor());
 
 
 matterEngine.createBounds(canvasHolder.getWidth(),canvasHolder.getHeight(),{restitution:0.9});

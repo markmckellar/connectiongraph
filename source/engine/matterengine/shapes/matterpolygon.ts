@@ -26,8 +26,10 @@ export class MatterPolygon extends MatterShape implements PolygonEngineShape
             options,
         );	
 		this.polygonBody.collisionFilter.category = MatterEngine.boundsFilter;
-		Matter.World.add(matterEngine.engine.world,[this.polygonBody]);
-		drawable.init(this,options);
+		matterEngine.addMatterShape(this);
+        drawable.init(this,options);
+        //Matter.Sleeping.set(this.getBody(), true);
+        
     }
     
     public getBody():Matter.Body {

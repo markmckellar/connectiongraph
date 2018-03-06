@@ -55,7 +55,7 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
     }
 	
     public getWorldPosition():WorldPosition {
-		return( MatterTools.bodyPostion2WorldPosition( this. getBody() ) );
+		return( MatterTools.bodyPostion2WorldPosition( this.getBody() ) );
 	}
 
 	public translate(worldPosition:WorldPosition):void {
