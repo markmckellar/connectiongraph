@@ -52,6 +52,8 @@ world.worldObjectArray.push(circle1);
 world.worldObjectArray.push(circle2);
 world.worldObjectArray.push(rectangle1);
 world.worldObjectArray.push(polygon1);
+world.worldObjectArray.push(world.worldEngine.getMouseAnchor());
+
 
 
 

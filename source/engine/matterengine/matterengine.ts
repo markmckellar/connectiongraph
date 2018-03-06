@@ -51,7 +51,7 @@ export  class MatterEngine  implements WorldEngine {
           new WorldId("mouseAnchor"),
           new CircleDisplayShape(),
           5,8,          
-          new WorldPosition(60,60),
+          new WorldPosition(-10,-10),
           {restitution:0.9,isSensor:true},
           this
         );
@@ -66,9 +66,8 @@ export  class MatterEngine  implements WorldEngine {
           pointB: { x: -0, y: -0. },
           length:0.1,
           stiffness: 0.1,
-        });moveTo
+        });
 
-        //Matter.World.add(this.engine.world,[this.matterMouseConstraint]);
 
         Matter.World.addConstraint(this.engine.world, this.matterMouseConstraint)
         
@@ -89,18 +88,8 @@ export  class MatterEngine  implements WorldEngine {
     }
 
     public updateMouseConstraint(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void {
-      var newPosition = new WorldPosition(
-        //  event.x-mouseEventHandler.getMouseStatus().clickOffset.x,
-        //  event.y-mouseEventHandler.getMouseStatus().clickOffset.y
-        event.x- canvasMouse.offset.x,event.y- canvasMouse.offset.y
-      );
+      var newPosition = new WorldPosition(event.x- canvasMouse.offset.x,event.y- canvasMouse.offset.y);
       this.mouseAnchor.translate(newPosition);
-      //this.matterMouseConstraint.pointA.x = canvasMouse.offset.x;
-      //this.matterMouseConstraint.pointA.y = canvasMouse.offset.y;
-      
-      
-      
-      //console.log("updateMouseConstraint:x="+this.matterMouseConstraint.pointA.x+":y="+this.matterMouseConstraint.pointA.y);
       if(mouseEventHandler.getCurrentWorldObject()!=null && this.matterMouseConstraint.bodyB==null)
       {
         console.log("updateMouseConstraint:getCurrentWorldObject="+mouseEventHandler.getCurrentWorldObject().getWorldId().id+
@@ -111,15 +100,8 @@ export  class MatterEngine  implements WorldEngine {
           let matterShape:MatterShape = this.matterShapes.get(mouseEventHandler.getCurrentWorldObject().getWorldId());
           let bodyB =  matterShape.getBody();
           this.matterMouseConstraint.bodyB = bodyB;
-          //this.matterMouseConstraint.pointB = bodyB.position;
-          //this.matterMouseConstraint.pointB = { x: +this.matterMouseConstraint.pointA.x, y: +this.matterMouseConstraint.pointA.y };
-          //this.matterMouseConstraint.pointB = { x:bodyB.position.x, y:bodyB.position.y };
-          this.matterMouseConstraint.pointB =
-          { 
-            x:0,y:0,
-            //x:  event.x - bodyB.position.x - canvasMouse.offset.x,
-            //y:  event.y - bodyB.position.y - canvasMouse.offset.y
-          };
+          // TODO do we really want this in the middle?  Should it be where thye grabbed it?!?!
+          this.matterMouseConstraint.pointB = { x:0,y:0 };
 
           console.log("-----updateMouseConstraint:getCurrentWorldObject="+mouseEventHandler.getCurrentWorldObject().getWorldId().id+
           ":Ax="+this.matterMouseConstraint.pointA.x+":Ay="+this.matterMouseConstraint.pointA.y+
@@ -255,7 +237,7 @@ export  class MatterEngine  implements WorldEngine {
     }
   
       public disableEvents(matterEngine:MatterEngine):void {
-        // what does the function passed to deregistger an event even mean?!?!?
+        // TODO what does the function passed to deregistger an event even mean?!?!?
         Matter.Events.off(this,MatterEvent.beforeUpdate,function(event) {});
         Matter.Events.off(this,MatterEvent.collisionActive,function(event) {});	
         Matter.Events.off(this,MatterEvent.collisionEnd,function(event) {});		
