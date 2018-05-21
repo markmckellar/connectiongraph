@@ -20,6 +20,7 @@ import { MouseEventHandler } from "../../display/canvas/mouseeventhandler";
 import { MatterShape } from "./shapes/mattershape";
 import { EngineShape } from "../shapes/engineshape";
 import { CircleDisplayShape } from "../../display/drawableshapes/circledisplayshape";
+import { TextDisplayShape } from "../../display/drawableshapes/textdisplayshape";
 
 export  class MatterEngine  implements WorldEngine {
     private _matterTools:MatterTools ;
@@ -154,6 +155,18 @@ export  class MatterEngine  implements WorldEngine {
       );
       return(rectangle);
     }
+
+    createTextBox(worldId:WorldId,textDisplayShape:TextDisplayShape,width:number,height:number,worldPosition:WorldPosition,options:any):RectangleEngineShape {
+      let rectangle:MatterRectangle = new MatterRectangle (
+        worldId,
+        textDisplayShape,
+        width,height,worldPosition,
+        options,
+        this
+      );
+      return(rectangle);
+    }
+
 
     public createPolygon(worldId:WorldId,drawable:Drawable,numberOfSides:number,radius:number,worldPosition:WorldPosition,options:any):PolygonEngineShape {
       let ploygon:PolygonEngineShape = new MatterPolygon(

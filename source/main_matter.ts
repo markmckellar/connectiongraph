@@ -8,8 +8,10 @@ import * as Matter from "matter-js";
 import { CircleEngineShape } from "./engine/shapes/circleengineshape";
 import { RectangleEngineShape } from "./engine/shapes/rectangleengineshape";
 import { RectangleDisplayShape } from "./display/drawableshapes/rectangledisplayshape";
+import { TextDisplayShape } from "./display/drawableshapes/textdisplayshape";
 import { PolygonDisplayShape } from "./display/drawableshapes/polygondisplayshape";
 import { PolygonEngineShape } from "./engine/shapes/polygonengineshape";
+
 
 
 
@@ -51,13 +53,13 @@ let polygon1:PolygonEngineShape = world.worldEngine.createPolygon(
   {}
 );
 
-let textBox1:TextBoxEngineShape = world.worldEngine.createRectangle(
+let textBox1:RectangleEngineShape = world.worldEngine.createTextBox(
   new WorldId("textbox1"),
   new TextDisplayShape(
     new RectangleDisplayShape(),
     "SomeText"),
-  5,40,
-  new WorldPosition(400,100),
+  60,60,
+  new WorldPosition(550,550),
   {}
 );
       
@@ -65,6 +67,7 @@ world.worldObjectArray.push(circle1);
 world.worldObjectArray.push(circle2);
 world.worldObjectArray.push(rectangle1);
 world.worldObjectArray.push(polygon1);
+world.worldObjectArray.push(textBox1);
 world.worldObjectArray.push(world.worldEngine.getMouseAnchor());
 
 
