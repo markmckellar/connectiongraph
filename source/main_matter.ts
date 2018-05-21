@@ -50,6 +50,16 @@ let polygon1:PolygonEngineShape = world.worldEngine.createPolygon(
   new WorldPosition(400,100),
   {}
 );
+
+let textBox1:TextBoxEngineShape = world.worldEngine.createRectangle(
+  new WorldId("textbox1"),
+  new TextDisplayShape(e
+    new RectangleDisplayShape(),
+    "SomeText"),
+  5,40,
+  new WorldPosition(400,100),
+  {}
+);
       
 world.worldObjectArray.push(circle1);
 world.worldObjectArray.push(circle2);
