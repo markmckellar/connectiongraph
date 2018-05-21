@@ -53,7 +53,7 @@ let polygon1:PolygonEngineShape = world.worldEngine.createPolygon(
 
 let textBox1:TextBoxEngineShape = world.worldEngine.createRectangle(
   new WorldId("textbox1"),
-  new TextDisplayShape(e
+  new TextDisplayShape(
     new RectangleDisplayShape(),
     "SomeText"),
   5,40,
