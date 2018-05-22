@@ -100,7 +100,34 @@ export class TextDisplayShape implements Drawable
 
 	}
 
-
+	fillTextMutipleLines(context,text,x,y,lineHeight,splitChar):void
+	{
+		let lines:string = text.split(splitChar);
+	    var line = '';
+	
+	    for(let n = 0; n < lines.length; n++)
+	    {
+	      	//let metrics = context.measureText(lines[n]);
+	      	context.fillText(lines[n], x, y);
+	      	y = y+lineHeight; 
+	    }
+	    context.fillText(line, x, y);
+	 }
+	
+	metricsTextMutipleLines(context,text,lineHeight,splitChar):object
+	{
+		let lines = text.split(splitChar);
+	    //let line = '';
+	    let maxWidth = 0;
+	    let totalHeight = 0;
+	    for(let n = 0; n < lines.length; n++)
+	    {
+			let metrics = context.measureText(lines[n]);
+	     	if(metrics.width>maxWidth) maxWidth = metrics.width;
+	      	totalHeight = totalHeight + lineHeight;
+	    }
+	    return({width:maxWidth,height:totalHeight});
+	 }
 
 
 
