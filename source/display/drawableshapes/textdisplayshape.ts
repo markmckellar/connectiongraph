@@ -78,7 +78,24 @@ export class TextDisplayShape implements Drawable
 
 		context.lineWidth = 2;		        
 		WorldDisplay.drawOutlinedShape(context,this.rectangleEngineShape.getShapePoints());
-		
+
+		let fitContentToText:boolean = true;
+		// DRAW TEXT
+		// IF FITTING CONTAINER SIZE TO CONTENT THEN :
+		// ---
+		// ---
+		// ---
+		// ---
+		// IF FITTING TEXT SIZE TO CONTAINER THEN :
+		if(fitContentToText)
+		{
+			let width:number = this.rectangleDisplayShape.rectangleEngineShape.getWidth();
+			let height:number = this.rectangleDisplayShape.rectangleEngineShape.getHeight();
+
+			this.setContextFont(context,"bold","Arial",15);
+
+			let textMetrics = metricsTextMutipleLines
+		}
 
 		/*
 
@@ -100,10 +117,17 @@ export class TextDisplayShape implements Drawable
 
 	}
 
-	fillTextMutipleLines(context,text,x,y,lineHeight,splitChar):void
+	setContextFont(context:CanvasRenderingContext2D,fontStyle:string,fontFace:string,fontPixelHeight:number)
 	{
-		let lines:string = text.split(splitChar);
-	    var line = '';
+		context.font=fontStyle+" "+fontPixelHeight+"px "+fontFace; 
+		context.textAlign="center";
+		context.fillStyle=WorldDisplay.getColorFromString("ff0000ff");
+	}
+
+	fillTextMutipleLines(context:CanvasRenderingContext2D,text:string,x:number,y:number,lineHeight:number,splitChar:string):void
+	{
+		let lines:string[] = text.split(splitChar);
+	    let line = '';
 	
 	    for(let n = 0; n < lines.length; n++)
 	    {
@@ -114,7 +138,7 @@ export class TextDisplayShape implements Drawable
 	    context.fillText(line, x, y);
 	 }
 	
-	metricsTextMutipleLines(context,text,lineHeight,splitChar):object
+	metricsTextMutipleLines(context:CanvasRenderingContext2D,text:string,lineHeight:number,splitChar:string):object
 	{
 		let lines = text.split(splitChar);
 	    //let line = '';
