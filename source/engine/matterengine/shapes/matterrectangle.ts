@@ -33,6 +33,24 @@ export class MatterRectangle extends MatterShape implements RectangleEngineShape
 		
 	}
 
+	public setSize(width:number,height:number) {
+		
+		//let scaleX:number = width/this.width;
+		//let scaleY:number =height/this.height;
+
+		let scaleX:number = width/this.width;
+		let scaleY:number =height/this.height;
+
+		//console.log("setSize:"+JSON.stringify({"scaleX":scaleX,"scaleY":scaleY,"width":width,"height":height,"cw":this.width,"ch":this.height}))
+		//console.log("setSize:"+JSON.stringify({"scaleX":scaleX,"scaleY":scaleY,"width":width,"height":height}))
+
+		
+		this.scaleShape(scaleX,scaleY);
+		this.width = width;
+		this.height = height;
+	}
+
+
 
 	public getWidth():number {
 		return(this.width);

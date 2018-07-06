@@ -1,5 +1,7 @@
 import { WorldId } from "./worldid";
 import { WorldPosition } from "./worldposition";
+import { WorldObjectEventHandler } from "./worldobjecteventhandler";
+
 import { Drawable } from "../display/drawable";
 //import { WorldObjectDisplay } from "../display/worldobjectdisplay";
 //import { EngineObject } from "../engine/engineobjects/engineobject";
@@ -18,6 +20,8 @@ export interface WorldObject {
 	setSelected(selected:boolean): void;
 	setVisable(visable:boolean):void;
 	getWorldId(): WorldId 
-	getOptions():any;
-	
+	getOptions():any;	
+	getWorldObjectEventHandler():WorldObjectEventHandler;
+	setWorldObjectEventHandler(worldObjectEventHandler:WorldObjectEventHandler):void;
+
 }

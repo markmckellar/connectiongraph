@@ -2,12 +2,43 @@ import { Drawable } from "../drawable";
 import { WorldDisplay } from "../worlddisplay";
 import { RectangleEngineShape } from "../../engine/shapes/rectangleengineshape";
 import { RectangleDisplayShape } from "./rectangledisplayshape";
+import { World } from "../../world/world";
+import { CanvasMouse } from "../canvas/canvasmouse";
+import { WorldObjectEventHandler } from "../../world/worldobjecteventhandler";
+
+class Size {
+	private _width:number;
+	private _height:number;
+	constructor(width:number,height:number)
+	{
+		this.width = width;
+		this.height = height;
+	}
+	public get width(): number {
+		return this._width;
+	}
+
+	public set width(value: number) {
+		this._width = value;
+	}
+	public get height(): number {
+		return this._height;
+	}
+
+	public set height(value: number) {
+		this._height = value;
+	}
+}
 
 export class TextDisplayShape implements Drawable
 {
     private _rectangleDisplayShape:RectangleDisplayShape;
     private _displayText:string;
 	private _rectangleEngineShape:RectangleEngineShape;
+
+
+	
+
 
 	constructor(rectangleDisplayShape:RectangleDisplayShape,displayText:string)
 	{
@@ -17,7 +48,35 @@ export class TextDisplayShape implements Drawable
 	}
 
 	public init(rectangleEngineShape:RectangleEngineShape,options:any):void {
-		this.rectangleEngineShape = rectangleEngineShape;		
+		this.rectangleEngineShape = rectangleEngineShape;	
+		this.rectangleDisplayShape.init(this.rectangleEngineShape,options);
+
+
+		let woe:WorldObjectEventHandler = 
+		{
+			pointerDownEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void
+			{
+				console.log("LOOOOOLZZZZZ! HEY FELLA XXXXXXX");
+				console.log("setSize:"+JSON.stringify({"width":this.width,"height":this.height}))
+
+			},
+			pointerMoveEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {},
+			pointerUpEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {}
+		};
+
+	
+		this.rectangleEngineShape.setWorldObjectEventHandler(woe);
+	
+
+		/*
+		this.rectangleEngineShape.getWorldObjectEventHandler().pointerMoveEvent = 
+			function(world:World,canvasMouse:CanvasMouse,event:MouseEvent)
+			{
+				this.rectangleEngineShape.getWorldObjectEventHandler().pointerMoveEvent(world,canvasMouse,event);
+				console.log("QQQQQQQQQQQQQQQQQQQ click on text box:"+JSON.stringify({"cw":this.width,"ch":this.height}));
+
+			};
+			*/
 	}
 
 	public get rectangleEngineShape(): RectangleEngineShape {
@@ -73,11 +132,16 @@ export class TextDisplayShape implements Drawable
 		*/
 		//console.log("CircleDisplayShape.drawShape");
 
+		/*
 		context.fillStyle = WorldDisplay.getColorFromString("ff0000ff");
-		context.strokeStyle = WorldDisplay.getColorFromString("0000ffff");
-
+		//context.strokeStyle = WorldDisplay.getColorFromString("0000ffff");
+		context.strokeStyle = WorldDisplay.getColorFromString("00ff0011");
+		
 		context.lineWidth = 2;		        
 		WorldDisplay.drawOutlinedShape(context,this.rectangleEngineShape.getShapePoints());
+	*/
+
+		//this.rectangleEngineShape.getDrawable().draw(context);
 
 		let fitContentToText:boolean = true;
 		// DRAW TEXT
@@ -89,13 +153,55 @@ export class TextDisplayShape implements Drawable
 		// IF FITTING TEXT SIZE TO CONTAINER THEN :
 		if(fitContentToText)
 		{
-			let width:number = this.rectangleDisplayShape.rectangleEngineShape.getWidth();
-			let height:number = this.rectangleDisplayShape.rectangleEngineShape.getHeight();
 
+
+			/*
+			context.fillStyle = WorldDisplay.getColorFromString("ff0000ff");
+			context.strokeStyle = WorldDisplay.getColorFromString("0000ffff");
+			context.lineWidth = 2;
+			WorldDisplay.drawOutlinedShape(context,this.rectangleEngineShape.getShapePoints());
+	
+			this.rectangleDisplayShape.draw(context);
+*/			this.rectangleDisplayShape.draw(context);
+
+
+			let hPadding:number = 15;
+			let vPadding:number = 15;
+			
+			let fontPixelHeight:number = 15;
 			this.setContextFont(context,"bold","Arial",15);
 
-			let textMetrics = metricsTextMutipleLines
+
+			let textSize:Size = this.metricsTextMutipleLines(context,
+				this.displayText,fontPixelHeight,"\n");
+			let containerSize = new Size(textSize.width+hPadding*2,textSize.height+vPadding*2);
+			/*
+			let scale = new Size(containerSize.width/this.rectangleEngineShape.getWidth(),
+				containerSize.height/this.rectangleEngineShape.getHeight());
+*/
+			this.rectangleEngineShape.setSize(containerSize.width,containerSize.height);
+
+			//this.rectangleEngineShape.scaleShape(scale.height,scale.width);
+
+			//console.log("XXXXXX:"+JSON.stringify(this.rectangleEngineShape.getWorldPosition()));
+			
+			//context.fillStyle = WorldDisplay.getColorFromString("ffffffff");
+			//context.strokeStyle = WorldDisplay.getColorFromString("0000ffff");
+
+
+
+
+
+
+			this.drawTextMutipleLines(context,this.displayText,
+				this.rectangleEngineShape.getWorldPosition().x+hPadding,
+				this.rectangleEngineShape.getWorldPosition().y+vPadding,
+				fontPixelHeight,"\n");
+
+			// newW = currentW * scale
+			// scaleW = newW / currentW
 		}
+
 
 		/*
 
@@ -119,12 +225,15 @@ export class TextDisplayShape implements Drawable
 
 	setContextFont(context:CanvasRenderingContext2D,fontStyle:string,fontFace:string,fontPixelHeight:number)
 	{
+		//context.fillStyle = WorldDisplay.getColorFromString("ffffffff");
+			//context.strokeStyle = WorldDisplay.getColorFromString("0000ffff");
+
 		context.font=fontStyle+" "+fontPixelHeight+"px "+fontFace; 
 		context.textAlign="center";
-		context.fillStyle=WorldDisplay.getColorFromString("ff0000ff");
+		context.fillStyle=WorldDisplay.getColorFromString("000000ff");
 	}
 
-	fillTextMutipleLines(context:CanvasRenderingContext2D,text:string,x:number,y:number,lineHeight:number,splitChar:string):void
+	private drawTextMutipleLines(context:CanvasRenderingContext2D,text:string,x:number,y:number,lineHeight:number,splitChar:string):void
 	{
 		let lines:string[] = text.split(splitChar);
 	    let line = '';
@@ -138,7 +247,7 @@ export class TextDisplayShape implements Drawable
 	    context.fillText(line, x, y);
 	 }
 	
-	metricsTextMutipleLines(context:CanvasRenderingContext2D,text:string,lineHeight:number,splitChar:string):object
+	private metricsTextMutipleLines(context:CanvasRenderingContext2D,text:string,lineHeight:number,splitChar:string):Size
 	{
 		let lines = text.split(splitChar);
 	    //let line = '';
@@ -149,8 +258,9 @@ export class TextDisplayShape implements Drawable
 			let metrics = context.measureText(lines[n]);
 	     	if(metrics.width>maxWidth) maxWidth = metrics.width;
 	      	totalHeight = totalHeight + lineHeight;
-	    }
-	    return({width:maxWidth,height:totalHeight});
+		}
+		//console.log("MEEETRICS!!!   ::::: "+JSON.stringify((new Size(maxWidth,totalHeight))));
+	    return(new Size(maxWidth,totalHeight));
 	 }
 
 
@@ -341,6 +451,30 @@ export class TextDisplayShape implements Drawable
   
   }
 
+
+  class Size {
+	private _width:number;
+	private _height:number;
+	constructor(width:number,height:number)
+	{
+
+	}
+	public get width(): number {
+		return this._width;
+	}
+
+	public set width(value: number) {
+		this._width = value;
+	}
+	public get height(): number {
+		return this._height;
+	}
+
+	public set height(value: number) {
+		this._height = value;
+	}
+};
+
 ******************************/
 
 
@@ -357,4 +491,3 @@ export class TextDisplayShape implements Drawable
 
 
 
-}

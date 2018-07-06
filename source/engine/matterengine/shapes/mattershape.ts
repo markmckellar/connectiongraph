@@ -7,6 +7,9 @@ import { Drawable } from "../../../display/drawable";
 import { WorldObject } from "../../../world/worldobject";
 import { WorldId } from "../../../world/worldid";
 import { MatterEngine } from "../matterengine";
+import { WorldObjectEventHandler } from "../../../world/worldobjecteventhandler";
+import { World } from "../../../world/world";
+import { CanvasMouse } from "../../../display/canvas/canvasmouse";
 //import { worker } from "cluster";
 
 //import { World } from "../../walkerworld/world";
@@ -20,6 +23,7 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 	private _isObjectVisable:boolean;
 	private _isObjectSelected:boolean;
 	private _objectOptions:any;
+	private _worldObjectEventHandler:WorldObjectEventHandler;
 
 
     constructor(worldId:WorldId,drawable:Drawable,options:any,matterEngine:MatterEngine) {
@@ -29,10 +33,38 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 		this.isObjectVisable = true;
 		this.isObjectSelected = true;
 		this.objectOptions = options;
+		this.worldObjectEventHandler = this.createMouseEventHandler();
+
 		drawable.init(this,options);
-    }
+	}
+	
+	public 	createMouseEventHandler():WorldObjectEventHandler {
+	 	let woe:WorldObjectEventHandler = 
+		{
+			pointerDownEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {console.log("ZZZZZZZZZZ HAHA  HEY FELLA XXXXXXX")},
+			pointerMoveEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {},
+			pointerUpEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {}
+		}
+		return(woe);
+	}
+
+	public getWorldObjectEventHandler():WorldObjectEventHandler {
+		return(this.worldObjectEventHandler);
+	}
+	
+	public setWorldObjectEventHandler(worldObjectEventHandler:WorldObjectEventHandler):void {
+		this.worldObjectEventHandler = worldObjectEventHandler;
+	}
+
+
     
 	public abstract getBody():Matter.Body;
+
+	public scaleShape(scaleX:number,scaleY:number):void {
+		Matter.Body.scale(this.getBody(),scaleX,scaleY,this.getBody().position);
+		
+	}
+	
 	
 	//public getWorldPosition():WorldPosition;
 	//public translate(worldPosition:WorldPosition):void;
@@ -99,6 +131,22 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 
 	public set worldId(value: WorldId) {
 		this._worldId = value;
+	}
+
+    /**
+     * Getter worldObjectEventHandler
+     * @return {WorldObjectEventHandler}
+     */
+	public get worldObjectEventHandler(): WorldObjectEventHandler {
+		return this._worldObjectEventHandler;
+	}
+
+    /**
+     * Setter worldObjectEventHandler
+     * @param {WorldObjectEventHandler} value
+     */
+	public set worldObjectEventHandler(value: WorldObjectEventHandler) {
+		this._worldObjectEventHandler = value;
 	}
 	
 

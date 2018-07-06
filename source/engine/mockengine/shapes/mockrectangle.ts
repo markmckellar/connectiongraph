@@ -18,6 +18,10 @@ export class MockRectangle extends MockShape implements RectangleEngineShape
 		drawable.init(this,options);
 	}
 
+	public setSize(width:number,height:number) {
+		console.error("setSize NOT IMPLMENTED");
+	}
+
 	public containsWorldPosition(worldPosition:WorldPosition):boolean {
 		return(
 			(

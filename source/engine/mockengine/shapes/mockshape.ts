@@ -2,6 +2,9 @@ import { WorldPosition } from "../../../world/worldposition";
 import { Drawable } from "../../../display/drawable";
 import { WorldObject } from "../../../world/worldobject";
 import { WorldId } from "../../../world/worldid";
+import { WorldObjectEventHandler } from "../../../world/worldobjecteventhandler";
+import { World } from "../../../world/world";
+import { CanvasMouse } from "../../../display/canvas/canvasmouse";
 
 //import { World } from "../../walkerworld/world";
 //import { WorldObjectDisplay } from "../worldobjectdisplay";
@@ -14,7 +17,8 @@ export abstract class MockShape implements WorldObject
 	private _isObjectVisable:boolean;
 	private _isObjectSelected:boolean;
 	private _objectOptions:any;
-	
+	private _worldObjectEventHandler:WorldObjectEventHandler;
+
 	private _position:WorldPosition; 
 
     constructor(worldId:WorldId,drawable:Drawable,position:WorldPosition,options:any) {
@@ -25,6 +29,25 @@ export abstract class MockShape implements WorldObject
 		this.isObjectSelected = true;
 		this.drawable = drawable;
 		this.position = position;
+		this.worldObjectEventHandler = this.createMouseEventHandler();
+	}
+
+	public 	createMouseEventHandler():WorldObjectEventHandler {
+		let woe:WorldObjectEventHandler = 
+	   {
+		   pointerDownEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {},
+		   pointerMoveEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {},
+		   pointerUpEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {}
+	   }
+	   return(woe);
+   }
+   public getWorldObjectEventHandler():WorldObjectEventHandler {
+	return(this.worldObjectEventHandler);
+
+   }
+
+   public setWorldObjectEventHandler(worldObjectEventHandler:WorldObjectEventHandler):void {
+	this.worldObjectEventHandler = worldObjectEventHandler;
 	}
 	
 	public isAnimated(): boolean { return(this.isObjectAnimated); }
@@ -37,7 +60,10 @@ export abstract class MockShape implements WorldObject
 	public setSelected(selected:boolean): void { this.isObjectSelected = selected; }
 	public setVisable(visable:boolean):void { this.isObjectVisable = visable; }
 	
-	
+	public scaleShape(scaleX:number,scaleY:number):void {
+		console.error("scaleShape NOT IMPLMENTED");
+		
+	}
     public getWorldPosition():WorldPosition {
 		return(this.position );
 	}
@@ -47,6 +73,22 @@ export abstract class MockShape implements WorldObject
 		//this.position.y = worldPosition.y;
 		this.position.translate(worldPosition);
 		
+	}
+
+    /**
+     * Getter worldObjectEventHandler
+     * @return {WorldObjectEventHandler}
+     */
+	public get worldObjectEventHandler(): WorldObjectEventHandler {
+		return this._worldObjectEventHandler;
+	}
+
+    /**
+     * Setter worldObjectEventHandler
+     * @param {WorldObjectEventHandler} value
+     */
+	public set worldObjectEventHandler(value: WorldObjectEventHandler) {
+		this._worldObjectEventHandler = value;
 	}
 
 	

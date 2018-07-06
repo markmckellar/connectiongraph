@@ -53,12 +53,13 @@ let polygon1:PolygonEngineShape = world.worldEngine.createPolygon(
   {}
 );
 
+
 let textBox1:RectangleEngineShape = world.worldEngine.createTextBox(
   new WorldId("textbox1"),
   new TextDisplayShape(
     new RectangleDisplayShape(),
-    "SomeText"),
-  60,60,
+    "SomeText\nAnd more text"),
+  100,100,
   new WorldPosition(550,550),
   {}
 );
