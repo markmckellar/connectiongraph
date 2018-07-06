@@ -164,6 +164,10 @@ export  class MatterEngine  implements WorldEngine {
         options,
         this
       );
+      //Matter.Body.setInertia(rectangle.getBody(),Infinity);
+      //Matter.Body.setStatic(rectangle.getBody(),true);
+
+      //rectangle.getBody().inertia = Infinity;
       return(rectangle);
     }
 

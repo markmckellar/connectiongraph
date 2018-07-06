@@ -37,6 +37,16 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 
 		drawable.init(this,options);
 	}
+
+	public stopRotation():void {
+		Matter.Body.setAngularVelocity(this.getBody(),0);
+		Matter.Body.setAngle(this.getBody(),0);
+
+		//Matter.Body.setInertia(rectangle.getBody(),Infinity);
+      //Matter.Body.setStatic(rectangle.getBody(),true);
+
+	}
+
 	
 	public 	createMouseEventHandler():WorldObjectEventHandler {
 	 	let woe:WorldObjectEventHandler = 

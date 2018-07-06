@@ -23,5 +23,6 @@ export interface WorldObject {
 	getOptions():any;	
 	getWorldObjectEventHandler():WorldObjectEventHandler;
 	setWorldObjectEventHandler(worldObjectEventHandler:WorldObjectEventHandler):void;
+	stopRotation():void;
 
 }

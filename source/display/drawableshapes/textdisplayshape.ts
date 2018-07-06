@@ -259,6 +259,7 @@ else{
 			// scaleW = newW / currentW
 		}
 
+		this.rectangleEngineShape.stopRotation();
 
 		/*
 

@@ -32,6 +32,11 @@ export abstract class MockShape implements WorldObject
 		this.worldObjectEventHandler = this.createMouseEventHandler();
 	}
 
+	public stopRotation():void {
+
+	}
+
+
 	public 	createMouseEventHandler():WorldObjectEventHandler {
 		let woe:WorldObjectEventHandler = 
 	   {

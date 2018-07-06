@@ -61,7 +61,7 @@ let textBox1:RectangleEngineShape = world.worldEngine.createTextBox(
     "SomeText\nAnd more text"),
   100,100,
   new WorldPosition(550,550),
-  {}
+  {inertia: Infinity}
 );
       
 world.worldObjectArray.push(circle1);
