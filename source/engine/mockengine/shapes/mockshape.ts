@@ -33,7 +33,7 @@ export abstract class MockShape implements WorldObject
 	}
 
 	public stopRotation():void {
-
+		// its a mock engine, nothng to do here :)
 	}
 
 

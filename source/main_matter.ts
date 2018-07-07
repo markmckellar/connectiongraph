@@ -58,17 +58,43 @@ let textBox1:RectangleEngineShape = world.worldEngine.createTextBox(
   new WorldId("textbox1"),
   new TextDisplayShape(
     new RectangleDisplayShape(),
-    "SomeText\nAnd more text"),
+    "SomeText Mg\nAnd more text Mg"),
   100,100,
   new WorldPosition(550,550),
-  {inertia: Infinity}
+  {}
 );
       
+
+
+let textBox2:RectangleEngineShape = world.worldEngine.createTextBox(
+  new WorldId("textbox2"),
+  new TextDisplayShape(
+    new RectangleDisplayShape(),
+    "hey there friend Mg"),
+  //80,20,
+  100,100,
+  new WorldPosition(150,550),
+  {}
+);
+
+let textBox3:RectangleEngineShape = world.worldEngine.createTextBox(
+  new WorldId("textbox3"),
+  new TextDisplayShape(
+    new RectangleDisplayShape(),
+    "SomeText Mg\nAnd more text Mg\nSomeText Mg\nAnd more text Mg\nSomeText Mg\nAnd more text Mg\nSomeText Mg\nAnd more text Mg"),
+    100,100,
+    new WorldPosition(550,250),
+  {}
+);
+      
+
 world.worldObjectArray.push(circle1);
 world.worldObjectArray.push(circle2);
 world.worldObjectArray.push(rectangle1);
 world.worldObjectArray.push(polygon1);
 world.worldObjectArray.push(textBox1);
+world.worldObjectArray.push(textBox2);
+world.worldObjectArray.push(textBox3);
 world.worldObjectArray.push(world.worldEngine.getMouseAnchor());
 
 

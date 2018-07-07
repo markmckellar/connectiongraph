@@ -19,7 +19,8 @@ export class MockRectangle extends MockShape implements RectangleEngineShape
 	}
 
 	public setSize(width:number,height:number) {
-		console.error("setSize NOT IMPLMENTED");
+		this.width = width;
+		this.height = height;
 	}
 
 	public containsWorldPosition(worldPosition:WorldPosition):boolean {

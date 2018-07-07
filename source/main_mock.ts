@@ -9,6 +9,7 @@ import { RectangleEngineShape } from "./engine/shapes/rectangleengineshape";
 import { RectangleDisplayShape } from "./display/drawableshapes/rectangledisplayshape";
 import { PolygonEngineShape } from "./engine/shapes/polygonengineshape";
 import { PolygonDisplayShape } from "./display/drawableshapes/polygondisplayshape";
+import { TextDisplayShape } from "./display/drawableshapes/textdisplayshape";
 
 
 let mockEngine = new MockEngine();
@@ -47,11 +48,47 @@ let polygon1:PolygonEngineShape = world.worldEngine.createPolygon(
   new WorldPosition(400,100),
   {}
 );
+
+
+let textBox1:RectangleEngineShape = world.worldEngine.createTextBox(
+  new WorldId("textbox1"),
+  new TextDisplayShape(
+    new RectangleDisplayShape(),
+    "SomeText Mg\nAnd more text Mg"),
+  100,100,
+  new WorldPosition(550,550),
+  {}
+);
       
+
+
+let textBox2:RectangleEngineShape = world.worldEngine.createTextBox(
+  new WorldId("textbox2"),
+  new TextDisplayShape(
+    new RectangleDisplayShape(),
+    "hey there friend Mg"),
+  //80,20,
+  100,100,
+  new WorldPosition(150,550),
+  {}
+);
+
+let textBox3:RectangleEngineShape = world.worldEngine.createTextBox(
+  new WorldId("textbox3"),
+  new TextDisplayShape(
+    new RectangleDisplayShape(),
+    "SomeText Mg\nAnd more text Mg\nSomeText Mg\nAnd more text Mg\nSomeText Mg\nAnd more text Mg\nSomeText Mg\nAnd more text Mg"),
+    100,100,
+    new WorldPosition(550,250),
+  {}
+);
 world.worldObjectArray.push(circle1);
 world.worldObjectArray.push(circle2);
 world.worldObjectArray.push(rectangle1);
 world.worldObjectArray.push(polygon1);
+world.worldObjectArray.push(textBox1);
+world.worldObjectArray.push(textBox2);
+world.worldObjectArray.push(textBox3);
 world.worldObjectArray.push(world.worldEngine.getMouseAnchor());
 
 
