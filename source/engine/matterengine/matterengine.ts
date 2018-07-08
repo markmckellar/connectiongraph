@@ -21,6 +21,8 @@ import { MatterShape } from "./shapes/mattershape";
 import { EngineShape } from "../shapes/engineshape";
 import { CircleDisplayShape } from "../../display/drawableshapes/circledisplayshape";
 import { TextDisplayShape } from "../../display/drawableshapes/textdisplayshape";
+import { TextEngineShape } from "../shapes/textengineshape";
+import { MatterRectangleText } from "./shapes/matterrectangletext";
 
 export  class MatterEngine  implements WorldEngine {
     private _matterTools:MatterTools ;
@@ -156,8 +158,8 @@ export  class MatterEngine  implements WorldEngine {
       return(rectangle);
     }
 
-    createTextBox(worldId:WorldId,textDisplayShape:TextDisplayShape,width:number,height:number,worldPosition:WorldPosition,options:any):RectangleEngineShape {
-      let rectangle:MatterRectangle = new MatterRectangle (
+    public createTextBox(worldId:WorldId,textDisplayShape:TextDisplayShape,width:number,height:number,worldPosition:WorldPosition,options:any):TextEngineShape {
+      let rectangleText:MatterRectangleText = new MatterRectangleText (
         worldId,
         textDisplayShape,
         width,height,worldPosition,
@@ -168,7 +170,7 @@ export  class MatterEngine  implements WorldEngine {
       //Matter.Body.setStatic(rectangle.getBody(),true);
 
       //rectangle.getBody().inertia = Infinity;
-      return(rectangle);
+      return(rectangleText);
     }
 
 

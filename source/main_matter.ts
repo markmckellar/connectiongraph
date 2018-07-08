@@ -11,6 +11,7 @@ import { RectangleDisplayShape } from "./display/drawableshapes/rectangledisplay
 import { TextDisplayShape } from "./display/drawableshapes/textdisplayshape";
 import { PolygonDisplayShape } from "./display/drawableshapes/polygondisplayshape";
 import { PolygonEngineShape } from "./engine/shapes/polygonengineshape";
+import { TextEngineShape } from "./engine/shapes/textengineshape";
 
 
 
@@ -54,7 +55,7 @@ let polygon1:PolygonEngineShape = world.worldEngine.createPolygon(
 );
 
 
-let textBox1:RectangleEngineShape = world.worldEngine.createTextBox(
+let textBox1:TextEngineShape = world.worldEngine.createTextBox(
   new WorldId("textbox1"),
   new TextDisplayShape(
     new RectangleDisplayShape(),
@@ -66,7 +67,7 @@ let textBox1:RectangleEngineShape = world.worldEngine.createTextBox(
       
 
 
-let textBox2:RectangleEngineShape = world.worldEngine.createTextBox(
+let textBox2:TextEngineShape = world.worldEngine.createTextBox(
   new WorldId("textbox2"),
   new TextDisplayShape(
     new RectangleDisplayShape(),
@@ -77,7 +78,7 @@ let textBox2:RectangleEngineShape = world.worldEngine.createTextBox(
   {}
 );
 
-let textBox3:RectangleEngineShape = world.worldEngine.createTextBox(
+export let textBox3:TextEngineShape = world.worldEngine.createTextBox(
   new WorldId("textbox3"),
   new TextDisplayShape(
     new RectangleDisplayShape(),
@@ -86,7 +87,8 @@ let textBox3:RectangleEngineShape = world.worldEngine.createTextBox(
     new WorldPosition(550,250),
   {}
 );
-      
+
+
 
 world.worldObjectArray.push(circle1);
 world.worldObjectArray.push(circle2);

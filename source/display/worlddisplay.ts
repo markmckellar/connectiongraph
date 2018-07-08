@@ -3,6 +3,31 @@ import { WorldPosition } from "../world/worldposition";
 import { World } from "../world/world";
 import { CanvasMouse } from "./canvas/canvasmouse";
 
+export class Size {
+	private _width:number;
+	private _height:number;
+
+	constructor(width:number,height:number)
+	{
+		this.width = width;
+		this.height = height;
+	}
+	public get width(): number {
+		return this._width;
+	}
+
+	public set width(value: number) {
+		this._width = value;
+	}
+	public get height(): number {
+		return this._height;
+	}
+
+	public set height(value: number) {
+		this._height = value;
+	}
+}
+
 export class WorldDisplay  {
     /*
     static world(render:Matter.Render) {
@@ -11,6 +36,51 @@ export class WorldDisplay  {
         console.log("doing some redering...");
     }
     */    
+
+   public static  drawTextMutipleLines(context:CanvasRenderingContext2D,text:string,x:number,y:number,lineHeight:number,splitChar:string):void
+   {
+	   let lines:string[] = text.split(splitChar);
+   
+	   for(let n = 0; n < lines.length; n++)
+	   {
+		   context.fillText(lines[n], x, y);
+		   y = y+lineHeight;
+	   }
+	}
+   
+	public static  metricsTextMutipleLines(context:CanvasRenderingContext2D,text:string,lineHeight:number,splitChar:string):Size
+   {
+	   let lines = text.split(splitChar);
+	   let maxWidth = 0;
+	   let totalHeight = lineHeight/2;
+	   for(let n = 0; n < lines.length; n++)
+	   {
+		   let metrics = context.measureText(lines[n]);
+			if(metrics.width>maxWidth) maxWidth = metrics.width;
+		   totalHeight = totalHeight + lineHeight;
+		}
+	   // TODO for some reason maxWidth is always 1 short, how come??!?! (coincidentally I think the java image libraries have the same issue)
+
+	   return(new Size(maxWidth+1,totalHeight));
+	}
+
+	/*
+	public static metricsTextMutipleLines(context:CanvasRenderingContext2D,text:string,lineHeight:number,splitChar:string)
+	{
+		let lines:Array<string> = text.split(splitChar);
+	    //let line:string = '';
+	    let maxWidth:number = 0;
+	    let totalHeight = 0;
+	    for(var n = 0; n < lines.length; n++)
+	    {
+            let metrics:TextMetrics = context.measureText(lines[n]);
+            if(metrics.width>maxWidth) maxWidth = metrics.width;
+            totalHeight = totalHeight + lineHeight;
+	    }
+	    return({width:maxWidth,height:totalHeight});
+	 }
+	 */
+
     public static getColorFromString(colorString:string):string
     {
       if(colorString.length==6)
@@ -172,20 +242,7 @@ export class WorldDisplay  {
 	    context.fillText(line, x, y);
 	 }
 	
-    public static metricsTextMutipleLines(context:CanvasRenderingContext2D,text:string,lineHeight:number,splitChar:string)
-	{
-		let lines:Array<string> = text.split(splitChar);
-	    //let line:string = '';
-	    let maxWidth:number = 0;
-	    let totalHeight = 0;
-	    for(var n = 0; n < lines.length; n++)
-	    {
-            let metrics:TextMetrics = context.measureText(lines[n]);
-            if(metrics.width>maxWidth) maxWidth = metrics.width;
-            totalHeight = totalHeight + lineHeight;
-	    }
-	    return({width:maxWidth,height:totalHeight});
-	 }
+   
 	
     public static roundedRect(context:CanvasRenderingContext2D,x:number,y:number,
         w:number,h:number,r:number,borderWitdh:number,borderColor:string,rectColor:string):void

@@ -14,6 +14,8 @@ import { World } from "../../world/world";
 import { CircleDisplayShape } from "../../display/drawableshapes/circledisplayshape";
 import { EngineShape } from "../shapes/engineshape";
 import { TextDisplayShape } from "../../display/drawableshapes/textdisplayshape";
+import { TextEngineShape } from "../shapes/textengineshape";
+import { MockRectangleText } from "./shapes/mockrectangletext";
 
 export class MockEngine implements WorldEngine {
   private _mouseAnchor: MockCircle;
@@ -73,17 +75,18 @@ export class MockEngine implements WorldEngine {
     return rectangle;
   }
 
-  createTextBox(worldId:WorldId,textDisplayShape:TextDisplayShape,width:number,height:number,worldPosition:WorldPosition,options:any):RectangleEngineShape {
-    let rectangle:MockRectangle = new MockRectangle (
+  public createTextBox(worldId:WorldId,textDisplayShape:TextDisplayShape,width:number,height:number,worldPosition:WorldPosition,options:any):TextEngineShape {
+  //createTextBox(worldId:WorldId,textDisplayShape:TextDisplayShape,width:number,height:number,worldPosition:WorldPosition,options:any):RectangleEngineShape {
+    let rectangleText:MockRectangleText = new MockRectangleText (
       worldId,
       textDisplayShape,
       width,height,worldPosition,
       options,
       this
     );
-    return(rectangle);
+    return(rectangleText);
   }
-  
+
   public createPolygon(
     worldId: WorldId,
     drawable: Drawable,

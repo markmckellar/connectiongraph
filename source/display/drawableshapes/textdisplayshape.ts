@@ -1,45 +1,19 @@
 import { Drawable } from "../drawable";
-import { WorldDisplay } from "../worlddisplay";
+import { WorldDisplay, Size } from "../worlddisplay";
 import { RectangleEngineShape } from "../../engine/shapes/rectangleengineshape";
 import { RectangleDisplayShape } from "./rectangledisplayshape";
 import { World } from "../../world/world";
 import { CanvasMouse } from "../canvas/canvasmouse";
 import { WorldObjectEventHandler } from "../../world/worldobjecteventhandler";
+import { DrawableText } from "./drawabletext";
 
-class Size {
-	private _width:number;
-	private _height:number;
 
-	constructor(width:number,height:number)
-	{
-		this.width = width;
-		this.height = height;
-	}
-	public get width(): number {
-		return this._width;
-	}
-
-	public set width(value: number) {
-		this._width = value;
-	}
-	public get height(): number {
-		return this._height;
-	}
-
-	public set height(value: number) {
-		this._height = value;
-	}
-}
-
-export class TextDisplayShape implements Drawable
+export class TextDisplayShape implements DrawableText
 {
     private _rectangleDisplayShape:RectangleDisplayShape;
     private _displayText:string;
 	private _rectangleEngineShape:RectangleEngineShape;
 	private _textImageData:ImageData;
-
-	
-
 
 	constructor(rectangleDisplayShape:RectangleDisplayShape,displayText:string)
 	{
@@ -50,10 +24,20 @@ export class TextDisplayShape implements Drawable
 
 	}
 
+	public getText():string
+	{
+		return(this.displayText);
+	}
+
+	public setText(displayText:string):void
+	{
+		this.textImageData = null;
+		this.displayText = displayText;
+	}
+
 	public init(rectangleEngineShape:RectangleEngineShape,options:any):void {
 		this.rectangleEngineShape = rectangleEngineShape;	
 		this.rectangleDisplayShape.init(this.rectangleEngineShape,options);
-
 
 		let woe:WorldObjectEventHandler = 
 		{
@@ -67,11 +51,8 @@ export class TextDisplayShape implements Drawable
 			pointerMoveEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {},
 			pointerUpEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {}
 		};
-
 	
 		this.rectangleEngineShape.setWorldObjectEventHandler(woe);
-	
-
 		/*
 		this.rectangleEngineShape.getWorldObjectEventHandler().pointerMoveEvent = 
 			function(world:World,canvasMouse:CanvasMouse,event:MouseEvent)
@@ -170,7 +151,7 @@ export class TextDisplayShape implements Drawable
 				let fontPixelHeight:number = 15;
 				this.setContextFont(context,"bold","Arial",15,"000000ff");
 
-				let textSize:Size = this.metricsTextMutipleLines(context,
+				let textSize:Size = WorldDisplay.metricsTextMutipleLines(context,
 					this.displayText,
 					fontPixelHeight,
 					"\n");
@@ -183,7 +164,7 @@ export class TextDisplayShape implements Drawable
 				// the rectangle may have reset our color
 				this.setContextFont(context,"bold","Arial",15,"000000ff");
 
-				this.drawTextMutipleLines(context,
+				WorldDisplay.drawTextMutipleLines(context,
 					this.displayText,
 					x,
 					y-textSize.height/2+fontPixelHeight,
@@ -208,6 +189,7 @@ export class TextDisplayShape implements Drawable
 		this.rectangleEngineShape.stopRotation();
 	}
 
+	/*
 	private drawTextMutipleLines(context:CanvasRenderingContext2D,text:string,x:number,y:number,lineHeight:number,splitChar:string):void
 	{
 		let lines:string[] = text.split(splitChar);
@@ -234,7 +216,7 @@ export class TextDisplayShape implements Drawable
 
 	    return(new Size(maxWidth+1,totalHeight));
 	 }
-
+*/
 	setContextFont(context:CanvasRenderingContext2D,fontStyle:string,fontFace:string,fontPixelHeight:number,fontColor:string)
 	{
 		//context.fillStyle = WorldDisplay.getColorFromString("ffffffff");
@@ -277,6 +259,65 @@ export class TextDisplayShape implements Drawable
 	  context.fill();
   }
 *****************/
+
+/*******
+ * 
+ * context.font = '14pt Verdana';
+ * 
+ function measureTextHeight(fontSizeFace) {
+    // create a temp canvas
+    var width=1000;
+    var height=60;
+    var canvas=document.createElement("canvas");
+    canvas.width=width;
+    canvas.height=height;
+    var ctx=canvas.getContext("2d");
+
+    // Draw the entire a-z/A-Z alphabet in the canvas
+    var text="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    ctx.save();
+    ctx.font=fontSizeFace;
+    ctx.clearRect(0,0,width,height);
+    ctx.fillText(text, 0, 40);
+    ctx.restore();
+
+    // Get the pixel data from the canvas
+    var data = ctx.getImageData(0,0,width,height).data,
+        first = false, 
+        last = false,
+        r = height,
+        c = 0;
+
+    // Find the last line with a non-transparent pixel
+    while(!last && r) {
+        r--;
+        for(c = 0; c < width; c++) {
+            if(data[r * width * 4 + c * 4 + 3]) {
+                last = r;
+                break;
+            }
+        }
+    }
+
+    // Find the first line with a non-transparent pixel
+    while(r) {
+        r--;
+        for(c = 0; c < width; c++) {
+            if(data[r * width * 4 + c * 4 + 3]) {
+                first = r;
+                break;
+            }
+        }
+
+        // If we've got it then return the height
+        if(first != r) return last - first;
+    }
+
+    // error condition if we get here
+    return 0;
+}
+
+ */
 }
 
 
