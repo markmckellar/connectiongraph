@@ -35,6 +35,12 @@ export class MockEngine implements WorldEngine {
     return this.mouseAnchor;
   }
 
+  public createBounds(width:number,height:number,options:any):void {
+  }
+
+  public startEngine():void {
+  }
+
   public createCircle(
     worldId: WorldId,
     drawable: Drawable,

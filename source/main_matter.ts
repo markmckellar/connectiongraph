@@ -12,14 +12,14 @@ import { TextDisplayShape } from "./display/drawableshapes/textdisplayshape";
 import { PolygonDisplayShape } from "./display/drawableshapes/polygondisplayshape";
 import { PolygonEngineShape } from "./engine/shapes/polygonengineshape";
 import { TextEngineShape } from "./engine/shapes/textengineshape";
-
-
-
-
+import { Test1 } from "./test1";
 
 let matterEngine = new MatterEngine();
 let world:WorldOfWorldObjects = new WorldOfWorldObjects(matterEngine);
 let canvasHolder:CanvasHolderHTML = new CanvasHolderHTML("worldCanvas",world);
+
+let test1 = new Test1(matterEngine,world,canvasHolder);
+/*
 
 let circle1:CircleEngineShape = world.worldEngine.createCircle(
       new WorldId("circle1"),
@@ -110,3 +110,4 @@ function doDraw()
 {
   world.drawWorld(canvasHolder);	
 }
+*/

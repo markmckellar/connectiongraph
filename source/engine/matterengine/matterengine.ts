@@ -79,6 +79,10 @@ export  class MatterEngine  implements WorldEngine {
 
     }
 
+    public startEngine():void {
+      Matter.Engine.run(this.engine);
+
+    }
 
     public getMouseAnchor():EngineShape {
       return(this.mouseAnchor);

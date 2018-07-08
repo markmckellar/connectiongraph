@@ -20,5 +20,11 @@ export interface WorldEngine {
     getMouseAnchor():EngineShape;
     pointerDownEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void;
     pointerMoveEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void;
-    pointerUpEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void;    
+    pointerUpEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void; 
+    
+    createBounds(width:number,height:number,options:any):void;
+
+    startEngine():void;
+
+    
 }

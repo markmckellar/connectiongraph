@@ -10,12 +10,16 @@ import { RectangleDisplayShape } from "./display/drawableshapes/rectangledisplay
 import { PolygonEngineShape } from "./engine/shapes/polygonengineshape";
 import { PolygonDisplayShape } from "./display/drawableshapes/polygondisplayshape";
 import { TextDisplayShape } from "./display/drawableshapes/textdisplayshape";
+import { Test1 } from "./test1";
 
 
 let mockEngine = new MockEngine();
 let world:WorldOfWorldObjects = new WorldOfWorldObjects(mockEngine);
 let canvasHolder:CanvasHolderHTML = new CanvasHolderHTML("worldCanvas",world);
 
+let test1 = new Test1(mockEngine,world,canvasHolder);
+
+/*
 let circle1:CircleEngineShape = world.worldEngine.createCircle(
   new WorldId("circle1"),
   new CircleDisplayShape(),
@@ -105,5 +109,5 @@ function doDraw()
   world.drawWorld(canvasHolder);	
 }
 
-
+*/
 
