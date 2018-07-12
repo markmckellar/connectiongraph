@@ -7,6 +7,7 @@ import { WorldEngine } from "../engine/worldengine";
 import { WorldPosition } from "./worldposition";
 import { WorldObject } from "./worldobject";
 import { CanvasHolder } from "../display/canvas/canvasholder";
+import { WorldId } from "./worldid";
 
 
 export abstract class World {
@@ -17,6 +18,10 @@ export abstract class World {
     constructor(worldEngine:WorldEngine){
 		this.worldEngine = worldEngine;
 	}
+
+	public abstract addWorldObject(worldObject:WorldObject):void;
+
+    public abstract getWorldObjectMatchingWorldId(worldId:WorldId):WorldObject;
 	
 	public abstract getWorldObjectContainingPosition(worldPosition:WorldPosition):WorldObject;
 

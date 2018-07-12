@@ -118,6 +118,32 @@ export class WorldDisplay  {
 		}
 		return(polygonPointArray);
 	}
+
+/**
+	 * Draws an outlined shape from an Array of WorldPosition objects. It is assumed that the fill color, 
+	 * stroek color and line width for the context have been set before the call is made
+	 * 
+	 * @static
+	 * @param {CanvasRenderingContext2D} context 
+	 * @param {Array<WorldPosition>} worldPositionArray 
+	 * @memberof WorldDisplay
+	 */
+	public static drawConnectedLine(context:CanvasRenderingContext2D,worldPositionArray:Array<WorldPosition>):void
+	{	    
+	    context.beginPath();
+	    for(let i=0;i<worldPositionArray.length;i++)
+	    {   	
+			var point = worldPositionArray[i];
+	    	if(i==0) context.moveTo(point.x,point.y);
+	    	else context.lineTo(point.x,point.y);
+	    }
+	    //context.closePath();
+	    
+	    //context.fill();
+	    //context.lineWidth = displayInfo.borderWidth;
+	    context.stroke();
+	}
+
 	/**
 	 * Draws an outlined shape from an Array of WorldPosition objects. It is assumed that the fill color, 
 	 * stroek color and line width for the context have been set before the call is made

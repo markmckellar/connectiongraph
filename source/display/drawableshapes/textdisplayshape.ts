@@ -51,17 +51,7 @@ export class TextDisplayShape implements DrawableText
 			pointerMoveEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {},
 			pointerUpEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {}
 		};
-	
 		this.rectangleEngineShape.setWorldObjectEventHandler(woe);
-		/*
-		this.rectangleEngineShape.getWorldObjectEventHandler().pointerMoveEvent = 
-			function(world:World,canvasMouse:CanvasMouse,event:MouseEvent)
-			{
-				this.rectangleEngineShape.getWorldObjectEventHandler().pointerMoveEvent(world,canvasMouse,event);
-				console.log("QQQQQQQQQQQQQQQQQQQ click on text box:"+JSON.stringify({"cw":this.width,"ch":this.height}));
-
-			};
-			*/
 	}
 
 
@@ -189,34 +179,6 @@ export class TextDisplayShape implements DrawableText
 		this.rectangleEngineShape.stopRotation();
 	}
 
-	/*
-	private drawTextMutipleLines(context:CanvasRenderingContext2D,text:string,x:number,y:number,lineHeight:number,splitChar:string):void
-	{
-		let lines:string[] = text.split(splitChar);
-	
-	    for(let n = 0; n < lines.length; n++)
-	    {
-			context.fillText(lines[n], x, y);
-			y = y+lineHeight;
-	    }
-	 }
-	
-	private metricsTextMutipleLines(context:CanvasRenderingContext2D,text:string,lineHeight:number,splitChar:string):Size
-	{
-		let lines = text.split(splitChar);
-	    let maxWidth = 0;
-	    let totalHeight = lineHeight/2;
-	    for(let n = 0; n < lines.length; n++)
-	    {
-			let metrics = context.measureText(lines[n]);
-	     	if(metrics.width>maxWidth) maxWidth = metrics.width;
-			totalHeight = totalHeight + lineHeight;
- 		}
-		// TODO for some reason maxWidth is always 1 short, how come??!?! (coincidentally I think the java image libraries have the same issue)
-
-	    return(new Size(maxWidth+1,totalHeight));
-	 }
-*/
 	setContextFont(context:CanvasRenderingContext2D,fontStyle:string,fontFace:string,fontPixelHeight:number,fontColor:string)
 	{
 		//context.fillStyle = WorldDisplay.getColorFromString("ffffffff");

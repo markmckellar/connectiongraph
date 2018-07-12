@@ -16,6 +16,9 @@ import { EngineShape } from "../shapes/engineshape";
 import { TextDisplayShape } from "../../display/drawableshapes/textdisplayshape";
 import { TextEngineShape } from "../shapes/textengineshape";
 import { MockRectangleText } from "./shapes/mockrectangletext";
+import { DrawableConnector } from "../../display/drawableshapes/drawableconnector";
+import { EngineConnectorDef } from "../shapes/engineconnectordef";
+import { EngineConnector } from "../shapes/engineconnector";
 
 export class MockEngine implements WorldEngine {
   private _mouseAnchor: MockCircle;
@@ -59,6 +62,10 @@ export class MockEngine implements WorldEngine {
       this
     );
     return circle;
+  }
+
+  public createConnector(worldId:WorldId,drawableConnector:DrawableConnector,connectorShape:EngineShape,engineConnectorDefArray:Array<EngineConnectorDef>,worldPosition:WorldPosition,options:any):EngineConnector {
+    return(null);
   }
 
   public createRectangle(

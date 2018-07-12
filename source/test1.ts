@@ -3,7 +3,6 @@ import { WorldOfWorldObjects } from "./world/worldofworldobjects";
 import { CircleDisplayShape } from "./display/drawableshapes/circledisplayshape";
 import { WorldPosition } from "./world/worldposition";
 import { WorldId } from "./world/worldid";
-import * as Matter from "matter-js";
 import { CircleEngineShape } from "./engine/shapes/circleengineshape";
 import { RectangleEngineShape } from "./engine/shapes/rectangleengineshape";
 import { RectangleDisplayShape } from "./display/drawableshapes/rectangledisplayshape";
@@ -12,10 +11,12 @@ import { PolygonDisplayShape } from "./display/drawableshapes/polygondisplayshap
 import { PolygonEngineShape } from "./engine/shapes/polygonengineshape";
 import { TextEngineShape } from "./engine/shapes/textengineshape";
 import { WorldEngine } from "./engine/worldengine";
+import { World } from "./world/world";
 
 export class Test1 {
 
-    constructor(worldEngine:WorldEngine,world:WorldOfWorldObjects,canvasHolder:CanvasHolderHTML) {
+    constructor(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML) {
+
         let circle1:CircleEngineShape = world.worldEngine.createCircle(
             new WorldId("circle1"),
             new CircleDisplayShape(),
@@ -85,14 +86,14 @@ export class Test1 {
       
       
       
-      world.worldObjectArray.push(circle1);
-      world.worldObjectArray.push(circle2);
-      world.worldObjectArray.push(rectangle1);
-      world.worldObjectArray.push(polygon1);
-      world.worldObjectArray.push(textBox1);
-      world.worldObjectArray.push(textBox2);
-      world.worldObjectArray.push(textBox3);
-      world.worldObjectArray.push(world.worldEngine.getMouseAnchor());
+      world.addWorldObject(circle1);
+      world.addWorldObject(circle2);
+      world.addWorldObject(rectangle1);
+      world.addWorldObject(polygon1);
+      world.addWorldObject(textBox1);
+      world.addWorldObject(textBox2);
+      world.addWorldObject(textBox3);
+      world.addWorldObject(world.worldEngine.getMouseAnchor());
       
       
       worldEngine.createBounds(canvasHolder.getWidth(),canvasHolder.getHeight(),{restitution:0.9});
@@ -106,4 +107,5 @@ export class Test1 {
         world.drawWorld(canvasHolder);	
       }
     }
+
 }

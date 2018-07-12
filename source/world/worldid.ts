@@ -4,7 +4,11 @@ export class WorldId {
 
     public constructor(woldObjectId:string) {
         this.id = woldObjectId;
-    }
+	}
+	
+	public matches(worldId:WorldId):boolean {
+		return(this.id==worldId.id);
+	}
 
 	public get id(): string {
 		return this._id;

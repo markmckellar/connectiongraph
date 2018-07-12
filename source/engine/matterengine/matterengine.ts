@@ -23,6 +23,10 @@ import { CircleDisplayShape } from "../../display/drawableshapes/circledisplaysh
 import { TextDisplayShape } from "../../display/drawableshapes/textdisplayshape";
 import { TextEngineShape } from "../shapes/textengineshape";
 import { MatterRectangleText } from "./shapes/matterrectangletext";
+import { DrawableConnector } from "../../display/drawableshapes/drawableconnector";
+import { EngineConnectorDef } from "../shapes/engineconnectordef";
+import { EngineConnector } from "../shapes/engineconnector";
+import { MatterConnector } from "./shapes/matterconnector";
 
 export  class MatterEngine  implements WorldEngine {
     private _matterTools:MatterTools ;
@@ -148,8 +152,23 @@ export  class MatterEngine  implements WorldEngine {
         this
       );
       return(circle);
-
     }
+
+    public createConnector(worldId:WorldId,drawableConnector:DrawableConnector,connectorShape:EngineShape,
+      engineConnectorDefArray:Array<EngineConnectorDef>,
+      worldPosition:WorldPosition,options:any):EngineConnector {
+        let connector = new MatterConnector(
+          worldId,
+          drawableConnector,
+          connectorShape,
+          engineConnectorDefArray,
+          worldPosition,
+          options,
+          this);
+      
+      return(connector);
+    }
+
 
     public createRectangle(worldId:WorldId,drawable:Drawable,width:number,height:number,worldPosition:WorldPosition,options:any):RectangleEngineShape {
       let rectangle:MatterRectangle = new MatterRectangle (
