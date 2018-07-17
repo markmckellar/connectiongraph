@@ -1,15 +1,26 @@
 import { EngineShape } from "./engineshape";
+import { WorldPosition } from "../../world/worldposition";
 
 export class EngineConnectorDef {
     private _engineShape:EngineShape;
     private _length:number;
     private _stiffness:number;
-    
+
     constructor(engineShape:EngineShape,length:number,stiffness:number) {
         this.engineShape = engineShape;
         this.length = length;
         this.stiffness = stiffness;
     }
+
+    public static getWorldPositionArrayFromEngineDefs(engineConnectorDefArray:Array<EngineConnectorDef>):Array<WorldPosition> {
+		let worldPositionArray:Array<WorldPosition> = new Array<WorldPosition>();
+		for(let n = 0; n < engineConnectorDefArray.length; n++)
+		{
+			worldPositionArray.push(engineConnectorDefArray[n].engineShape.getWorldPosition());
+		}
+		return(worldPositionArray);
+   }
+    
 
     /**
      * Getter engineShape

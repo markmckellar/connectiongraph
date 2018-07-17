@@ -9,11 +9,12 @@ import { DrawableConnector } from "../../../display/drawableshapes/drawableconne
 import { EngineConnectorDef } from "../../shapes/engineconnectordef";
 import { WorldDisplay } from "../../../display/worlddisplay";
 import { EngineShape } from "../../shapes/engineshape";
+import { MatterConnectorDef } from "./matterconnectordef";
 
 export class MatterConnector extends MatterShape implements EngineConnector
 {
     private _drawableConnector:DrawableConnector;
-    private _engineConnectorDefArray:Array<EngineConnectorDef>;
+    private _matterConnectorDefArray:Array<MatterConnectorDef>;
 
     private _connectorCircleBody:Matter.Body;
 	private _connectorCircleCurvePoints:number;
@@ -23,18 +24,18 @@ export class MatterConnector extends MatterShape implements EngineConnector
         worldId:WorldId,
         drawableConnector:DrawableConnector,
         connectorShape:EngineShape,
-        engineConnectorDefArray:Array<EngineConnectorDef>,
+        matterConnectorDefArray:Array<MatterConnectorDef>,
         position:WorldPosition,
         options:any,
         matterEngine:MatterEngine)
 	{
        super(worldId,drawableConnector,options,matterEngine);
        this.drawableConnector = drawableConnector;
-       this.engineConnectorDefArray = engineConnectorDefArray;
+       this.matterConnectorDefArray = matterConnectorDefArray;
 
 
 
-       this.connectorCircleRadius = 1; // REALLY?!?! it should be a param
+       this.connectorCircleRadius = 30; // REALLY?!?! it should be a param
        this.connectorCircleCurvePoints = 8; // REALLY?!?! it should be a param
        this.connectorCircleBody = Matter.Bodies.circle(
            position.x,position.y,
@@ -42,11 +43,28 @@ export class MatterConnector extends MatterShape implements EngineConnector
            options,
            this.connectorCircleCurvePoints);	
        //this.circleBody.collisionFilter.category = MatterEngine.boundsFilter;
-       matterEngine.addMatterShape(this);
-
+       //matterEngine.addMatterShape(this);
         
        drawableConnector.init(this,options);
-       matterEngine.addMatterShape(this);
+       //matterEngine.addMatterShape(this);
+
+       for(let i=0;i<this.matterConnectorDefArray.length;i++) {
+        let connectorDef:MatterConnectorDef = matterConnectorDefArray[i];
+        let matterConstraint = Matter.Constraint.create(
+            {
+                bodyA: this.connectorCircleBody,
+                bodyB: connectorDef.matterShape.getBody(),
+                pointA: { x: -0, y: -0 },
+                pointB: { x: -0, y: -0 },
+                length:connectorDef.length,
+                stiffness:connectorDef.stiffness
+            });
+        connectorDef.init(matterConstraint);
+        //Matter.Body.setStatic(this.connectorCircleBody,true);
+        //Matter.Body.setMass(this.connectorCircleBody,0.0001);
+       }
+       matterEngine.addMatterConnector(this);
+       
     }
 
     public getBody():Matter.Body {
@@ -54,13 +72,13 @@ export class MatterConnector extends MatterShape implements EngineConnector
     }
 
     public getEngineConnectorDefArray():Array<EngineConnectorDef> {
-        return(this.engineConnectorDefArray);
+        return(this.matterConnectorDefArray);
     }
 
 
     public getMiddleWorldPosition():WorldPosition {
         let positions = new Array<WorldPosition>();
-        for(let i=0;i<this.engineConnectorDefArray.length;i++) positions.push(this.engineConnectorDefArray[i].engineShape.getWorldPosition());
+        for(let i=0;i<this.matterConnectorDefArray.length;i++) positions.push(this.matterConnectorDefArray[i].engineShape.getWorldPosition());
         let middle:WorldPosition = WorldDisplay.getAveragePostionFromPositionList(positions);
         return(middle);
     }
@@ -85,19 +103,19 @@ export class MatterConnector extends MatterShape implements EngineConnector
 
 
     /**
-     * Getter engineConnectorDefArray
-     * @return {Array<EngineConnectorDef>}
+     * Getter matterConnectorDefArray
+     * @return {Array<MatterConnectorDef>}
      */
-	public get engineConnectorDefArray(): Array<EngineConnectorDef> {
-		return this._engineConnectorDefArray;
+	public get matterConnectorDefArray(): Array<MatterConnectorDef> {
+		return this._matterConnectorDefArray;
 	}
 
     /**
-     * Setter engineConnectorDefArray
-     * @param {Array<EngineConnectorDef>} value
+     * Setter matterConnectorDefArray
+     * @param {Array<MatterConnectorDef>} value
      */
-	public set engineConnectorDefArray(value: Array<EngineConnectorDef>) {
-		this._engineConnectorDefArray = value;
+	public set matterConnectorDefArray(value: Array<MatterConnectorDef>) {
+		this._matterConnectorDefArray = value;
 	}
 
 

@@ -16,15 +16,28 @@ import { DrawableConnector } from "../display/drawableshapes/drawableconnector";
 
 
 export interface WorldEngine {
-    createCircle(worldId:WorldId,drawable:Drawable,radius:number,numberOfSides:number,worldPosition:WorldPosition,options:any):CircleEngineShape;
-    createRectangle(worldId:WorldId,drawable:Drawable,width:number,height:number,worldPosition:WorldPosition,options:any):RectangleEngineShape;
+    createCircle(worldId:WorldId,drawable:Drawable,radius:number,numberOfSides:number,
+        worldPosition:WorldPosition,options:any):CircleEngineShape;
+
+    createRectangle(worldId:WorldId,drawable:Drawable,width:number,height:number,
+        worldPosition:WorldPosition,options:any):RectangleEngineShape;
+
     createTextBox(worldId:WorldId,drawableText:DrawableText,
         width:number,height:number,worldPosition:WorldPosition,options:any):TextEngineShape;
-    createPolygon(worldId:WorldId,drawable:Drawable,numberOfSides:number,radius:number,worldPosition:WorldPosition,options:any):PolygonEngineShape;
+
+    createPolygon(worldId:WorldId,drawable:Drawable,numberOfSides:number,radius:number,
+        worldPosition:WorldPosition,options:any):PolygonEngineShape;
+
     getMouseAnchor():EngineShape;
-    pointerDownEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void;
-    pointerMoveEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void;
-    pointerUpEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void; 
+
+    pointerDownEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,
+        mouseEventHandler:MouseEventHandler):void;
+        
+    pointerMoveEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,
+        mouseEventHandler:MouseEventHandler):void;
+
+    pointerUpEngineEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent,
+        mouseEventHandler:MouseEventHandler):void; 
     
     createBounds(width:number,height:number,options:any):void;
 

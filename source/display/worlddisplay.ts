@@ -2,6 +2,7 @@
 import { WorldPosition } from "../world/worldposition";
 import { World } from "../world/world";
 import { CanvasMouse } from "./canvas/canvasmouse";
+import { WorldObject } from "../world/worldobject";
 
 export class Size {
 	private _width:number;
@@ -36,6 +37,15 @@ export class WorldDisplay  {
         console.log("doing some redering...");
     }
     */    
+
+   public static getWorldPositionArrayFromObjects(worldObjectArray:Array<WorldObject>):Array<WorldPosition> {
+		let worldPositionArray:Array<WorldPosition> = new Array<WorldPosition>();
+		for(let n = 0; n < worldObjectArray.length; n++)
+		{
+			worldPositionArray.push(worldObjectArray[n].getWorldPosition());
+		}
+		return(worldPositionArray);
+   }
 
    public static  drawTextMutipleLines(context:CanvasRenderingContext2D,text:string,x:number,y:number,lineHeight:number,splitChar:string):void
    {

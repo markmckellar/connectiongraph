@@ -27,6 +27,7 @@ import { DrawableConnector } from "../../display/drawableshapes/drawableconnecto
 import { EngineConnectorDef } from "../shapes/engineconnectordef";
 import { EngineConnector } from "../shapes/engineconnector";
 import { MatterConnector } from "./shapes/matterconnector";
+import { MatterConnectorDef } from "./shapes/matterconnectordef";
 
 export  class MatterEngine  implements WorldEngine {
     private _matterTools:MatterTools ;
@@ -98,6 +99,20 @@ export  class MatterEngine  implements WorldEngine {
       
     }
 
+    public addMatterConnector(matterConnector:MatterConnector):void {
+      this.addMatterShape(matterConnector);
+      //Matter.World.add(this.engine.world,[matterConnector.getBody()]);
+
+      for(let i=0;i<matterConnector.matterConnectorDefArray.length;i++) {
+        let connectorDef:MatterConnectorDef = matterConnector.matterConnectorDefArray[i];
+        //Matter.World.add(this.engine.world,[connectorDef.matterConstraint]);
+        Matter.World.addConstraint(this.engine.world, connectorDef.matterConstraint)
+
+      }
+
+      
+    }
+
     public updateMouseConstraint(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void {
       var newPosition = new WorldPosition(event.x- canvasMouse.offset.x,event.y- canvasMouse.offset.y);
       this.mouseAnchor.translate(newPosition);
@@ -157,15 +172,18 @@ export  class MatterEngine  implements WorldEngine {
     public createConnector(worldId:WorldId,drawableConnector:DrawableConnector,connectorShape:EngineShape,
       engineConnectorDefArray:Array<EngineConnectorDef>,
       worldPosition:WorldPosition,options:any):EngineConnector {
+        let matterConnectorDefArray:Array<MatterConnectorDef> = new Array<MatterConnectorDef>();
+        for(let i=0;i<engineConnectorDefArray.length;i++) 
+          matterConnectorDefArray.push(new MatterConnectorDef(this,engineConnectorDefArray[i]));
+        
         let connector = new MatterConnector(
           worldId,
           drawableConnector,
           connectorShape,
-          engineConnectorDefArray,
+          matterConnectorDefArray,
           worldPosition,
           options,
           this);
-      
       return(connector);
     }
 
