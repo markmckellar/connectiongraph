@@ -19,6 +19,8 @@ import { MockRectangleText } from "./shapes/mockrectangletext";
 import { DrawableConnector } from "../../display/drawableshapes/drawableconnector";
 import { EngineConnectorDef } from "../shapes/engineconnectordef";
 import { EngineConnector } from "../shapes/engineconnector";
+import { MockConnectorDef } from "./shapes/mockconnectordef";
+import { MockConnector } from "./shapes/mockconnector";
 
 export class MockEngine implements WorldEngine {
   private _mouseAnchor: MockCircle;
@@ -64,10 +66,6 @@ export class MockEngine implements WorldEngine {
     return circle;
   }
 
-  public createConnector(worldId:WorldId,drawableConnector:DrawableConnector,connectorShape:EngineShape,engineConnectorDefArray:Array<EngineConnectorDef>,worldPosition:WorldPosition,options:any):EngineConnector {
-    return(null);
-  }
-
   public createRectangle(
     worldId: WorldId,
     drawable: Drawable,
@@ -86,6 +84,25 @@ export class MockEngine implements WorldEngine {
       this
     );
     return rectangle;
+  }
+
+  public createConnector(worldId:WorldId,drawableConnector:DrawableConnector,connectorShape:EngineShape,
+    engineConnectorDefArray:Array<EngineConnectorDef>,
+    options:any):EngineConnector {
+
+      let mockConnectorDefArrayDef:Array<MockConnectorDef> = new Array<MockConnectorDef>();
+      
+      for(let i=0;i<engineConnectorDefArray.length;i++) 
+        mockConnectorDefArrayDef.push(new MockConnectorDef(this,engineConnectorDefArray[i]));
+      
+      let connector = new MockConnector(
+        worldId,
+        drawableConnector,
+        connectorShape,
+        mockConnectorDefArrayDef,
+        options,
+        this);
+    return(connector);
   }
 
   public createTextBox(worldId:WorldId,textDisplayShape:TextDisplayShape,width:number,height:number,worldPosition:WorldPosition,options:any):TextEngineShape {

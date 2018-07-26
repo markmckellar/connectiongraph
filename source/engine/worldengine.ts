@@ -45,7 +45,7 @@ export interface WorldEngine {
 
     createConnector(worldId:WorldId,drawableConnector:DrawableConnector,
         connectorShape:EngineShape,engineConnectorDefArray:Array<EngineConnectorDef>,
-        worldPosition:WorldPosition,options:any):EngineConnector;
+        options:any):EngineConnector;
 
     
 }

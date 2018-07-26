@@ -73,6 +73,12 @@ export abstract class MockShape implements WorldObject
 		return(this.position );
 	}
 
+	public setWorldPosition(worldPosition:WorldPosition):void {
+		//this.position.x = worldPosition.x;
+		//this.position.y = worldPosition.y;
+		this.position.setWorldPosition(worldPosition);
+	}
+
 	public translate(worldPosition:WorldPosition):void {
 		//this.position.x = worldPosition.x;
 		//this.position.y = worldPosition.y;
@@ -94,13 +100,6 @@ export abstract class MockShape implements WorldObject
      */
 	public set worldObjectEventHandler(value: WorldObjectEventHandler) {
 		this._worldObjectEventHandler = value;
-	}
-
-	
-	public setWorldPosition(worldPosition:WorldPosition):void {
-		//this.position.x = worldPosition.x;
-		//this.position.y = worldPosition.y;
-		this.position.setWorldPosition(worldPosition);
 	}
 
 	public abstract containsWorldPosition(worldPosition:WorldPosition):boolean;

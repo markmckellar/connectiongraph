@@ -34,6 +34,8 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 		this.isObjectSelected = true;
 		this.objectOptions = options;
 		this.worldObjectEventHandler = this.createMouseEventHandler();
+		//options["timeScale"]= 0.1;
+		//options["frictionAir"]= 0.9;
 
 		drawable.init(this,options);
 	}

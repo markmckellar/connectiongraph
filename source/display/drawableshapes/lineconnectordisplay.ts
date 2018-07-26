@@ -31,18 +31,18 @@ export class LineConnectorDisplay implements DrawableConnector
         context.fillStyle = WorldDisplay.getColorFromString("ff0000ff");
 		context.strokeStyle = WorldDisplay.getColorFromString("0000ffff");
 
-        this.engineConnector.setWorldPosition(
-			WorldDisplay.getAveragePostionFromPositionList(
-				EngineConnectorDef.getWorldPositionArrayFromEngineDefs(
-					this.engineConnector.getEngineConnectorDefArray())			)
+		
+        this.engineConnector.positionConnectorShape();
 
-		);
+		//WorldDisplay.drawOutlinedShape(context,this.engineConnector.getShapePoints());
+
 
 
         context.lineWidth = 2;
         for(let i=0;i<this.engineConnector.getEngineConnectorDefArray().length;i++)
         {
-            WorldDisplay.drawConnectedLine(context,[
+			WorldDisplay.drawConnectedLine(context,
+			[
                 this.engineConnector.getEngineConnectorDefArray()[i].engineShape.getWorldPosition(),
                 this.engineConnector.getWorldPosition()
             ]);

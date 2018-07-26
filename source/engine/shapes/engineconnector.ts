@@ -29,4 +29,5 @@ export  interface EngineConnector extends EngineShape
     */
    
    getEngineConnectorDefArray():Array<EngineConnectorDef>;
+   positionConnectorShape():void;
 }

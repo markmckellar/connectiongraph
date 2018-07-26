@@ -53,7 +53,8 @@ export  class MatterEngine  implements WorldEngine {
         this.engine = Matter.Engine.create(); 
         
         this.engine.world.gravity.x = 0.0;
-        this.engine.world.gravity.y = 1.0;
+        //this.engine.world.gravity.y = 1.0;
+        this.engine.world.gravity.y = 0.0;
 
         this.mouseAnchor = new MatterCircle(
           new WorldId("mouseAnchor"),
@@ -171,7 +172,7 @@ export  class MatterEngine  implements WorldEngine {
 
     public createConnector(worldId:WorldId,drawableConnector:DrawableConnector,connectorShape:EngineShape,
       engineConnectorDefArray:Array<EngineConnectorDef>,
-      worldPosition:WorldPosition,options:any):EngineConnector {
+      options:any):EngineConnector {
         let matterConnectorDefArray:Array<MatterConnectorDef> = new Array<MatterConnectorDef>();
         for(let i=0;i<engineConnectorDefArray.length;i++) 
           matterConnectorDefArray.push(new MatterConnectorDef(this,engineConnectorDefArray[i]));
@@ -181,7 +182,6 @@ export  class MatterEngine  implements WorldEngine {
           drawableConnector,
           connectorShape,
           matterConnectorDefArray,
-          worldPosition,
           options,
           this);
       return(connector);

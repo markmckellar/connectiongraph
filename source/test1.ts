@@ -15,6 +15,7 @@ import { World } from "./world/world";
 import { EngineConnector } from "./engine/shapes/engineconnector";
 import { EngineConnectorDef } from "./engine/shapes/engineconnectordef";
 import { LineConnectoDisplayShape } from "./display/drawableshapes/lineconnectordisplayshape";
+import { LineConnectorDisplay } from "./display/drawableshapes/lineconnectordisplay";
 
 export class Test1 {
 
@@ -87,8 +88,8 @@ export class Test1 {
         {}
       );
 
-      let c1A:EngineConnectorDef = new EngineConnectorDef(textBox1,100,0.1);
-      let c1B:EngineConnectorDef = new EngineConnectorDef(textBox2,100,0.1);
+      let c1A:EngineConnectorDef = new EngineConnectorDef(textBox1,200,0.5);
+      let c1B:EngineConnectorDef = new EngineConnectorDef(textBox2,200,0.5);
 
       let c1Circle:CircleEngineShape = world.worldEngine.createCircle(
         new WorldId("c1Circle"),
@@ -100,10 +101,9 @@ export class Test1 {
       
       let connector1:EngineConnector = world.worldEngine.createConnector(
         new WorldId("connector1"),
-        new LineConnectoDisplayShape(),//drawableConnector:DrawableConnector,
+        new LineConnectorDisplay(),//drawableConnector:DrawableConnector,
         c1Circle,//connectorShape:EngineShape,
         [c1A,c1B],
-        c1Circle.getWorldPosition(),
         {}
       );
 
@@ -116,6 +116,9 @@ export class Test1 {
       world.addWorldObject(textBox2);
       world.addWorldObject(textBox3);
       world.addWorldObject(connector1);
+
+      world.addWorldObject(c1Circle);
+
       world.addWorldObject(world.worldEngine.getMouseAnchor());
       
       

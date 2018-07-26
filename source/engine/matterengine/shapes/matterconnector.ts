@@ -15,17 +15,16 @@ export class MatterConnector extends MatterShape implements EngineConnector
 {
     private _drawableConnector:DrawableConnector;
     private _matterConnectorDefArray:Array<MatterConnectorDef>;
+    private _connectorShape:EngineShape;
+    private _matterShape:MatterShape;
 
-    private _connectorCircleBody:Matter.Body;
-	private _connectorCircleCurvePoints:number;
-	private _connectorCircleRadius:number;
+
 	
     constructor(
         worldId:WorldId,
         drawableConnector:DrawableConnector,
         connectorShape:EngineShape,
         matterConnectorDefArray:Array<MatterConnectorDef>,
-        position:WorldPosition,
         options:any,
         matterEngine:MatterEngine)
 	{
@@ -33,15 +32,15 @@ export class MatterConnector extends MatterShape implements EngineConnector
        this.drawableConnector = drawableConnector;
        this.matterConnectorDefArray = matterConnectorDefArray;
 
+       this.connectorShape = connectorShape;
+
+       if(!matterEngine.matterShapes.has(connectorShape.getWorldId()))
+       throw new Error("Error creating MatterConnectorDef, matterShape not found.  WorldId is : "+
+       connectorShape.getWorldId().id);
+       this.matterShape = matterEngine.matterShapes.get(connectorShape.getWorldId()); 
 
 
-       this.connectorCircleRadius = 30; // REALLY?!?! it should be a param
-       this.connectorCircleCurvePoints = 8; // REALLY?!?! it should be a param
-       this.connectorCircleBody = Matter.Bodies.circle(
-           position.x,position.y,
-           this.connectorCircleRadius,
-           options,
-           this.connectorCircleCurvePoints);	
+  	
        //this.circleBody.collisionFilter.category = MatterEngine.boundsFilter;
        //matterEngine.addMatterShape(this);
         
@@ -52,7 +51,7 @@ export class MatterConnector extends MatterShape implements EngineConnector
         let connectorDef:MatterConnectorDef = matterConnectorDefArray[i];
         let matterConstraint = Matter.Constraint.create(
             {
-                bodyA: this.connectorCircleBody,
+                bodyA: this.matterShape.getBody(),
                 bodyB: connectorDef.matterShape.getBody(),
                 pointA: { x: -0, y: -0 },
                 pointB: { x: -0, y: -0 },
@@ -60,15 +59,53 @@ export class MatterConnector extends MatterShape implements EngineConnector
                 stiffness:connectorDef.stiffness
             });
         connectorDef.init(matterConstraint);
-        //Matter.Body.setStatic(this.connectorCircleBody,true);
-        //Matter.Body.setMass(this.connectorCircleBody,0.0001);
        }
        matterEngine.addMatterConnector(this);
        
     }
 
+    public positionConnectorShape():void {
+        //let allYs = this.connectorShape.getWorldPosition().y;
+        //for(let i=0;i<this.getEngineConnectorDefArray().length;i++)
+        //allYs += this.getEngineConnectorDefArray()[i].engineShape.getWorldPosition().y;
+
+        //let averageY = allYs / (this.getEngineConnectorDefArray().length+1);
+
+        let averagePostion:WorldPosition = WorldDisplay.getAveragePostionFromPositionList(
+            EngineConnectorDef.getWorldPositionArrayFromEngineDefs(
+                this.getEngineConnectorDefArray()) ) 
+
+        if(!this.connectorShape.isSelected()) this.connectorShape.setWorldPosition(averagePostion);
+        for(let i=0;i<this.getEngineConnectorDefArray().length;i++)
+        {
+            if(!this.getEngineConnectorDefArray()[i].engineShape.isSelected())
+                this.getEngineConnectorDefArray()[i].engineShape.setWorldPosition(
+                    new WorldPosition(
+                    this.getEngineConnectorDefArray()[i].engineShape.getWorldPosition().x,
+                    averagePostion.y
+                    )   );
+        }
+        /*
+        this.connectorShape.setWorldPosition(
+            new WorldPosition(
+            this.connectorShape.getWorldPosition().x,
+            averageY
+            ) );
+            */
+        /*
+        if(this.connectorShape.isAnimated() || true)
+        {
+            this.connectorShape.setWorldPosition(
+			    WorldDisplay.getAveragePostionFromPositionList(
+				    EngineConnectorDef.getWorldPositionArrayFromEngineDefs(
+					    this.getEngineConnectorDefArray()) ) );
+        }*/
+
+    }
+
+
     public getBody():Matter.Body {
-        return(this.connectorCircleBody);
+        return(this.matterShape.getBody());
     }
 
     public getEngineConnectorDefArray():Array<EngineConnectorDef> {
@@ -84,7 +121,7 @@ export class MatterConnector extends MatterShape implements EngineConnector
     }
 
     public getWorldPosition():WorldPosition {
-        return(this.getMiddleWorldPosition());
+        return(this.connectorShape.getWorldPosition());
     }
 
 	public translate(worldPosition:WorldPosition):void {
@@ -119,6 +156,40 @@ export class MatterConnector extends MatterShape implements EngineConnector
 	}
 
 
+    /**
+     * Getter connectorShape
+     * @return {EngineShape}
+     */
+	public get connectorShape(): EngineShape {
+		return this._connectorShape;
+	}
+
+    /**
+     * Setter connectorShape
+     * @param {EngineShape} value
+     */
+	public set connectorShape(value: EngineShape) {
+		this._connectorShape = value;
+	}
+
+
+    /**
+     * Getter matterShape
+     * @return {MatterShape}
+     */
+	public get matterShape(): MatterShape {
+		return this._matterShape;
+	}
+
+    /**
+     * Setter matterShape
+     * @param {MatterShape} value
+     */
+	public set matterShape(value: MatterShape) {
+		this._matterShape = value;
+	}
+
+
 
     /**
      * Getter drawableConnector
@@ -136,55 +207,5 @@ export class MatterConnector extends MatterShape implements EngineConnector
 		this._drawableConnector = value;
 	}
 
-
-    /**
-     * Getter connectorCircleBody
-     * @return {Matter.Body}
-     */
-	public get connectorCircleBody(): Matter.Body {
-		return this._connectorCircleBody;
-	}
-
-    /**
-     * Setter connectorCircleBody
-     * @param {Matter.Body} value
-     */
-	public set connectorCircleBody(value: Matter.Body) {
-		this._connectorCircleBody = value;
-	}
-
-
-    /**
-     * Getter connectorCircleCurvePoints
-     * @return {number}
-     */
-	public get connectorCircleCurvePoints(): number {
-		return this._connectorCircleCurvePoints;
-	}
-
-    /**
-     * Setter connectorCircleCurvePoints
-     * @param {number} value
-     */
-	public set connectorCircleCurvePoints(value: number) {
-		this._connectorCircleCurvePoints = value;
-	}
-
-    /**
-     * Getter connectorCircleRadius
-     * @return {number}
-     */
-	public get connectorCircleRadius(): number {
-		return this._connectorCircleRadius;
-	}
-
-    /**
-     * Setter connectorCircleRadius
-     * @param {number} value
-     */
-	public set connectorCircleRadius(value: number) {
-		this._connectorCircleRadius = value;
-	}
-    
 
 }

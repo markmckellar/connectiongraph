@@ -4,6 +4,7 @@ import { Drawable } from "../../../display/drawable";
 import { MockShape } from "./mockshape";
 import { WorldId } from "../../../world/worldid";
 import { MockEngine } from "../mockengine";
+import { WorldDisplay } from "../../../display/worlddisplay";
 
 export class MockCircle extends MockShape implements CircleEngineShape
 {
@@ -30,7 +31,8 @@ export class MockCircle extends MockShape implements CircleEngineShape
 
 	public getShapePoints():Array<WorldPosition> {
 		//return( WorldDisplay.getPolygonPoints(Math.PI/4,4,this.getWidth()+this.get,this.getWorldPosition() ) ;
-		return(null);
+		//WorldDisplay.getCirclePositionList(this.radius,this.curvePoints);
+		return(WorldDisplay.getCirclePositionList(this.radius,this.curvePoints));
     }
 
 	public get curvePoints(): number {
