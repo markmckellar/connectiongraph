@@ -1,5 +1,5 @@
 
-import { EngineShape } from "./engineshape";
+import { EngineShape } from "../shapes/engineshape";
 import { WorldObject } from "../../world/worldobject";
 import { EngineConnectorDef } from "./engineconnectordef";
 
@@ -29,5 +29,4 @@ export  interface EngineConnector extends EngineShape
     */
    
    getEngineConnectorDefArray():Array<EngineConnectorDef>;
-   positionConnectorShape():void;
 }

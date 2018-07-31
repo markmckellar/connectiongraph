@@ -1,9 +1,9 @@
 import { WorldPosition } from "../../../world/worldposition";
 import { Drawable } from "../../../display/drawable";
 import { WorldId } from "../../../world/worldid";
-import { EngineConnector } from "../../shapes/engineconnector";
+import { EngineConnector } from "../../connectors/engineconnector";
 import { DrawableConnector } from "../../../display/drawableshapes/drawableconnector";
-import { EngineConnectorDef } from "../../shapes/engineconnectordef";
+import { EngineConnectorDef } from "../../connectors/engineconnectordef";
 import { WorldDisplay } from "../../../display/worlddisplay";
 import { EngineShape } from "../../shapes/engineshape";
 import { MockShape } from "./mockshape";
@@ -71,17 +71,6 @@ export class MockConnector extends MockShape implements EngineConnector
        */
     }
 
-    public positionConnectorShape():void {
-
-        if(this.connectorShape.isAnimated())
-        {
-            this.connectorShape.setWorldPosition(
-			    WorldDisplay.getAveragePostionFromPositionList(
-				    EngineConnectorDef.getWorldPositionArrayFromEngineDefs(
-					    this.getEngineConnectorDefArray()) ) );
-        }
-
-    }
 
     public getShapePoints():Array<WorldPosition> {
         //return( WorldDisplay.getPolygonPoints(Math.PI/4,4,this.getWidth()+this.get,this.getWorldPosition() ) ;

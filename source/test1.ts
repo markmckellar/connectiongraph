@@ -12,10 +12,10 @@ import { PolygonEngineShape } from "./engine/shapes/polygonengineshape";
 import { TextEngineShape } from "./engine/shapes/textengineshape";
 import { WorldEngine } from "./engine/worldengine";
 import { World } from "./world/world";
-import { EngineConnector } from "./engine/shapes/engineconnector";
-import { EngineConnectorDef } from "./engine/shapes/engineconnectordef";
-import { LineConnectoDisplayShape } from "./display/drawableshapes/lineconnectordisplayshape";
+import { EngineConnector } from "./engine/connectors/engineconnector";
+import { EngineConnectorDef } from "./engine/connectors/engineconnectordef";
 import { LineConnectorDisplay } from "./display/drawableshapes/lineconnectordisplay";
+import { PositionerFree } from "./engine/connectors/connectorpositioners/positionerfree";
 
 export class Test1 {
 
@@ -87,9 +87,9 @@ export class Test1 {
           new WorldPosition(550,250),
         {}
       );
-
-      let c1A:EngineConnectorDef = new EngineConnectorDef(textBox1,200,0.5);
-      let c1B:EngineConnectorDef = new EngineConnectorDef(textBox2,200,0.5);
+      
+      let c1A:EngineConnectorDef = new EngineConnectorDef(textBox1,new PositionerFree(),200,0.1);
+      let c1B:EngineConnectorDef = new EngineConnectorDef(textBox2,new PositionerFree(),200,1);
 
       let c1Circle:CircleEngineShape = world.worldEngine.createCircle(
         new WorldId("c1Circle"),

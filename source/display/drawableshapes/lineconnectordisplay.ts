@@ -7,8 +7,8 @@ import { CanvasMouse } from "../canvas/canvasmouse";
 import { WorldObjectEventHandler } from "../../world/worldobjecteventhandler";
 import { DrawableText } from "./drawabletext";
 import { DrawableConnector } from "./drawableconnector";
-import { EngineConnector } from "../../engine/shapes/engineconnector";
-import { EngineConnectorDef } from "../../engine/shapes/engineconnectordef";
+import { EngineConnector } from "../../engine/connectors/engineconnector";
+import { EngineConnectorDef } from "../../engine/connectors/engineconnectordef";
 
 
 export class LineConnectorDisplay implements DrawableConnector
@@ -30,12 +30,6 @@ export class LineConnectorDisplay implements DrawableConnector
 	{
         context.fillStyle = WorldDisplay.getColorFromString("ff0000ff");
 		context.strokeStyle = WorldDisplay.getColorFromString("0000ffff");
-
-		
-        this.engineConnector.positionConnectorShape();
-
-		//WorldDisplay.drawOutlinedShape(context,this.engineConnector.getShapePoints());
-
 
 
         context.lineWidth = 2;

@@ -4,12 +4,13 @@ import { MatterShape } from "./mattershape";
 import { Drawable } from "../../../display/drawable";
 import { WorldId } from "../../../world/worldid";
 import { MatterEngine } from "../matterengine";
-import { EngineConnector } from "../../shapes/engineconnector";
+import { EngineConnector } from "../../connectors/engineconnector";
 import { DrawableConnector } from "../../../display/drawableshapes/drawableconnector";
-import { EngineConnectorDef } from "../../shapes/engineconnectordef";
+import { EngineConnectorDef } from "../../connectors/engineconnectordef";
 import { WorldDisplay } from "../../../display/worlddisplay";
 import { EngineShape } from "../../shapes/engineshape";
 import { MatterConnectorDef } from "./matterconnectordef";
+import { MatterEvent } from "../events/matterevent";
 
 export class MatterConnector extends MatterShape implements EngineConnector
 {
@@ -61,48 +62,20 @@ export class MatterConnector extends MatterShape implements EngineConnector
         connectorDef.init(matterConstraint);
        }
        matterEngine.addMatterConnector(this);
+
+       let self = this;
+       matterEngine.registerCompositeEvent(
+           this.worldId.id+"afterUpdate",
+           MatterEvent.afterUpdate,           
+           function(matterEngine:MatterEngine,eventType:MatterEvent,event:Matter.IEventComposite<Matter.Composite>):void {
+                    for(let i=0;i<self.getEngineConnectorDefArray().length;i++) {
+                        let connectorDef = self.getEngineConnectorDefArray()[i];
+                        connectorDef.connectorPositioner.positionConnectorShape(self,connectorDef);
+                    }
+                }
+        );
        
     }
-
-    public positionConnectorShape():void {
-        //let allYs = this.connectorShape.getWorldPosition().y;
-        //for(let i=0;i<this.getEngineConnectorDefArray().length;i++)
-        //allYs += this.getEngineConnectorDefArray()[i].engineShape.getWorldPosition().y;
-
-        //let averageY = allYs / (this.getEngineConnectorDefArray().length+1);
-
-        let averagePostion:WorldPosition = WorldDisplay.getAveragePostionFromPositionList(
-            EngineConnectorDef.getWorldPositionArrayFromEngineDefs(
-                this.getEngineConnectorDefArray()) ) 
-
-        if(!this.connectorShape.isSelected()) this.connectorShape.setWorldPosition(averagePostion);
-        for(let i=0;i<this.getEngineConnectorDefArray().length;i++)
-        {
-            if(!this.getEngineConnectorDefArray()[i].engineShape.isSelected())
-                this.getEngineConnectorDefArray()[i].engineShape.setWorldPosition(
-                    new WorldPosition(
-                    this.getEngineConnectorDefArray()[i].engineShape.getWorldPosition().x,
-                    averagePostion.y
-                    )   );
-        }
-        /*
-        this.connectorShape.setWorldPosition(
-            new WorldPosition(
-            this.connectorShape.getWorldPosition().x,
-            averageY
-            ) );
-            */
-        /*
-        if(this.connectorShape.isAnimated() || true)
-        {
-            this.connectorShape.setWorldPosition(
-			    WorldDisplay.getAveragePostionFromPositionList(
-				    EngineConnectorDef.getWorldPositionArrayFromEngineDefs(
-					    this.getEngineConnectorDefArray()) ) );
-        }*/
-
-    }
-
 
     public getBody():Matter.Body {
         return(this.matterShape.getBody());

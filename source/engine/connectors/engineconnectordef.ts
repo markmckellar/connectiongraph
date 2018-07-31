@@ -1,13 +1,17 @@
-import { EngineShape } from "./engineshape";
+import { EngineShape } from "../shapes/engineshape";
 import { WorldPosition } from "../../world/worldposition";
+import { ConnectorPositioner } from "./connectorpositioners/connectorpositioner";
 
 export class EngineConnectorDef {
     private _engineShape:EngineShape;
     private _length:number;
-    private _stiffness:number;
+    private _stiffness:number;    
 
-    constructor(engineShape:EngineShape,length:number,stiffness:number) {
+    private _connectorPositioner:ConnectorPositioner;
+
+    constructor(engineShape:EngineShape,connectorPositioner:ConnectorPositioner,length:number,stiffness:number) {
         this.engineShape = engineShape;
+        this.connectorPositioner = connectorPositioner;
         this.length = length;
         this.stiffness = stiffness;
     }
@@ -20,6 +24,55 @@ export class EngineConnectorDef {
 		}
 		return(worldPositionArray);
    }
+
+
+    /**
+     * Getter connectorPositioner
+     * @return {ConnectorPositioner}
+     */
+	public get connectorPositioner(): ConnectorPositioner {
+		return this._connectorPositioner;
+	}
+
+    /**
+     * Setter connectorPositioner
+     * @param {ConnectorPositioner} value
+     */
+	public set connectorPositioner(value: ConnectorPositioner) {
+		this._connectorPositioner = value;
+	}
+
+    /**
+     * Getter length
+     * @return {number}
+     */
+	public get length(): number {
+		return this._length;
+	}
+
+    /**
+     * Setter length
+     * @param {number} value
+     */
+	public set length(value: number) {
+		this._length = value;
+	}
+
+    /**
+     * Getter stiffness
+     * @return {number}
+     */
+	public get stiffness(): number {
+		return this._stiffness;
+	}
+
+    /**
+     * Setter stiffness
+     * @param {number} value
+     */
+	public set stiffness(value: number) {
+		this._stiffness = value;
+	}
     
 
     /**
@@ -37,39 +90,4 @@ export class EngineConnectorDef {
 	public set engineShape(value: EngineShape) {
 		this._engineShape = value;
 	}
-
-    /**
-     * Getter length
-     * @return {number}
-     */
-	public get length(): number {
-		return this._length;
-	}
-
-    /**
-     * Setter length
-     * @param {number} value
-     */
-	public set length(value: number) {
-		this._length = value;
-    }
-    
-
-    /**
-     * Getter stiffness
-     * @return {number}
-     */
-	public get stiffness(): number {
-		return this._stiffness;
-	}
-
-    /**
-     * Setter stiffness
-     * @param {number} value
-     */
-	public set stiffness(value: number) {
-		this._stiffness = value;
-	}
-
-
 }

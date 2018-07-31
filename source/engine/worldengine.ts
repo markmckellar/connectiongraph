@@ -10,8 +10,8 @@ import { World } from "../world/world";
 import { EngineShape } from "./shapes/engineshape";
 import { TextEngineShape } from "./shapes/textengineshape";
 import { DrawableText } from "../display/drawableshapes/drawabletext";
-import { EngineConnector } from "./shapes/engineconnector";
-import { EngineConnectorDef } from "./shapes/engineconnectordef";
+import { EngineConnector } from "./connectors/engineconnector";
+import { EngineConnectorDef } from "./connectors/engineconnectordef";
 import { DrawableConnector } from "../display/drawableshapes/drawableconnector";
 
 

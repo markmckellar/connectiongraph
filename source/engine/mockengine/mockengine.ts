@@ -17,13 +17,14 @@ import { TextDisplayShape } from "../../display/drawableshapes/textdisplayshape"
 import { TextEngineShape } from "../shapes/textengineshape";
 import { MockRectangleText } from "./shapes/mockrectangletext";
 import { DrawableConnector } from "../../display/drawableshapes/drawableconnector";
-import { EngineConnectorDef } from "../shapes/engineconnectordef";
-import { EngineConnector } from "../shapes/engineconnector";
+import { EngineConnectorDef } from "../connectors/engineconnectordef";
+import { EngineConnector } from "../connectors/engineconnector";
 import { MockConnectorDef } from "./shapes/mockconnectordef";
 import { MockConnector } from "./shapes/mockconnector";
 
 export class MockEngine implements WorldEngine {
   private _mouseAnchor: MockCircle;
+  private _connectorArray:Array<MockConnector>;
 
   public constructor() {
     this.mouseAnchor = new MockCircle(
@@ -35,6 +36,7 @@ export class MockEngine implements WorldEngine {
       { restitution: 0.9, isSensor: true },
       this
     );
+    this.connectorArray = new Array<MockConnector>();
   }
   public getMouseAnchor(): EngineShape {
     return this.mouseAnchor;
@@ -44,6 +46,21 @@ export class MockEngine implements WorldEngine {
   }
 
   public startEngine():void {
+    let self = this;
+
+    setInterval(
+      function() {
+        for(let i=0;i<self.connectorArray.length;i++) {
+          let connector = self.connectorArray[i];
+          for(let j=0;j<connector.getEngineConnectorDefArray().length;j++) {
+            let connectorDef = connector.getEngineConnectorDefArray()[j];
+            connectorDef.connectorPositioner.positionConnectorShape(connector,connectorDef);
+          }
+        }
+      },
+      100);
+
+    
   }
 
   public createCircle(
@@ -102,6 +119,7 @@ export class MockEngine implements WorldEngine {
         mockConnectorDefArrayDef,
         options,
         this);
+        this.connectorArray.push(connector);
     return(connector);
   }
 
@@ -191,4 +209,23 @@ export class MockEngine implements WorldEngine {
   public set mouseAnchor(value: MockCircle) {
     this._mouseAnchor = value;
   }
+
+
+    /**
+     * Getter connectorArray
+     * @return {Array<MockConnector>}
+     */
+	public get connectorArray(): Array<MockConnector> {
+		return this._connectorArray;
+	}
+
+    /**
+     * Setter connectorArray
+     * @param {Array<MockConnector>} value
+     */
+	public set connectorArray(value: Array<MockConnector>) {
+		this._connectorArray = value;
+	}
+
+
 }

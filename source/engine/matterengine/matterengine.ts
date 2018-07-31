@@ -24,8 +24,8 @@ import { TextDisplayShape } from "../../display/drawableshapes/textdisplayshape"
 import { TextEngineShape } from "../shapes/textengineshape";
 import { MatterRectangleText } from "./shapes/matterrectangletext";
 import { DrawableConnector } from "../../display/drawableshapes/drawableconnector";
-import { EngineConnectorDef } from "../shapes/engineconnectordef";
-import { EngineConnector } from "../shapes/engineconnector";
+import { EngineConnectorDef } from "../connectors/engineconnectordef";
+import { EngineConnector } from "../connectors/engineconnector";
 import { MatterConnector } from "./shapes/matterconnector";
 import { MatterConnectorDef } from "./shapes/matterconnectordef";
 
@@ -245,44 +245,44 @@ export  class MatterEngine  implements WorldEngine {
       return(name+":"+eventType);
     }
 
-      public registerCompositeEvent(name:string,eventType:MatterEvent,event:MatterCompositeEvent):void {
-        this.compositeEventHandlers.set(this.getCompositeEventMapId(name,eventType),event);    
-        console.log("MatterEngine:registerCompositeEvent:.keys.length="+this.compositeEventHandlers.keys.length);
-      }
-  
-      public deregisterCompositeEvent(name:string,eventType:MatterEvent,event:MatterCompositeEvent):void {
-        this.compositeEventHandlers.delete(this.getCompositeEventMapId(name,eventType));    
-      }
+    public registerCompositeEvent(name:string,eventType:MatterEvent,event:MatterCompositeEvent):void {
+      this.compositeEventHandlers.set(this.getCompositeEventMapId(name,eventType),event);    
+      console.log("MatterEngine:registerCompositeEvent:.keys.length="+this.compositeEventHandlers.keys.length);
+    }
+
+    public deregisterCompositeEvent(name:string,eventType:MatterEvent,event:MatterCompositeEvent):void {
+      this.compositeEventHandlers.delete(this.getCompositeEventMapId(name,eventType));    
+    }
 
 
-      public registerTimestampedEvent(name:string,eventType:MatterEvent,event:MatterTimestampedEvent):void {
-        this.timestampEventHandlers.set(this.geTimestampedEventMapId(name,eventType),event);    
-        console.log("MatterEngine:registerTimestampedEvent:.keys.length="+this.timestampEventHandlers.keys.length);
-      }
-  
-      public deregisterTimestampedEvent(name:string,eventType:MatterEvent,event:MatterTimestampedEvent):void {
-        this.timestampEventHandlers.delete(this.geTimestampedEventMapId(name,eventType));    
-      }
-  
-      private getCollisionEventMapId(body:Matter.Body,eventType:MatterEvent):string {
-        return(body.id+":"+eventType);
-      }
-  
-      public registerCollisionEvent(body:Matter.Body,eventType:MatterEvent,event:MatterCollisionEvent):void {
-        this.collisionEventHandlers.set(this.getCollisionEventMapId(body,eventType),event);    
-      }
-  
-      public deregisterCollisionEvent(body:Matter.Body,eventType:MatterEvent,event:MatterCollisionEvent):void {
-        this.collisionEventHandlers.delete(this.getCollisionEventMapId(body,eventType));    
-      }
-  
-      public hasCollisionHandler(body:Matter.Body,eventType:MatterEvent):boolean {
-        return(this.collisionEventHandlers.has(this.getCollisionEventMapId(body,eventType)))
-      }
-  
-      public getCollisionHandler(body:Matter.Body,eventType:MatterEvent):MatterCollisionEvent {
-        return( this.collisionEventHandlers.get(this.getCollisionEventMapId(body,eventType)) );
-      }
+    public registerTimestampedEvent(name:string,eventType:MatterEvent,event:MatterTimestampedEvent):void {
+      this.timestampEventHandlers.set(this.geTimestampedEventMapId(name,eventType),event);    
+      console.log("MatterEngine:registerTimestampedEvent:.keys.length="+this.timestampEventHandlers.keys.length);
+    }
+
+    public deregisterTimestampedEvent(name:string,eventType:MatterEvent,event:MatterTimestampedEvent):void {
+      this.timestampEventHandlers.delete(this.geTimestampedEventMapId(name,eventType));    
+    }
+
+    private getCollisionEventMapId(body:Matter.Body,eventType:MatterEvent):string {
+      return(body.id+":"+eventType);
+    }
+
+    public registerCollisionEvent(body:Matter.Body,eventType:MatterEvent,event:MatterCollisionEvent):void {
+      this.collisionEventHandlers.set(this.getCollisionEventMapId(body,eventType),event);    
+    }
+
+    public deregisterCollisionEvent(body:Matter.Body,eventType:MatterEvent,event:MatterCollisionEvent):void {
+      this.collisionEventHandlers.delete(this.getCollisionEventMapId(body,eventType));    
+    }
+
+    public hasCollisionHandler(body:Matter.Body,eventType:MatterEvent):boolean {
+      return(this.collisionEventHandlers.has(this.getCollisionEventMapId(body,eventType)))
+    }
+
+    public getCollisionHandler(body:Matter.Body,eventType:MatterEvent):MatterCollisionEvent {
+      return( this.collisionEventHandlers.get(this.getCollisionEventMapId(body,eventType)) );
+    }
 
     public initRendererEvents(render:Matter.Render):void {
       let me:MatterEngine = this;
@@ -296,96 +296,96 @@ export  class MatterEngine  implements WorldEngine {
         { me.processTimestampedEvent(MatterEvent.afterRender,event) } );   
     }
   
-      public disableEvents(matterEngine:MatterEngine):void {
-        // TODO what does the function passed to deregistger an event even mean?!?!?
-        Matter.Events.off(this,MatterEvent.beforeUpdate,function(event) {});
-        Matter.Events.off(this,MatterEvent.collisionActive,function(event) {});	
-        Matter.Events.off(this,MatterEvent.collisionEnd,function(event) {});		
-        Matter.Events.off(this,MatterEvent.collisionStart,function(event) {});		      
-      }
-  
-      private processCollisionPairsEvent(eventType:MatterEvent,event: Matter.IEventCollision<Matter.Engine>):void {
-        var pairs:Matter.IPair[] = event.pairs;
-        for(let i=0;i<pairs.length;i++){
-          // TODO this is the collision loop...  we can probably drop from 4 hash lookps to 2
-          if(this.hasCollisionHandler(pairs[i].bodyA,eventType))
-            this.getCollisionHandler(pairs[i].bodyA,eventType)(this,eventType,event);
-  
-          if(this.hasCollisionHandler(pairs[i].bodyB,eventType))
-            this.getCollisionHandler(pairs[i].bodyB,eventType)(this,eventType,event);
-        }
-      }
-  
-      private processTimestampedEvent(eventType:MatterEvent,event:Matter.IEventTimestamped<Matter.Engine>):void  {      
-        //console.log("MatterEngine:processTimestampedEvent:keys.length="+ Array.from(  this.timestampEventHandlers.keys() ).length);
+    public disableEvents(matterEngine:MatterEngine):void {
+      // TODO what does the function passed to deregistger an event even mean?!?!?
+      Matter.Events.off(this,MatterEvent.beforeUpdate,function(event) {});
+      Matter.Events.off(this,MatterEvent.collisionActive,function(event) {});	
+      Matter.Events.off(this,MatterEvent.collisionEnd,function(event) {});		
+      Matter.Events.off(this,MatterEvent.collisionStart,function(event) {});		      
+    }
 
-        let keys = Array.from(  this.timestampEventHandlers.keys() );
-        //console.log("MatterEngine:processTimestampedEvent:keys.length="+keys.length);
-        for(let i=0;i<keys.length;i++ ){
-          let name:string = keys[i];
-          //console.log("-----MasterEngine:processTimestampedEvent:looking at:name="+name);
-          
-          if(name.endsWith(eventType)) {
-            //console.log("----------MatterEngine:processTimestampedEvent:has:name="+name);
-            let handler:MatterTimestampedEvent =  this.timestampEventHandlers.get(name);
-            handler(this,eventType,event);
-          }          
-        }
+    private processCollisionPairsEvent(eventType:MatterEvent,event: Matter.IEventCollision<Matter.Engine>):void {
+      var pairs:Matter.IPair[] = event.pairs;
+      for(let i=0;i<pairs.length;i++){
+        // TODO this is the collision loop...  we can probably drop from 4 hash lookps to 2
+        if(this.hasCollisionHandler(pairs[i].bodyA,eventType))
+          this.getCollisionHandler(pairs[i].bodyA,eventType)(this,eventType,event);
+
+        if(this.hasCollisionHandler(pairs[i].bodyB,eventType))
+          this.getCollisionHandler(pairs[i].bodyB,eventType)(this,eventType,event);
       }
-  
-      private processCompositeEvent(eventType:MatterEvent,event: Matter.IEventComposite<Matter.Composite>):void  {  
+    }
 
+    private processTimestampedEvent(eventType:MatterEvent,event:Matter.IEventTimestamped<Matter.Engine>):void  {      
+      //console.log("MatterEngine:processTimestampedEvent:keys.length="+ Array.from(  this.timestampEventHandlers.keys() ).length);
 
-        let keys = Array.from(  this.compositeEventHandlers.keys() );
-        //console.log("MatterEngine:processCompositeEvent:yes.length="+keys.length);
-        for(let i=0;i<keys.length;i++ ){
-          let name:string = keys[i];
-          //console.log("-----MasterEngine:processCompositeEvent:looking at:name="+name);
-          
-          if(name.endsWith(eventType)) {
-            //console.log("----------MatterEngine:processCompositeEvent:has:name="+name);
-            let handler:MatterCompositeEvent =  this.compositeEventHandlers.get(name);
-            handler(this,eventType,event);
-          }          
-        }
-      
-       }
-  
-       public enableEvents():void {
-        console.log("World:event:enableEvents")
-        let me:MatterEngine = this;
-  
-        Matter.Events.on(this.engine,MatterEvent.collisionStart,
-          function(event:Matter.IEventCollision<Matter.Engine>)
-          { me.processCollisionPairsEvent(MatterEvent.collisionStart,event) } ); 
+      let keys = Array.from(  this.timestampEventHandlers.keys() );
+      //console.log("MatterEngine:processTimestampedEvent:keys.length="+keys.length);
+      for(let i=0;i<keys.length;i++ ){
+        let name:string = keys[i];
+        //console.log("-----MasterEngine:processTimestampedEvent:looking at:name="+name);
         
-        Matter.Events.on(this.engine,MatterEvent.collisionEnd,
-          function(event:Matter.IEventCollision<Matter.Engine>)
-          { me.processCollisionPairsEvent(MatterEvent.collisionEnd,event) } ); 
-        
-        Matter.Events.on(this.engine,MatterEvent.collisionEnd,
-          function(event:Matter.IEventCollision<Matter.Engine>)
-          { me.processCollisionPairsEvent(MatterEvent.collisionEnd,event) } ); 
-              
-        Matter.Events.on(this.engine,MatterEvent.beforeUpdate,
-          function(event:Matter.IEventTimestamped<Matter.Engine>)
-          { me.processTimestampedEvent(MatterEvent.collisionEnd,event) } ); 
-    
-        Matter.Events.on(this.engine,MatterEvent.afterUpdate,
-          function(event:Matter.IEventComposite<Matter.Composite>)
-          { me.processCompositeEvent(MatterEvent.afterUpdate,event) } ); 
-      
-        Matter.Events.on(this.engine,MatterEvent.beforeAdd,
-          function(event:Matter.IEventComposite<Matter.Composite>)
-          { me.processCompositeEvent(MatterEvent.beforeAdd,event) } ); 
-    
-        Matter.Events.on(this.engine,MatterEvent.afterAdd,
-          function(event:Matter.IEventComposite<Matter.Composite>)
-          { me.processCompositeEvent(MatterEvent.afterAdd,event) } ); 
-
+        if(name.endsWith(eventType)) {
+          //console.log("----------MatterEngine:processTimestampedEvent:has:name="+name);
+          let handler:MatterTimestampedEvent =  this.timestampEventHandlers.get(name);
+          handler(this,eventType,event);
+        }          
       }
+    }
+  
+    private processCompositeEvent(eventType:MatterEvent,event: Matter.IEventComposite<Matter.Composite>):void  {  
 
-    public get engine(): Matter.Engine {
+
+      let keys = Array.from(  this.compositeEventHandlers.keys() );
+      //console.log("MatterEngine:processCompositeEvent:yes.length="+keys.length);
+      for(let i=0;i<keys.length;i++ ){
+        let name:string = keys[i];
+        //console.log("-----MasterEngine:processCompositeEvent:looking at:name="+name);
+        
+        if(name.endsWith(eventType)) {
+          //console.log("----------MatterEngine:processCompositeEvent:has:name="+name);
+          let handler:MatterCompositeEvent =  this.compositeEventHandlers.get(name);
+          handler(this,eventType,event);
+        }          
+      }
+    
+      }
+  
+    public enableEvents():void {
+      console.log("World:event:enableEvents")
+      let me:MatterEngine = this;
+
+      Matter.Events.on(this.engine,MatterEvent.collisionStart,
+        function(event:Matter.IEventCollision<Matter.Engine>)
+        { me.processCollisionPairsEvent(MatterEvent.collisionStart,event) } ); 
+      
+      Matter.Events.on(this.engine,MatterEvent.collisionEnd,
+        function(event:Matter.IEventCollision<Matter.Engine>)
+        { me.processCollisionPairsEvent(MatterEvent.collisionEnd,event) } ); 
+      
+      Matter.Events.on(this.engine,MatterEvent.collisionEnd,
+        function(event:Matter.IEventCollision<Matter.Engine>)
+        { me.processCollisionPairsEvent(MatterEvent.collisionEnd,event) } ); 
+            
+      Matter.Events.on(this.engine,MatterEvent.beforeUpdate,
+        function(event:Matter.IEventTimestamped<Matter.Engine>)
+        { me.processTimestampedEvent(MatterEvent.collisionEnd,event) } ); 
+  
+      Matter.Events.on(this.engine,MatterEvent.afterUpdate,
+        function(event:Matter.IEventComposite<Matter.Composite>)
+        { me.processCompositeEvent(MatterEvent.afterUpdate,event) } ); 
+    
+      Matter.Events.on(this.engine,MatterEvent.beforeAdd,
+        function(event:Matter.IEventComposite<Matter.Composite>)
+        { me.processCompositeEvent(MatterEvent.beforeAdd,event) } ); 
+  
+      Matter.Events.on(this.engine,MatterEvent.afterAdd,
+        function(event:Matter.IEventComposite<Matter.Composite>)
+        { me.processCompositeEvent(MatterEvent.afterAdd,event) } ); 
+
+  }
+
+  public get engine(): Matter.Engine {
 		return this._engine;
 	}
 

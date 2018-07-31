@@ -1,4 +1,4 @@
-import { EngineConnectorDef } from "../../shapes/engineconnectordef";
+import { EngineConnectorDef } from "../../connectors/engineconnectordef";
 import { MatterShape } from "./mattershape";
 import { MatterEngine } from "../matterengine";
 
@@ -15,7 +15,7 @@ export class MatterConnectorDef extends EngineConnectorDef {
     */
 
     constructor(matterEngine:MatterEngine,engineConnectorDef:EngineConnectorDef) {
-        super(engineConnectorDef.engineShape,engineConnectorDef.length,engineConnectorDef.stiffness);
+        super(engineConnectorDef.engineShape,engineConnectorDef.connectorPositioner,engineConnectorDef.length,engineConnectorDef.stiffness);
         if(!matterEngine.matterShapes.has(engineConnectorDef.engineShape.getWorldId()))
             throw new Error("Error creating MatterConnectorDef, matterShape not found.  WorldId is : "+
             engineConnectorDef.engineShape.getWorldId().id);
