@@ -58,7 +58,7 @@ export class MockEngine implements WorldEngine {
           }
         }
       },
-      100);
+      1000/30);
 
     
   }

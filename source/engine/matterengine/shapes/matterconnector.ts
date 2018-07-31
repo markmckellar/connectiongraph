@@ -67,12 +67,13 @@ export class MatterConnector extends MatterShape implements EngineConnector
        matterEngine.registerCompositeEvent(
            this.worldId.id+"afterUpdate",
            MatterEvent.afterUpdate,           
-           function(matterEngine:MatterEngine,eventType:MatterEvent,event:Matter.IEventComposite<Matter.Composite>):void {
-                    for(let i=0;i<self.getEngineConnectorDefArray().length;i++) {
-                        let connectorDef = self.getEngineConnectorDefArray()[i];
-                        connectorDef.connectorPositioner.positionConnectorShape(self,connectorDef);
-                    }
+           function(matterEngine:MatterEngine,eventType:MatterEvent,event:Matter.IEventComposite<Matter.Composite>):void
+           {
+                for(let i=0;i<self.getEngineConnectorDefArray().length;i++) {
+                    let connectorDef = self.getEngineConnectorDefArray()[i];
+                    connectorDef.connectorPositioner.positionConnectorShape(self,connectorDef);
                 }
+           }
         );
        
     }

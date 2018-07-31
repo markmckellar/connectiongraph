@@ -16,6 +16,8 @@ import { EngineConnector } from "./engine/connectors/engineconnector";
 import { EngineConnectorDef } from "./engine/connectors/engineconnectordef";
 import { LineConnectorDisplay } from "./display/drawableshapes/lineconnectordisplay";
 import { PositionerFree } from "./engine/connectors/connectorpositioners/positionerfree";
+import { PositionerLockX } from "./engine/connectors/connectorpositioners/positionerlockx";
+import { PositionerLockY } from "./engine/connectors/connectorpositioners/positionerlockxy";
 
 export class Test1 {
 
@@ -88,8 +90,8 @@ export class Test1 {
         {}
       );
       
-      let c1A:EngineConnectorDef = new EngineConnectorDef(textBox1,new PositionerFree(),200,0.1);
-      let c1B:EngineConnectorDef = new EngineConnectorDef(textBox2,new PositionerFree(),200,1);
+      let c1A:EngineConnectorDef = new EngineConnectorDef(textBox1,new PositionerLockX(),200,0.01);
+      let c1B:EngineConnectorDef = new EngineConnectorDef(textBox2,new PositionerLockY(),200,0.01);
 
       let c1Circle:CircleEngineShape = world.worldEngine.createCircle(
         new WorldId("c1Circle"),
