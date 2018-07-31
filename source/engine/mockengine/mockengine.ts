@@ -50,9 +50,11 @@ export class MockEngine implements WorldEngine {
 
     setInterval(
       function() {
-        for(let i=0;i<self.connectorArray.length;i++) {
+        for(let i=0;i<self.connectorArray.length;i++)
+        {
           let connector = self.connectorArray[i];
-          for(let j=0;j<connector.getEngineConnectorDefArray().length;j++) {
+          for(let j=0;j<connector.getEngineConnectorDefArray().length;j++)
+          {
             let connectorDef = connector.getEngineConnectorDefArray()[j];
             connectorDef.connectorPositioner.positionConnectorShape(connector,connectorDef);
           }

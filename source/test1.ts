@@ -76,7 +76,7 @@ export class Test1 {
           "hey there friend Mg"),
         //80,20,
         100,100,
-        new WorldPosition(150,550),
+        new WorldPosition(150,350),
         {}
       );
       

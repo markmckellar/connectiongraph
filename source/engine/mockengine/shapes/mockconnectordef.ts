@@ -24,6 +24,7 @@ export class MockConnectorDef extends EngineConnectorDef {
         this.matterShape = mockEngine.matterShapes.get(engineConnectorDef.engineShape.getWorldId()); 
         this.matterConstraint = null;
         */
+
     }
 
     public init():void {

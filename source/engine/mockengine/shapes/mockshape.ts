@@ -26,7 +26,7 @@ export abstract class MockShape implements WorldObject
 		this.drawable = drawable;
 		this.isObjectAnimated = true;
 		this.isObjectVisable = true;
-		this.isObjectSelected = true;
+		this.isObjectSelected = false;
 		this.drawable = drawable;
 		this.position = position;
 		this.worldObjectEventHandler = this.createMouseEventHandler();

@@ -16,10 +16,8 @@ export class MockConnector extends MockShape implements EngineConnector
 {
     private _drawableConnector:DrawableConnector;
     private _mockConnectorDefArray:Array<MockConnectorDef>;
-
-
-    
 	private _connectorShape:EngineShape;
+
     constructor(
         worldId:WorldId,
         drawableConnector:DrawableConnector,
@@ -127,23 +125,30 @@ export class MockConnector extends MockShape implements EngineConnector
 
 
     public containsWorldPosition(worldPosition:WorldPosition):boolean {
-        //return(this.connectorShape.containsWorldPosition(worldPosition));
-        return(false);
+        return(this.connectorShape.containsWorldPosition(worldPosition));
+        //return(false);
     }
 
     /*
+    public isSelected(): boolean { return(this.connectorShape.isSelected()); }
+
+    
     public getWorldPosition():WorldPosition {
         //return(this.getMiddleWorldPosition());
-        return(super.getWorldPosition());
+        //return(super.getWorldPosition());
+        return(this.connectorShape.getWorldPosition());
 
     }
 
 	public translate(worldPosition:WorldPosition):void {
+        this.connectorShape.translate(worldPosition);
     }
 
 	public setWorldPosition(worldPosition:WorldPosition):void {
+        this.connectorShape.setWorldPosition(worldPosition);
     }
-
+    */
+/*
     public containsWorldPosition(worldPosition:WorldPosition):boolean {
         return(false);
     }

@@ -14,7 +14,7 @@ export class PositionerLockX implements ConnectorPositioner {
     public positionConnectorShape(engineConnector:EngineConnector,engineConnectorDef:EngineConnectorDef):void {
         if(engineConnectorDef.engineShape.isSelected())
         {
-            engineConnector.setWorldPosition(
+            engineConnector.translate(
                 new WorldPosition(
                     engineConnectorDef.engineShape.getWorldPosition().x,
                     engineConnector.getWorldPosition().y)
@@ -22,7 +22,7 @@ export class PositionerLockX implements ConnectorPositioner {
         }
         else
         {
-            engineConnectorDef.engineShape.setWorldPosition(
+            engineConnectorDef.engineShape.translate(
                 new WorldPosition(
                     engineConnector.getWorldPosition().x,
                     engineConnectorDef.engineShape.getWorldPosition().y)
