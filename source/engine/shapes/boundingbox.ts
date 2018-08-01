@@ -3,13 +3,15 @@ import { WorldPosition } from "../../world/worldposition";
 
 export class BoundingBox
 {
-    private _pointList:Array<WorldPosition>;
+	private _pointList:Array<WorldPosition>;
+	private _width:number;
+	private _height:number;
+	private _position:WorldPosition;
 
 	constructor(pointList:Array<WorldPosition>)
 	{
-		///this.initDone = false;
 		this.pointList = pointList;
-		///////////this.initBoundingBox();
+		this.initBoundingBox();
 	
 	}
     
@@ -28,37 +30,35 @@ export class BoundingBox
 				)
 			);
 	}
-	
-	initBoundingBox()
+	*/
+	private initBoundingBox()
 	{
-		this.initDone = true;
-		//this.pointList = pointList;
-	
-	
-		this.xMin = null;
-		this.xMax = null;
-		this.yMin = null;
-		this.yMax = null;
-		//console.log("plist size="+pointList.length);
+		
+		let xMin:number = null;
+		let xMax:number = null;
+		let yMin:number = null;
+		let yMax:number = null;
+
 		for(var i=0;i<this.pointList.length;i++)
 		{
-			var p = this.pointList[i];
-			if(this.xMin==null) this.xMin = p;
-			if(this.xMax==null) this.xMax = p;
-			if(this.yMin==null) this.yMin = p;
-			if(this.yMax==null) this.yMax = p;
+			var p:WorldPosition = this.pointList[i];
+			if(xMin==null) xMin = p.x;
+			if(xMax==null) xMax = p.x;
+			if(yMin==null) yMin = p.y;
+			if(yMax==null) yMax = p.y;
 			
-			if(p.getX()<this.xMin) this.xMin = p;
-			if(p.getX()>this.xMax) this.xMax = p;
-			if(p.getY()<this.yMin) this.yMin = p;
-			if(p.getY()>this.yMax) this.yMax = p;
+			if(p.x<xMin) xMin = p.x;
+			if(p.x>xMax) xMax = p.x;
+			if(p.y<yMin) yMin = p.y;
+			if(p.y>yMax) yMax = p.y;
 	
 		}
 		
-		this.width = this.xMax.getX()-this.xMin.getX();
-		this.height = this.yMax.getY()-this.yMin.getY();
+		this.width = xMax-xMin;
+		this.height = yMax-yMin;
+		this.position = new WorldPosition(xMin,yMin);
     }
-    */
+    
 
 	public get pointList(): Array<WorldPosition> {
 		return this._pointList;
@@ -67,5 +67,56 @@ export class BoundingBox
 	public set pointList(value: Array<WorldPosition>) {
 		this._pointList = value;
 	}
+
+
+    /**
+     * Getter height
+     * @return {number}
+     */
+	public get height(): number {
+		return this._height;
+	}
+
+    /**
+     * Setter height
+     * @param {number} value
+     */
+	public set height(value: number) {
+		this._height = value;
+	}
+
+
+    /**
+     * Getter width
+     * @return {number}
+     */
+	public get width(): number {
+		return this._width;
+	}
+
+    /**
+     * Setter width
+     * @param {number} value
+     */
+	public set width(value: number) {
+		this._width = value;
+	}
+
+    /**
+     * Getter position
+     * @return {WorldPosition}
+     */
+	public get position(): WorldPosition {
+		return this._position;
+	}
+
+    /**
+     * Setter position
+     * @param {WorldPosition} value
+     */
+	public set position(value: WorldPosition) {
+		this._position = value;
+	}
+
     
 }

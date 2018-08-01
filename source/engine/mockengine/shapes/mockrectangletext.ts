@@ -1,7 +1,4 @@
-import { RectangleEngineShape } from "../../shapes/rectangleengineshape";
 import { WorldPosition } from "../../../world/worldposition";
-import { Drawable } from "../../../display/drawable";
-import { MockShape } from "./mockshape";
 import { WorldId } from "../../../world/worldid";
 import { MockEngine } from "../mockengine";
 import { MockRectangle } from "./mockrectangle";

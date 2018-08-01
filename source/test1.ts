@@ -1,5 +1,4 @@
 import { CanvasHolderHTML } from "./display/canvas/canvasholderhtml";
-import { WorldOfWorldObjects } from "./world/worldofworldobjects";
 import { CircleDisplayShape } from "./display/drawableshapes/circledisplayshape";
 import { WorldPosition } from "./world/worldposition";
 import { WorldId } from "./world/worldid";
@@ -15,9 +14,9 @@ import { World } from "./world/world";
 import { EngineConnector } from "./engine/connectors/engineconnector";
 import { EngineConnectorDef } from "./engine/connectors/engineconnectordef";
 import { LineConnectorDisplay } from "./display/drawableshapes/lineconnectordisplay";
-import { PositionerFree } from "./engine/connectors/connectorpositioners/positionerfree";
 import { PositionerLockX } from "./engine/connectors/connectorpositioners/positionerlockx";
 import { PositionerLockY } from "./engine/connectors/connectorpositioners/positionerlockxy";
+import { ShapeAndText } from "./engine/shapes/shapeandtext";
 
 export class Test1 {
 
@@ -26,7 +25,7 @@ export class Test1 {
        let circle1:CircleEngineShape = world.worldEngine.createCircle(
           new WorldId("circle1"),
           new CircleDisplayShape(),
-          30,8,
+          25,8,
           new WorldPosition(400,400),
           {restitution:0.9}
         );
@@ -43,7 +42,7 @@ export class Test1 {
       let rectangle1:RectangleEngineShape = world.worldEngine.createRectangle(
         new WorldId("rectangle1"),
         new RectangleDisplayShape(),
-        40,40,
+        100,100,
         new WorldPosition(100,100),
         {}
       );
@@ -109,6 +108,10 @@ export class Test1 {
         {}
       );
 
+
+
+      let shapeAndText1:ShapeAndText = new ShapeAndText(world,circle2,textBox3,100);
+
       
       world.addWorldObject(circle1);
       world.addWorldObject(circle2);
@@ -120,6 +123,10 @@ export class Test1 {
       world.addWorldObject(connector1);
 
       world.addWorldObject(c1Circle);
+
+      world.addWorldObject(shapeAndText1.connectorShape);
+      world.addWorldObject(shapeAndText1.connector);
+
 
       world.addWorldObject(world.worldEngine.getMouseAnchor());
       

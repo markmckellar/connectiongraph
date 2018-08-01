@@ -1,15 +1,11 @@
 import { WorldPosition } from "../../../world/worldposition";
-import { Drawable } from "../../../display/drawable";
 import { WorldId } from "../../../world/worldid";
 import { EngineConnector } from "../../connectors/engineconnector";
 import { DrawableConnector } from "../../../display/drawableshapes/drawableconnector";
 import { EngineConnectorDef } from "../../connectors/engineconnectordef";
-import { WorldDisplay } from "../../../display/worlddisplay";
 import { EngineShape } from "../../shapes/engineshape";
 import { MockShape } from "./mockshape";
 import { MockEngine } from "../mockengine";
-import { MockCircle } from "./mockcircle";
-import { CircleDisplayShape } from "../../../display/drawableshapes/circledisplayshape";
 import { MockConnectorDef } from "./mockconnectordef";
 
 export class MockConnector extends MockShape implements EngineConnector

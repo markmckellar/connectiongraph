@@ -1,6 +1,5 @@
 
 import { EngineShape } from "../shapes/engineshape";
-import { WorldObject } from "../../world/worldobject";
 import { EngineConnectorDef } from "./engineconnectordef";
 
 export  interface EngineConnector extends EngineShape

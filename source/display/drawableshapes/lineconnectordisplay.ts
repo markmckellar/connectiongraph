@@ -1,14 +1,6 @@
-import { Drawable } from "../drawable";
-import { WorldDisplay, Size } from "../worlddisplay";
-import { RectangleEngineShape } from "../../engine/shapes/rectangleengineshape";
-import { RectangleDisplayShape } from "./rectangledisplayshape";
-import { World } from "../../world/world";
-import { CanvasMouse } from "../canvas/canvasmouse";
-import { WorldObjectEventHandler } from "../../world/worldobjecteventhandler";
-import { DrawableText } from "./drawabletext";
+import { WorldDisplay } from "../worlddisplay";
 import { DrawableConnector } from "./drawableconnector";
 import { EngineConnector } from "../../engine/connectors/engineconnector";
-import { EngineConnectorDef } from "../../engine/connectors/engineconnectordef";
 
 
 export class LineConnectorDisplay implements DrawableConnector

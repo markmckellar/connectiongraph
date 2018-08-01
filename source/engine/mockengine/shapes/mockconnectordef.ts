@@ -4,7 +4,6 @@ import { MockEngine } from "../mockengine";
 
 export class MockConnectorDef extends EngineConnectorDef {
     private _mockShape:MockShape;
-    private _matterConstraint:Matter.Constraint;
 
     /*
     constructor(matterShape:MatterShape,length:number,stiffness:number) {

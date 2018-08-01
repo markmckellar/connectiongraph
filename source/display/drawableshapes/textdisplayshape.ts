@@ -1,4 +1,3 @@
-import { Drawable } from "../drawable";
 import { WorldDisplay, Size } from "../worlddisplay";
 import { RectangleEngineShape } from "../../engine/shapes/rectangleengineshape";
 import { RectangleDisplayShape } from "./rectangledisplayshape";
@@ -6,6 +5,7 @@ import { World } from "../../world/world";
 import { CanvasMouse } from "../canvas/canvasmouse";
 import { WorldObjectEventHandler } from "../../world/worldobjecteventhandler";
 import { DrawableText } from "./drawabletext";
+import { TextUpdateHandler } from "./textupdatehandler";
 
 
 export class TextDisplayShape implements DrawableText
@@ -14,6 +14,7 @@ export class TextDisplayShape implements DrawableText
     private _displayText:string;
 	private _rectangleEngineShape:RectangleEngineShape;
 	private _textImageData:ImageData;
+	private _textUpdateHandler:TextUpdateHandler;
 
 	constructor(rectangleDisplayShape:RectangleDisplayShape,displayText:string)
 	{
@@ -21,6 +22,7 @@ export class TextDisplayShape implements DrawableText
 		this.rectangleDisplayShape = rectangleDisplayShape;
 		this.displayText = displayText;
 		this.textImageData = null;
+		this.textUpdateHandler = null;
 
 	}
 
@@ -45,13 +47,28 @@ export class TextDisplayShape implements DrawableText
 			{
 				console.log("LOOOOOLZZZZZ! HEY FELLA XXXXXXX");
 				console.log("setSize:"+JSON.stringify({"width":this.width,"height":this.height}))
-
-
 			},
 			pointerMoveEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {},
 			pointerUpEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {}
 		};
 		this.rectangleEngineShape.setWorldObjectEventHandler(woe);
+	}
+
+
+    /**
+     * Getter textUpdateHandler
+     * @return {TextUpdateHandler}
+     */
+	public get textUpdateHandler(): TextUpdateHandler {
+		return this._textUpdateHandler;
+	}
+
+    /**
+     * Setter textUpdateHandler
+     * @param {TextUpdateHandler} value
+     */
+	public set textUpdateHandler(value: TextUpdateHandler) {
+		this._textUpdateHandler = value;
 	}
 
 
@@ -146,7 +163,7 @@ export class TextDisplayShape implements DrawableText
 					fontPixelHeight,
 					"\n");
 
-				let containerSize = new Size(textSize.width+hPadding*2,textSize.height+vPadding*2);
+				//let containerSize = new Size(textSize.width+hPadding*2,textSize.height+vPadding*2);
 				
 				this.rectangleEngineShape.setSize(textSize.width+hPadding*2,textSize.height+vPadding*2);
 				this.rectangleDisplayShape.draw(context);
@@ -174,6 +191,7 @@ export class TextDisplayShape implements DrawableText
 					y-this.textImageData.height/2
 			
 				);
+			if(this.textUpdateHandler) this.textUpdateHandler.handleTextUpdate(this);
 		}
 
 		this.rectangleEngineShape.stopRotation();

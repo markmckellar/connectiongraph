@@ -1,10 +1,6 @@
 import { WorldPosition } from "../../../world/worldposition";
-import * as Matter from "matter-js";
-import { MatterShape } from "./mattershape";
-import { Drawable } from "../../../display/drawable";
 import { WorldId } from "../../../world/worldid";
 import { MatterEngine } from "../matterengine";
-import { RectangleEngineShape } from "../../shapes/rectangleengineshape";
 import { TextEngineShape } from "../../shapes/textengineshape";
 import { MatterRectangle } from "./matterrectangle";
 import { DrawableText } from "../../../display/drawableshapes/drawabletext";
