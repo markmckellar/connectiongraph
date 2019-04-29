@@ -9,10 +9,14 @@ $ npm install
 
 This code base is in the pre stages of development.  It can be built but you will see errors in the build. 
 
-There are currently two build options :
+To build :
 * gulp build_all
 The resulting bundled JS file can be tested by loading :
 * test/test_all.html
 ...into a browser.
-This option uses the matter-js 2D engine for controling the movment of objects.
+
+
+* A demo is running [here](https://exp.blackdoge.com/connectiongraph_wiki/test/test_all.html).  Note the above that currently only chrome and firefox have been tested.  
+* Pick the engine and test to run
+* Hit "Play" to start the animation.
 
