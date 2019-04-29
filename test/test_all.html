@@ -1,0 +1,35 @@
+<html>
+    <head></head>
+
+    <body>
+            Engine : <select id='engineSelect'>
+                    <option>matter</option>
+                    <option>mock</option>
+                    <option>spring</option>
+                </select>
+                test : <select id='testSelect'>
+                        <option>test1</option>
+                        <option>test2</option>
+                    </select>
+
+              <button onclick="runTest();">RUN ENGINE AND TEST</button>      
+              <br>
+        <canvas id="worldCanvas" width="800" height="600" style="border:1px solid #000000;">
+           </canvas>
+
+        <script>
+            function getSelectedValue(elementId) {
+                var e = document.getElementById(elementId);
+                var value = e.options[e.selectedIndex].value;
+                var text = e.options[e.selectedIndex].text;
+                return(text);
+            }
+
+            function runTest() {
+                testAll.runTest(getSelectedValue('engineSelect'),getSelectedValue('testSelect'),'worldCanvas');
+            }
+        </script>
+
+        <script src="../dist/test_all.min.js"></script>
+    </body>
+</html>
