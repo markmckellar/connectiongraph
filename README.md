@@ -7,7 +7,7 @@ $ npm -g install gulp
 $ npm install
 ```
 
-This code base is in the pre stages of development.  It can be built but you will see errors in the build. 
+This code base is in the pre stages of development. 
 
 To build :
 * gulp build_all
