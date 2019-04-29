@@ -5,3 +5,5 @@
 /build
 /.classpath
 /.project
+/dist
+/package-lock.json

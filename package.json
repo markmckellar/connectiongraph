@@ -1,7 +1,7 @@
 {
-  "name": "ts-vscode-boilerplate",
+  "name": "connectiongraph",
   "version": "1.0.0",
-  "description": "Visual Studio Code TypeScript boilerplate",
+  "description": "Typescript module for anmated graphs of connected nodes",
   "main": "index.js",
   "directories": {
     "test": "test"
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/remojansen/ts-vscode-boilerplate.git"
+    "url": "git+https://github.com/markmckellar/connectiongraph"
   },
-  "author": "Remo H. Jansen <remo.jansen@wolksoftware.com> (http://www.remojansen.com)",
+  "author": "Mark Mckellar",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/remojansen/ts-vscode-boilerplate/issues"
+    "url": "https://github.com/markmckellar/connectiongraph"
   },
-  "homepage": "https://github.com/remojansen/ts-vscode-boilerplate#readme",
+  "homepage": "https://github.com/markmckellar/connectiongraph#readme",
   "devDependencies": {
     "@types/chai": "^3.4.34",
     "@types/jquery": "^2.0.33",
