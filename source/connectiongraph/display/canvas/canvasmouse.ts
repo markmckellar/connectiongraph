@@ -52,18 +52,19 @@ export class CanvasMouse
 
 
 	public pointerDownEvent(world:World,canvasMouse:CanvasMouse,event:UIEvent) {
+		event.preventDefault();
 		this.mouseEventHandler.pointerDownEvent(world,canvasMouse,event);
 	}
 	
 	public pointerMoveEvent(world:World,canvasMouse:CanvasMouse,event:UIEvent)	{
+		event.preventDefault();
 		this.mouseEventHandler.pointerMoveEvent(world,canvasMouse,event);
-
 	}
 	
 	public pointerUpEvent(world:World,canvasMouse:CanvasMouse,event:UIEvent)
 	{
+		event.preventDefault();
 		this.mouseEventHandler.pointerUpEvent(world,canvasMouse,event);
-
 	}
 	
 
