@@ -14,6 +14,8 @@
                     </select>
 
               <button onclick="runTest();">RUN ENGINE AND TEST</button>      
+              <div id="mousePositionX">x=?</div>
+              <div id="mousePositionY">y=?</div>
               <br>
         <canvas id="worldCanvas" width="800" height="600" style="border:1px solid #000000;">
            </canvas>
@@ -26,8 +28,17 @@
                 return(text);
             }
 
+            function updateDisplay(world) {
+                document.getElementById("mousePositionX").innerHTML = "x="+world.worldEngine.getMouseAnchor().getWorldPosition().x; 
+                document.getElementById("mousePositionY").innerHTML = "y="+world.worldEngine.getMouseAnchor().getWorldPosition().y; 
+            }
+
             function runTest() {
-                testAll.runTest(getSelectedValue('engineSelect'),getSelectedValue('testSelect'),'worldCanvas');
+                testAll.runTest(
+                    getSelectedValue('engineSelect'),
+                    getSelectedValue('testSelect'),'worldCanvas',
+                    updateDisplay
+                    );
             }
         </script>
 

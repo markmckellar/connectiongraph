@@ -19,7 +19,6 @@ import { CanvasMouse } from "../../display/canvas/canvasmouse";
 import { MouseEventHandler } from "../../display/canvas/mouseeventhandler";
 import { MatterShape } from "./shapes/mattershape";
 import { EngineShape } from "../shapes/engineshape";
-import { CircleDisplayShape } from "../../display/drawableshapes/circledisplayshape";
 import { TextDisplayShape } from "../../display/drawableshapes/textdisplayshape";
 import { TextEngineShape } from "../shapes/textengineshape";
 import { MatterRectangleText } from "./shapes/matterrectangletext";
@@ -28,8 +27,10 @@ import { EngineConnectorDef } from "../connectors/engineconnectordef";
 import { EngineConnector } from "../connectors/engineconnector";
 import { MatterConnector } from "./shapes/matterconnector";
 import { MatterConnectorDef } from "./shapes/matterconnectordef";
+import { WorldEngineParams } from "../worldengineparams";
+import { WorldEngineBase } from "../worldendginebase";
 
-export  class MatterEngine  implements WorldEngine {
+export  class MatterEngine extends WorldEngineBase implements WorldEngine {
     private _matterTools:MatterTools ;
     private _matterShapes : Map<WorldId,MatterShape>;
     private _collisionEventHandlers : Map<string,MatterCollisionEvent>;
@@ -38,12 +39,13 @@ export  class MatterEngine  implements WorldEngine {
     private _matterMouseConstraint:Matter.Constraint;
     private _engine : Matter.Engine;
     private _mouseAnchor:MatterCircle;
-    
+
 
     public static boundsFilter:number = 1;//0x0001;
     
-    public constructor() {
-      
+    public constructor(worldEngineParams:WorldEngineParams) {
+      super(worldEngineParams);
+
         this.matterTools = new MatterTools();
         this.collisionEventHandlers = new Map<string,MatterCollisionEvent>(); 
         this.compositeEventHandlers = new Map<string,MatterCompositeEvent>();
@@ -58,7 +60,7 @@ export  class MatterEngine  implements WorldEngine {
 
         this.mouseAnchor = new MatterCircle(
           new WorldId("mouseAnchor"),
-          new CircleDisplayShape(),
+          worldEngineParams.mouseDrawableShape,
           5,8,          
           new WorldPosition(-10,-10),
           {restitution:0.9,isSensor:true},
@@ -86,12 +88,16 @@ export  class MatterEngine  implements WorldEngine {
     }
 
     public stopEngine():void {
+      super.stopEngine();
       Matter.Engine.clear(this.engine);
     }
 
     public startEngine():void {
+      super.startEngine();
       Matter.Engine.run(this.engine);
+    }
 
+    public updateFunction()  {      
     }
 
     public getMouseAnchor():EngineShape {

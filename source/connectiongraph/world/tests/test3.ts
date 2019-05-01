@@ -8,9 +8,9 @@ import { World } from "../../../connectiongraph/world/world";
 import { EngineConnector } from "../../../connectiongraph/engine/connectors/engineconnector";
 import { EngineConnectorDef } from "../../../connectiongraph/engine/connectors/engineconnectordef";
 import { LineConnectorDisplay } from "../../../connectiongraph/display/drawableshapes/lineconnectordisplay";
+/*
 import { PositionerLockX } from "../../../connectiongraph/engine/connectors/connectorpositioners/positionerlockx";
 import { PositionerLockY } from "../../../connectiongraph/engine/connectors/connectorpositioners/positionerlockxy";
-/*
 import { ShapeAndText } from "../../../connectiongraph/engine/shapes/shapeandtext";
 import { RectangleEngineShape } from "../../../connectiongraph/engine/shapes/rectangleengineshape";
 import { RectangleDisplayShape } from "../../../connectiongraph/display/drawableshapes/rectangledisplayshape";

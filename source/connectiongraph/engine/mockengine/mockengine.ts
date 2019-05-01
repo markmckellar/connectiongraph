@@ -11,7 +11,6 @@ import { PolygonEngineShape } from "../shapes/polygonengineshape";
 import { CanvasMouse } from "../../display/canvas/canvasmouse";
 import { MouseEventHandler } from "../../display/canvas/mouseeventhandler";
 import { World } from "../../world/world";
-import { CircleDisplayShape } from "../../display/drawableshapes/circledisplayshape";
 import { EngineShape } from "../shapes/engineshape";
 import { TextDisplayShape } from "../../display/drawableshapes/textdisplayshape";
 import { TextEngineShape } from "../shapes/textengineshape";
@@ -21,15 +20,19 @@ import { EngineConnectorDef } from "../connectors/engineconnectordef";
 import { EngineConnector } from "../connectors/engineconnector";
 import { MockConnectorDef } from "./shapes/mockconnectordef";
 import { MockConnector } from "./shapes/mockconnector";
+import { WorldEngineParams } from "../worldengineparams";
+import { WorldEngineBase } from "../worldendginebase";
 
-export class MockEngine implements WorldEngine {
+export class MockEngine extends WorldEngineBase implements WorldEngine {
   private _mouseAnchor: MockCircle;
   private _connectorArray:Array<MockConnector>;
-  private intervalId:any;
-  public constructor() {
+
+  public constructor(worldEngineParams:WorldEngineParams) {
+    super(worldEngineParams);
+
     this.mouseAnchor = new MockCircle(
       new WorldId("mouseAnchor"),
-      new CircleDisplayShape(),
+      worldEngineParams.mouseDrawableShape,
       5,
       8,
       new WorldPosition(-10,-10),
@@ -45,27 +48,18 @@ export class MockEngine implements WorldEngine {
   public createBounds(width:number,height:number,options:any):void {
   }
 
-  public stopEngine():void {
-    console.log("clearing for:"+this.intervalId);
-    clearInterval(this.intervalId);
-  }
 
-  public startEngine():void {
-    let self = this;
 
-    self.intervalId = setInterval(
-      function() {
-        for(let i=0;i<self.connectorArray.length;i++)
-        {
-          let connector = self.connectorArray[i];
-          for(let j=0;j<connector.getEngineConnectorDefArray().length;j++)
-          {
-            let connectorDef = connector.getEngineConnectorDefArray()[j];
-            connectorDef.connectorPositioner.positionConnectorShape(connector,connectorDef);
-          }
-        }
-      },
-      1000/30);
+  public updateFunction()  {
+    for(let i=0;i<this.connectorArray.length;i++)
+    {
+      let connector = this.connectorArray[i];
+      for(let j=0;j<connector.getEngineConnectorDefArray().length;j++)
+      {
+        let connectorDef = connector.getEngineConnectorDefArray()[j];
+        connectorDef.connectorPositioner.positionConnectorShape(connector,connectorDef);
+      }
+    }
   }
 
   public createCircle(

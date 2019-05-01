@@ -1,5 +1,6 @@
 import { MatterEngine } from "./matterengine";
 import * as Matter from "matter-js";
+import { WorldEngineParams } from "../worldengineparams";
 
 export class MatterEngineRender  extends MatterEngine {
   
@@ -8,8 +9,8 @@ export class MatterEngineRender  extends MatterEngine {
     private _mouseConstraint:Matter.MouseConstraint;
     
     
-    public constructor() {
-      super();
+    public constructor(worldEngineParams:WorldEngineParams) {
+      super(worldEngineParams);
       this.render = Matter.Render.create({
         //let render = WalkerRenderer.create({
           element: document.body,

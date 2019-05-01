@@ -23,6 +23,8 @@ export class WorldOfWorldObjects extends World{
             let worldObject:WorldObject = this.worldObjectArray[i];
             worldObject.getDrawable().draw(context);
         }
+        this.worldEngine.worldEngineParams.updateFunction(this);
+        //this.worldEngine.getMouseAnchor().getWorldPosition().x;
     }
 
     public addWorldObject(worldObject:WorldObject):void {

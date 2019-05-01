@@ -31,7 +31,7 @@ export class DistanceWorldPosition extends WorldPosition {
 		else {
 			// get the equation for the line m=slope b=y-intercept
 			let m = this.getDeltaY(position) / this.getDeltaX(position);
-			let b = this.y - (m * this.y);
+			let b = this.y - (m * this.x);
 		
 			let xPlus = position.x + distance / Math.sqrt(1 + (m * m));
 			let xMinus = position.x - distance / Math.sqrt(1 + (m * m));
@@ -59,7 +59,7 @@ export class DistanceWorldPosition extends WorldPosition {
 			"otherPoint":otherPoint,
             'positionList':positionList
         }
-        console.log(JSON.stringify(output)); 
+        //console.log(JSON.stringify(output)); 
 		
 		return(positionList);
 	}

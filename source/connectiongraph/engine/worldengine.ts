@@ -13,9 +13,12 @@ import { DrawableText } from "../display/drawableshapes/drawabletext";
 import { EngineConnector } from "./connectors/engineconnector";
 import { EngineConnectorDef } from "./connectors/engineconnectordef";
 import { DrawableConnector } from "../display/drawableshapes/drawableconnector";
+import { WorldEngineParams } from "./worldengineparams";
 
 
 export interface WorldEngine {
+    worldEngineParams:WorldEngineParams;
+
     createCircle(worldId:WorldId,drawable:Drawable,radius:number,numberOfSides:number,
         worldPosition:WorldPosition,options:any):CircleEngineShape;
 

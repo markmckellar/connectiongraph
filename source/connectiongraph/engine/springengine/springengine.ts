@@ -11,7 +11,6 @@ import { PolygonEngineShape } from "../shapes/polygonengineshape";
 import { CanvasMouse } from "../../display/canvas/canvasmouse";
 import { MouseEventHandler } from "../../display/canvas/mouseeventhandler";
 import { World } from "../../world/world";
-import { CircleDisplayShape } from "../../display/drawableshapes/circledisplayshape";
 import { EngineShape } from "../shapes/engineshape";
 import { TextDisplayShape } from "../../display/drawableshapes/textdisplayshape";
 import { TextEngineShape } from "../shapes/textengineshape";
@@ -22,16 +21,19 @@ import { EngineConnector } from "../connectors/engineconnector";
 import { SpringConnectorDef } from "./shapes/springconnectordef";
 import { SpringConnector } from "./shapes/springconnector";
 import { SpringShape } from "./shapes/springshape";
+import { WorldEngineParams } from "../worldengineparams";
+import { WorldEngineBase } from "../worldendginebase";
 
-export class SpringEngine implements WorldEngine {
+export class SpringEngine extends WorldEngineBase implements WorldEngine {
   private _mouseAnchor: SpringCircle;
   private _connectorArray:Array<SpringConnector>;
-  private intervalId:any;
   private _springShapes : Map<WorldId,SpringShape>;
   //private springShapeArray : Array<SpringShape>;
 
 
-  public constructor() {
+  public constructor(worldEngineParams:WorldEngineParams) {
+    super(worldEngineParams);
+
     this.springShapes = new Map<WorldId,SpringShape>();
     //this.springShapeArray = new Array<SpringConnector>();
 
@@ -39,7 +41,7 @@ export class SpringEngine implements WorldEngine {
 
     this.mouseAnchor = new SpringCircle(
       new WorldId("mouseAnchor"),
-      new CircleDisplayShape(),
+      worldEngineParams.mouseDrawableShape,
       5,
       8,
       new WorldPosition(-10,-10),
@@ -54,37 +56,25 @@ export class SpringEngine implements WorldEngine {
   public createBounds(width:number,height:number,options:any):void {
   }
 
-  public stopEngine():void {
-    console.log("clearing for:"+this.intervalId);
-    clearInterval(this.intervalId);
-  }
 
-  public startEngine():void {
-    let self = this;
 
-    this.intervalId = setInterval(
-      function() {
-
-        self.animateCalculate();
-        self.animateFinalize();
-
-        for(let i=0;i<self.connectorArray.length;i++)
-        {
-          let connector = self.connectorArray[i];
-          
-          for(let j=0;j<connector.getEngineConnectorDefArray().length;j++)
-          {
-            let connectorDef = connector.getEngineConnectorDefArray()[j];
-            //console.log(
-            //  "SpringEngine:O1="+connector.getWorldId().id+
-            //  ":O2="+connectorDef.engineShape.getWorldId().id
-            //);
-          connectorDef.connectorPositioner.positionConnectorShape(connector,connectorDef);
-          }
-        }
-      },
-      //1000/30);  
-      5000);  
+  public updateFunction()  {
+    this.animateCalculate();
+    this.animateFinalize();
+    for(let i=0;i<this.connectorArray.length;i++)
+    {
+      let connector = this.connectorArray[i];
+      
+      for(let j=0;j<connector.getEngineConnectorDefArray().length;j++)
+      {
+        let connectorDef = connector.getEngineConnectorDefArray()[j];
+        //console.log(
+        //  "SpringEngine:O1="+connector.getWorldId().id+
+        //  ":O2="+connectorDef.engineShape.getWorldId().id
+        //);
+      connectorDef.connectorPositioner.positionConnectorShape(connector,connectorDef);
+      }
+    }
   }
 
   

@@ -8,7 +8,6 @@ import { SpringShape } from "./springshape";
 import { SpringEngine } from "../springengine";
 import { SpringConnectorDef } from "./springconnectordef";
 import { DistanceWorldPosition } from "./distanceworldposition";
-import { ShapeAndText } from "../../shapes/shapeandtext";
 
 export class SpringConnector extends SpringShape implements EngineConnector
 {
@@ -78,14 +77,13 @@ export class SpringConnector extends SpringShape implements EngineConnector
 
     public calulateSpringMovement(shape:SpringShape,connectedToPosition:WorldPosition,conectionLength:number,stiffness:number):WorldPosition
 	{
-        stiffness = 1.0;
+        //stiffness = 1.0;
         let wantPosition = new DistanceWorldPosition(shape.getWorldPosition().x,shape.getWorldPosition().y).getDistanceOnLinePointArrayClosest(
                 connectedToPosition,
                 conectionLength//+randomStrengthFactor*Math.random()
                 );
     
-        let distanceToPosition = shape.getWorldPosition().getDistance(wantPosition);
-        if(distanceToPosition==0.0) {
+        if(wantPosition.distance==0.0) {
             let output = {
                 'NO MOVE shape':shape.getWorldId().id,
                 'conectionLength':conectionLength,
@@ -93,15 +91,15 @@ export class SpringConnector extends SpringShape implements EngineConnector
                 'current':shape.getWorldPosition(),
                 'connectedToPosition':connectedToPosition,
                 'wantPosition':wantPosition,
-                'distanceToPosition':distanceToPosition,
+                'distanceToPosition':wantPosition.distance,
             }
-            console.log(JSON.stringify(output));  
+            //console.log(JSON.stringify(output));  
             return(wantPosition);
         }
         let movePosition = new DistanceWorldPosition(shape.getWorldPosition().x,shape.getWorldPosition().y).getDistanceOnLinePointArrayClosest(            
             connectedToPosition,
             //distanceToPosition * stiffness
-            conectionLength*stiffness
+            conectionLength-(conectionLength*stiffness)
                 );
 
         // add this position to the list of points this worldObject needs to move
@@ -113,10 +111,10 @@ export class SpringConnector extends SpringShape implements EngineConnector
             'current':shape.getWorldPosition(),
             'connectedToPosition':connectedToPosition,
             'wantPosition':wantPosition,
-            'distanceToPosition':distanceToPosition,
+            'distanceToPosition':wantPosition.distance,
             'movePosition':movePosition
         }
-        console.log(JSON.stringify(output));              
+        //console.log(JSON.stringify(output));              
         return(movePosition);
 	}
 

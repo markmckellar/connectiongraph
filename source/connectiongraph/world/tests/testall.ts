@@ -9,6 +9,8 @@ import { Test1 } from "./test1";
 import { Test2 } from "./test2";
 import { WorldOfWorldObjects } from "../worldofworldobjects";
 import { Test3 } from "./test3";
+import { MouseCrossCircleDisplayShape } from "../../display/drawableshapes/mousecrosscircledisplayshape";
+import { WorldEngineParams } from "../../engine/worldengineparams";
 
 export class TestAll {
     worldEngine:WorldEngine;
@@ -19,13 +21,13 @@ export class TestAll {
     constructor() {
     }
 
-    public runTest(engineName:string,testName:string,canvasName:string):void {
+    public runTest(engineName:string,testName:string,canvasName:string,updateFunction: (world: World) => void):void {
 
         console.log("runTest:engineName="+engineName+":testName="+testName+":canvasName="+canvasName);
 
         if(this.test) this.test.stopCurrent();
 
-        this.worldEngine = this.getEngineFromName(engineName);
+        this.worldEngine = this.getEngineFromName(engineName,updateFunction);
         this.world = new WorldOfWorldObjects(this.worldEngine);
         this.canvasHolder = new CanvasHolderHTML(canvasName,this.world);
         this.test = this.getTestFromName(testName,this.worldEngine,this.world,this.canvasHolder);
@@ -34,10 +36,17 @@ export class TestAll {
         this.test.runTests();
     }
 
-    public getEngineFromName(engineName:string):WorldEngine {
-        if(engineName=='matter') return(new MatterEngine());
-        else if(engineName=='mock') return(new MockEngine());
-        else if(engineName=='spring') return(new SpringEngine());
+    public getEngineFromName(engineName:string,updateFunction: (world: World) => void):WorldEngine {
+        let worldEngineParams:WorldEngineParams =
+        {
+            mouseDrawableShape:new MouseCrossCircleDisplayShape(),
+            updateFunction: updateFunction,
+            updateInterval: (1000/30)
+            //updateInterval: 5000
+        };
+        if(engineName=='matter') return(new MatterEngine(worldEngineParams));
+        else if(engineName=='mock') return(new MockEngine(worldEngineParams));
+        else if(engineName=='spring') return(new SpringEngine(worldEngineParams));
     }
 
     public getTestFromName(testName:string,worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML):BaseTest {
