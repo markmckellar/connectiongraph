@@ -84,7 +84,7 @@ export class SpringEngine implements WorldEngine {
         }
       },
       //1000/30);  
-      3000);  
+      5000);  
   }
 
   

@@ -71,30 +71,43 @@ export class SpringConnector extends SpringShape implements EngineConnector
                     this.calulateSpringMovement(
                         otherSpringShape,
                         shapePos,
+                        //this.springShape.getWorldPosition(),
                         conectorDef.length,conectorDef.stiffness) );
         }
     }
 
     public calulateSpringMovement(shape:SpringShape,connectedToPosition:WorldPosition,conectionLength:number,stiffness:number):WorldPosition
 	{
-        //stiffness = 1.0;
+        stiffness = 1.0;
         let wantPosition = new DistanceWorldPosition(shape.getWorldPosition().x,shape.getWorldPosition().y).getDistanceOnLinePointArrayClosest(
                 connectedToPosition,
                 conectionLength//+randomStrengthFactor*Math.random()
                 );
     
-        let distanceToPosition = this.springShape.getWorldPosition().getDistance(wantPosition);
-        if(distanceToPosition==0.0) return(wantPosition);
-
+        let distanceToPosition = shape.getWorldPosition().getDistance(wantPosition);
+        if(distanceToPosition==0.0) {
+            let output = {
+                'NO MOVE shape':shape.getWorldId().id,
+                'conectionLength':conectionLength,
+                'stiffness':stiffness,
+                'current':shape.getWorldPosition(),
+                'connectedToPosition':connectedToPosition,
+                'wantPosition':wantPosition,
+                'distanceToPosition':distanceToPosition,
+            }
+            console.log(JSON.stringify(output));  
+            return(wantPosition);
+        }
         let movePosition = new DistanceWorldPosition(shape.getWorldPosition().x,shape.getWorldPosition().y).getDistanceOnLinePointArrayClosest(            
-            wantPosition,
-            distanceToPosition * stiffness
+            connectedToPosition,
+            //distanceToPosition * stiffness
+            conectionLength*stiffness
                 );
 
         // add this position to the list of points this worldObject needs to move
         // to  
         let output = {
-            'shape':shape.getWorldId().id,
+            'MOVE shape':shape.getWorldId().id,
             'conectionLength':conectionLength,
             'stiffness':stiffness,
             'current':shape.getWorldPosition(),

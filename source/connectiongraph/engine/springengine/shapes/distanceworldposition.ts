@@ -24,8 +24,7 @@ export class DistanceWorldPosition extends WorldPosition {
 		let p1:DistanceWorldPosition = null;
 		let p2:DistanceWorldPosition = null;
 		// this is when the slope is undefined (totally horizontal line)
-		if (position.x == this.y)
-		{
+		if (position.x == this.x) {
 			p1 = new DistanceWorldPosition(position.x,position.y+distance);
 			p2 = new DistanceWorldPosition(position.x,position.y-distance);
 		}

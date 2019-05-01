@@ -34,7 +34,7 @@ export class Test3 extends BaseTest {
           new WorldId("circle1a"),
           new CircleDisplayShape(),
           25,8,
-          new WorldPosition(200,300),
+          new WorldPosition(200,200),
           {restitution:0.9}
         );
         
@@ -42,7 +42,8 @@ export class Test3 extends BaseTest {
         new WorldId("circle1b"),
         new CircleDisplayShape(),
         40,8,
-        new WorldPosition(400,300),
+        //new WorldPosition(200+Math.sqrt(2)*100,200+Math.sqrt(2)*100),
+        new WorldPosition(410,210),
         {restitution:0.9}
       );
 
