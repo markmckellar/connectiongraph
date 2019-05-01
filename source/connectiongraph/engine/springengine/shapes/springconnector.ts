@@ -6,64 +6,106 @@ import { EngineConnectorDef } from "../../connectors/engineconnectordef";
 import { EngineShape } from "../../shapes/engineshape";
 import { SpringShape } from "./springshape";
 import { SpringEngine } from "../springengine";
-import { MockConnectorDef } from "./springconnectordef";
+import { SpringConnectorDef } from "./springconnectordef";
+import { DistanceWorldPosition } from "./distanceworldposition";
+import { ShapeAndText } from "../../shapes/shapeandtext";
 
 export class SpringConnector extends SpringShape implements EngineConnector
 {
     private _drawableConnector:DrawableConnector;
-    private _mockConnectorDefArray:Array<MockConnectorDef>;
-	private _connectorShape:EngineShape;
+    private _springConnectorDefArray:Array<SpringConnectorDef>;
+    private _connectorShape:EngineShape;
+    public springShape:SpringShape;
+
 
     constructor(
         worldId:WorldId,
         drawableConnector:DrawableConnector,
         connectorShape:EngineShape,
-        mockConnectorDefArray:Array<MockConnectorDef>,
+        springConnectorDefArray:Array<SpringConnectorDef>,
         options:any,
         springEngine:SpringEngine)
 	{
-       super(worldId,drawableConnector,connectorShape.getWorldPosition(),options);
+       super(worldId,drawableConnector,connectorShape.getWorldPosition(),options,springEngine);
        this.drawableConnector = drawableConnector;
-       this.mockConnectorDefArray = mockConnectorDefArray;
-
-       
+       this.springConnectorDefArray = springConnectorDefArray;
        this.connectorShape = connectorShape;
 
-       connectorShape.getDrawable().init(connectorShape,options);
+       this.springShape = springEngine.getSpringShape(connectorShape.getWorldId()); 
 
-    
-       /*
-       this.connectorCircleBody = new MockCircle(
-            new WorldId(this.worldId+"-connector-circle"),
-            new CircleDisplayShape(),
-            this.connectorCircleRadius,this.connectorCircleCurvePoints,
-            this.getWorldPosition(),
-            {},
-            mockEngine
-            );
-      	*/
-       //this.circleBody.collisionFilter.category = MatterEngine.boundsFilter;
-       //matterEngine.addMatterShape(this);
-        
+       connectorShape.getDrawable().init(connectorShape,options);        
        drawableConnector.init(this,options);
 
-       /*
-       for(let i=0;i<this.matterConnectorDefArray.length;i++) {
-        let connectorDef:MatterConnectorDef = matterConnectorDefArray[i];
-        let matterConstraint = Matter.Constraint.create(
-            {
-                bodyA: this.connectorCircleBody,
-                bodyB: connectorDef.matterShape.getBody(),
-                pointA: { x: -0, y: -0 },
-                pointB: { x: -0, y: -0 },
-                length:connectorDef.length,
-                stiffness:connectorDef.stiffness
-            });
-        connectorDef.init(matterConstraint);
-       }
-       matterEngine.addMatterConnector(this);
-       */
     }
+
+    public getAllSpringShapes():Array<SpringShape> {
+        let allShapes = new Array<SpringShape>();
+        allShapes.push(this.springShape);
+        for(let i=0;i<this.springConnectorDefArray.length;i++) {
+            let conectorDef = this.springConnectorDefArray[i];
+            //console.log("getAllSpringShapes:this.springConnectorDefArray.lengt="+this.springConnectorDefArray.length+":i="+i+":shape="+conectorDef.engineShape.getWorldId().id);
+
+            allShapes.push(conectorDef.springShape);
+        }
+
+        return(allShapes);
+    }
+
+    public processConection() {
+        for(let i=0;i<this.springConnectorDefArray.length;i++) {
+            let conectorDef = this.springConnectorDefArray[i];
+            let otherSpringShape = conectorDef.springShape;
+
+            let shapePos = this.springShape.getWorldPosition();
+            if(!this.springShape.isSelected())
+            {
+                shapePos =  this.calulateSpringMovement(
+                    this.springShape,
+                    otherSpringShape.getWorldPosition(),
+                    conectorDef.length,conectorDef.stiffness);
+
+                this.springShape.moveList.push(shapePos);
+            }
+            if(!otherSpringShape.isSelected())                        
+                otherSpringShape.moveList.push(
+                    this.calulateSpringMovement(
+                        otherSpringShape,
+                        shapePos,
+                        conectorDef.length,conectorDef.stiffness) );
+        }
+    }
+
+    public calulateSpringMovement(shape:SpringShape,connectedToPosition:WorldPosition,conectionLength:number,stiffness:number):WorldPosition
+	{
+        //stiffness = 1.0;
+        let wantPosition = new DistanceWorldPosition(shape.getWorldPosition().x,shape.getWorldPosition().y).getDistanceOnLinePointArrayClosest(
+                connectedToPosition,
+                conectionLength//+randomStrengthFactor*Math.random()
+                );
+    
+        let distanceToPosition = this.springShape.getWorldPosition().getDistance(wantPosition);
+        if(distanceToPosition==0.0) return(wantPosition);
+
+        let movePosition = new DistanceWorldPosition(shape.getWorldPosition().x,shape.getWorldPosition().y).getDistanceOnLinePointArrayClosest(            
+            wantPosition,
+            distanceToPosition * stiffness
+                );
+
+        // add this position to the list of points this worldObject needs to move
+        // to  
+        let output = {
+            'shape':shape.getWorldId().id,
+            'conectionLength':conectionLength,
+            'stiffness':stiffness,
+            'current':shape.getWorldPosition(),
+            'connectedToPosition':connectedToPosition,
+            'wantPosition':wantPosition,
+            'distanceToPosition':distanceToPosition,
+            'movePosition':movePosition
+        }
+        console.log(JSON.stringify(output));              
+        return(movePosition);
+	}
 
 
     public getShapePoints():Array<WorldPosition> {
@@ -77,21 +119,21 @@ export class SpringConnector extends SpringShape implements EngineConnector
      * Getter mockConnectorDefArray
      * @return {Array<MockConnectorDef>}
      */
-	public get mockConnectorDefArray(): Array<MockConnectorDef> {
-		return this._mockConnectorDefArray;
+	public get springConnectorDefArray(): Array<SpringConnectorDef> {
+		return this._springConnectorDefArray;
 	}
 
     /**
      * Setter mockConnectorDefArray
      * @param {Array<MockConnectorDef>} value
      */
-	public set mockConnectorDefArray(value: Array<MockConnectorDef>) {
-		this._mockConnectorDefArray = value;
+	public set springConnectorDefArray(value: Array<SpringConnectorDef>) {
+		this._springConnectorDefArray = value;
 	}
 
 
     public getEngineConnectorDefArray():Array<EngineConnectorDef> {
-        return(this.mockConnectorDefArray);
+        return(this._springConnectorDefArray);
     }
 
 /*

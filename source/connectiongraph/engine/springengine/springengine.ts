@@ -19,15 +19,24 @@ import { SpringRectangleText } from "./shapes/springrectangletext";
 import { DrawableConnector } from "../../display/drawableshapes/drawableconnector";
 import { EngineConnectorDef } from "../connectors/engineconnectordef";
 import { EngineConnector } from "../connectors/engineconnector";
-import { MockConnectorDef } from "./shapes/springconnectordef";
+import { SpringConnectorDef } from "./shapes/springconnectordef";
 import { SpringConnector } from "./shapes/springconnector";
+import { SpringShape } from "./shapes/springshape";
 
 export class SpringEngine implements WorldEngine {
   private _mouseAnchor: SpringCircle;
   private _connectorArray:Array<SpringConnector>;
   private intervalId:any;
+  private _springShapes : Map<WorldId,SpringShape>;
+  //private springShapeArray : Array<SpringShape>;
+
 
   public constructor() {
+    this.springShapes = new Map<WorldId,SpringShape>();
+    //this.springShapeArray = new Array<SpringConnector>();
+
+    this.connectorArray = new Array<SpringConnector>();
+
     this.mouseAnchor = new SpringCircle(
       new WorldId("mouseAnchor"),
       new CircleDisplayShape(),
@@ -37,7 +46,6 @@ export class SpringEngine implements WorldEngine {
       { restitution: 0.9, isSensor: true },
       this
     );
-    this.connectorArray = new Array<SpringConnector>();
   }
   public getMouseAnchor(): EngineShape {
     return this.mouseAnchor;
@@ -54,21 +62,102 @@ export class SpringEngine implements WorldEngine {
   public startEngine():void {
     let self = this;
 
-    self.intervalId = setInterval(
+    this.intervalId = setInterval(
       function() {
+
+        self.animateCalculate();
+        self.animateFinalize();
+
         for(let i=0;i<self.connectorArray.length;i++)
         {
           let connector = self.connectorArray[i];
+          
           for(let j=0;j<connector.getEngineConnectorDefArray().length;j++)
           {
             let connectorDef = connector.getEngineConnectorDefArray()[j];
-            connectorDef.connectorPositioner.positionConnectorShape(connector,connectorDef);
+            //console.log(
+            //  "SpringEngine:O1="+connector.getWorldId().id+
+            //  ":O2="+connectorDef.engineShape.getWorldId().id
+            //);
+          connectorDef.connectorPositioner.positionConnectorShape(connector,connectorDef);
           }
         }
       },
-      1000/30);
+      //1000/30);  
+      3000);  
+  }
 
-    
+  
+  
+private animateCalculate()
+	{
+    for(let i=0;i<this.connectorArray.length;i++)
+    {
+      let connector = this.connectorArray[i];
+      connector.processConection();
+			}
+	}
+	
+	private animateFinalize()
+	{
+
+    for(let i=0;i<this.connectorArray.length;i++)
+    {
+      let connector = this.connectorArray[i];
+      let allShapes = connector.getAllSpringShapes();
+      for(let j=0;j<allShapes.length;j++) {
+        let shape = allShapes[j];
+        //console.log("allShapes.length="+allShapes.length+":j="+j);
+        //console.log("           shape="+shape.getWorldId().id);
+        this.setNewPosition(shape);
+        shape.moveList = new Array<WorldPosition>();
+      }
+    }
+	}
+
+	private setNewPosition(shape:SpringShape)
+	{
+		if(shape.moveList.length==0)  shape.moveList.push(shape.getWorldPosition());	
+		var newPosition = WorldPosition.getAveragePostionFromWorldPositionList(shape.moveList);
+		shape.translate(newPosition);
+	}
+ 
+
+  public getSpringShape(worldId:WorldId):SpringShape {
+    if(this.springShapes.has(worldId))
+      return(this.springShapes.get(worldId)); 
+      throw new Error("getSpringShape:shape not found! worldId="+worldId.id);
+
+  }
+
+/**
+ *
+ *
+ * @param {SpringShape} springShape
+ * @memberof SpringEngine
+ */
+public addSpringShape(springShape:SpringShape):void {
+    this.springShapes.set(springShape.worldId,springShape);    
+  }
+
+  public createConnector(worldId:WorldId,drawableConnector:DrawableConnector,connectorShape:EngineShape,
+    engineConnectorDefArray:Array<EngineConnectorDef>,
+    options:any):EngineConnector {
+
+      let connectorDefArrayDef:Array<SpringConnectorDef> = new Array<SpringConnectorDef>();
+      
+      for(let i=0;i<engineConnectorDefArray.length;i++) 
+      connectorDefArrayDef.push(new SpringConnectorDef(this,engineConnectorDefArray[i]));
+      
+      let connector = new SpringConnector(
+        worldId,
+        drawableConnector,
+        connectorShape,
+        connectorDefArrayDef,
+        options,
+        this);
+        this.connectorArray.push(connector);
+    return(connector);
   }
 
   public createCircle(
@@ -109,26 +198,6 @@ export class SpringEngine implements WorldEngine {
       this
     );
     return rectangle;
-  }
-
-  public createConnector(worldId:WorldId,drawableConnector:DrawableConnector,connectorShape:EngineShape,
-    engineConnectorDefArray:Array<EngineConnectorDef>,
-    options:any):EngineConnector {
-
-      let mockConnectorDefArrayDef:Array<MockConnectorDef> = new Array<MockConnectorDef>();
-      
-      for(let i=0;i<engineConnectorDefArray.length;i++) 
-        mockConnectorDefArrayDef.push(new MockConnectorDef(this,engineConnectorDefArray[i]));
-      
-      let connector = new SpringConnector(
-        worldId,
-        drawableConnector,
-        connectorShape,
-        mockConnectorDefArrayDef,
-        options,
-        this);
-        this.connectorArray.push(connector);
-    return(connector);
   }
 
   public createTextBox(worldId:WorldId,textDisplayShape:TextDisplayShape,width:number,height:number,worldPosition:WorldPosition,options:any):TextEngineShape {
@@ -218,6 +287,13 @@ export class SpringEngine implements WorldEngine {
     this._mouseAnchor = value;
   }
 
+  public get springShapes(): Map<WorldId,SpringShape> {
+		return this._springShapes;
+	}
+
+	public set springShapes(value: Map<WorldId,SpringShape>) {
+		this._springShapes = value;
+	}
 
     /**
      * Getter connectorArray

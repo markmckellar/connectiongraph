@@ -5,6 +5,7 @@ import { WorldId } from "../../../world/worldid";
 import { WorldObjectEventHandler } from "../../../world/worldobjecteventhandler";
 import { World } from "../../../world/world";
 import { CanvasMouse } from "../../../display/canvas/canvasmouse";
+import { SpringEngine } from "../springengine";
 
 //import { World } from "../../walkerworld/world";
 //import { WorldObjectDisplay } from "../worldobjectdisplay";
@@ -18,10 +19,11 @@ export abstract class SpringShape implements WorldObject
 	private _isObjectSelected:boolean;
 	private _objectOptions:any;
 	private _worldObjectEventHandler:WorldObjectEventHandler;
-
 	private _position:WorldPosition; 
+	public moveList:Array<WorldPosition>;
 
-    constructor(worldId:WorldId,drawable:Drawable,position:WorldPosition,options:any) {
+
+    constructor(worldId:WorldId,drawable:Drawable,position:WorldPosition,options:any,springEngine:SpringEngine) {
 		this.worldId = worldId;
 		this.drawable = drawable;
 		this.isObjectAnimated = true;
@@ -29,7 +31,9 @@ export abstract class SpringShape implements WorldObject
 		this.isObjectSelected = false;
 		this.drawable = drawable;
 		this.position = position;
-		this.worldObjectEventHandler = this.createMouseEventHandler();
+		this.worldObjectEventHandler = this.createMouseEventHandler();	
+		this.moveList = new Array<WorldPosition>();
+		springEngine.addSpringShape(this);
 	}
 
 	public stopRotation():void {

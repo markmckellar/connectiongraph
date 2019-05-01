@@ -1,5 +1,4 @@
 import { EngineShape } from "../shapes/engineshape";
-import { WorldPosition } from "../../world/worldposition";
 import { ConnectorPositioner } from "./connectorpositioners/connectorpositioner";
 
 export class EngineConnectorDef {
@@ -15,7 +14,7 @@ export class EngineConnectorDef {
         this.length = length;
         this.stiffness = stiffness;
     }
-
+/*
     public static getWorldPositionArrayFromEngineDefs(engineConnectorDefArray:Array<EngineConnectorDef>):Array<WorldPosition> {
 		let worldPositionArray:Array<WorldPosition> = new Array<WorldPosition>();
 		for(let n = 0; n < engineConnectorDefArray.length; n++)
@@ -24,7 +23,7 @@ export class EngineConnectorDef {
 		}
 		return(worldPositionArray);
    }
-
+*/
 
     /**
      * Getter connectorPositioner

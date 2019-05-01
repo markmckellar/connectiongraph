@@ -14,7 +14,7 @@ export class SpringCircle extends SpringShape implements CircleEngineShape
 
 	constructor(worldId:WorldId,drawable:Drawable,radius:number,curvePoints:number,position:WorldPosition,options:any,springEngine:SpringEngine)
 	{
-		super(worldId,drawable,position,options);
+		super(worldId,drawable,position,options,springEngine);
 		this.radius = radius;
 		this.curvePoints = curvePoints;	
 		drawable.init(this,options);

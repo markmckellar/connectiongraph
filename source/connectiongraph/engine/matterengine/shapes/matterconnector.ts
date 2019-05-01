@@ -36,8 +36,7 @@ export class MatterConnector extends MatterShape implements EngineConnector
        this.connectorShape = connectorShape;
 
        if(!matterEngine.matterShapes.has(connectorShape.getWorldId()))
-       throw new Error("Error creating MatterConnectorDef, matterShape not found.  WorldId is : "+
-       connectorShape.getWorldId().id);
+            throw new Error("Error creating MatterConnectorDef, matterShape not found.  WorldId is : "+connectorShape.getWorldId().id);
        this.matterShape = matterEngine.matterShapes.get(connectorShape.getWorldId()); 
 
 

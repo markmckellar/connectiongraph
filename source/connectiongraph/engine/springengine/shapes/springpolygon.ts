@@ -16,7 +16,7 @@ export class SpringPolygon extends SpringShape implements PolygonEngineShape
 
     constructor(worldId:WorldId,drawable:Drawable,numberOfSides:number,radius:number,worldPosition:WorldPosition,options:any,springEngine:SpringEngine)    
 	{
-        super(worldId,drawable,worldPosition,options);
+        super(worldId,drawable,worldPosition,options,springEngine);
         this.radius = radius;
         this.numberOfSides = numberOfSides;
         this.polygonPointArray = WorldDisplay.getPolygonPoints(0,numberOfSides,radius,worldPosition);

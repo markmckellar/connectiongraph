@@ -8,6 +8,7 @@ import { BaseTest } from "./basetest";
 import { Test1 } from "./test1";
 import { Test2 } from "./test2";
 import { WorldOfWorldObjects } from "../worldofworldobjects";
+import { Test3 } from "./test3";
 
 export class TestAll {
     worldEngine:WorldEngine;
@@ -42,6 +43,7 @@ export class TestAll {
     public getTestFromName(testName:string,worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML):BaseTest {
         if(testName=='test1') return(new Test1(worldEngine,world,canvasHolder));
         else if(testName=='test2') return(new Test2(worldEngine,world,canvasHolder));
+        else if(testName=='test3') return(new Test3(worldEngine,world,canvasHolder));
     }
 }
 
