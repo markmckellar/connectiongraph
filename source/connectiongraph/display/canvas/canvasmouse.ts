@@ -23,7 +23,6 @@ export class CanvasMouse
 			this.canvasholderHTML.canvas.addEventListener("pointerdown", function(event) { self.pointerDownEvent(world,self,event) }, false);
 			this.canvasholderHTML.canvas.addEventListener("pointermove",function(event) { self.pointerMoveEvent(world,self,event) }, false);
 			this.canvasholderHTML.canvas.addEventListener("pointerup",function(event) { self.pointerUpEvent(world,self,event) }, false);
-			//this.nodeMouseMovment = {};
 		}
 	}
 
@@ -51,16 +50,17 @@ export class CanvasMouse
 	    return( new WorldPosition(offsetLeft,offsetTop) );
 	}
 
-	public pointerDownEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent) {
+
+	public pointerDownEvent(world:World,canvasMouse:CanvasMouse,event:UIEvent) {
 		this.mouseEventHandler.pointerDownEvent(world,canvasMouse,event);
 	}
 	
-	public pointerMoveEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent)	{
+	public pointerMoveEvent(world:World,canvasMouse:CanvasMouse,event:UIEvent)	{
 		this.mouseEventHandler.pointerMoveEvent(world,canvasMouse,event);
 
 	}
 	
-	public pointerUpEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent)
+	public pointerUpEvent(world:World,canvasMouse:CanvasMouse,event:UIEvent)
 	{
 		this.mouseEventHandler.pointerUpEvent(world,canvasMouse,event);
 

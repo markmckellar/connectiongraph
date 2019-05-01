@@ -97,6 +97,8 @@ export class SpringConnector extends SpringShape implements EngineConnector
             //console.log(JSON.stringify(output));  
             return(wantPosition);
         }
+        // stiffness should use the refresh interval somehow to decide how far it moves each "click".. right now it is a default that is the same
+        // regardless of the animation interval
         let movePosition = new DistanceWorldPosition(shape.getWorldPosition().x,shape.getWorldPosition().y).getDistanceOnLinePointArrayClosest(            
             wantPosition,
             wantPosition.distance-(wantPosition.distance*stiffness)
