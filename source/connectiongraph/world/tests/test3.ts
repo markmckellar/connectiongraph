@@ -47,6 +47,8 @@ export class Test3 extends BaseTest {
         {restitution:0.9}
       );
 
+      world.addWorldObject(circle1a);
+      world.addWorldObject(circle1b);
     
       let cd1:EngineConnectorDef = new EngineConnectorDef(circle1a,new PositionerFree(),200,0.01);
       let connector1:EngineConnector = world.worldEngine.createConnector(
@@ -58,8 +60,7 @@ export class Test3 extends BaseTest {
       );
     
     
-      world.addWorldObject(circle1a);
-      world.addWorldObject(circle1b);
+
     
       world.addWorldObject(connector1);
     

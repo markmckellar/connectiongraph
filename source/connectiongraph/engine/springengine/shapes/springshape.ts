@@ -21,6 +21,7 @@ export abstract class SpringShape implements WorldObject
 	private _worldObjectEventHandler:WorldObjectEventHandler;
 	private _position:WorldPosition; 
 	public moveList:Array<WorldPosition>;
+	private isObjectSelecteable:boolean;
 
 
     constructor(worldId:WorldId,drawable:Drawable,position:WorldPosition,options:any,springEngine:SpringEngine) {
@@ -29,6 +30,7 @@ export abstract class SpringShape implements WorldObject
 		this.isObjectAnimated = true;
 		this.isObjectVisable = true;
 		this.isObjectSelected = false;
+		this.isObjectSelecteable = true;
 		this.drawable = drawable;
 		this.position = position;
 		this.worldObjectEventHandler = this.createMouseEventHandler();	
@@ -61,12 +63,16 @@ export abstract class SpringShape implements WorldObject
 	
 	public isAnimated(): boolean { return(this.isObjectAnimated); }
 	public isSelected(): boolean { return(this.isObjectSelected); }
+	public isSelectable(): boolean { return(this.isObjectSelecteable); }
+
 	public isVisable():boolean { return(this.isObjectVisable); }
 	public getWorldId(): WorldId { return(this.worldId); }
 	public getOptions(): any { return(this.objectOptions); }
 
 	public setAnimated(animated:boolean):void { this.isObjectAnimated = animated; }
 	public setSelected(selected:boolean): void { this.isObjectSelected = selected; }
+	public setSelectable(selectable:boolean): void { this.isObjectSelecteable = selectable; }
+
 	public setVisable(visable:boolean):void { this.isObjectVisable = visable; }
 	
 	public scaleShape(scaleX:number,scaleY:number):void {

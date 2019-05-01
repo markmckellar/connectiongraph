@@ -13,6 +13,7 @@ export class SpringRectangleText extends SpringRectangle implements TextEngineSh
 	constructor(worldId:WorldId,drawableText:DrawableText,width:number,height:number,position:WorldPosition,options:any,springEngine:SpringEngine)
 	{
         super(worldId,drawableText,width,height,position,options,springEngine);
+
         this.drawableText = drawableText;
 
 /*

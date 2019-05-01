@@ -13,6 +13,7 @@ export class SpringRectangle extends SpringShape implements RectangleEngineShape
 	constructor(worldId:WorldId,drawable:Drawable,width:number,height:number,position:WorldPosition,options:any,springEngine:SpringEngine)
 	{
 		super(worldId,drawable,position,options,springEngine);
+
 		this.width = width;
 		this.height = height;	
 		drawable.init(this,options);

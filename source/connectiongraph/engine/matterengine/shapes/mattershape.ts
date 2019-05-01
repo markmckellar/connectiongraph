@@ -24,7 +24,7 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 	private _isObjectSelected:boolean;
 	private _objectOptions:any;
 	private _worldObjectEventHandler:WorldObjectEventHandler;
-
+	private isObjectSelecteable:boolean;
 
     constructor(worldId:WorldId,drawable:Drawable,options:any,matterEngine:MatterEngine) {
 		this.worldId = worldId;
@@ -32,6 +32,7 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 		this.isObjectAnimated = true;
 		this.isObjectVisable = true;
 		this.isObjectSelected = false;
+		this.isObjectSelecteable = true;
 		this.objectOptions = options;
 		this.worldObjectEventHandler = this.createMouseEventHandler();
 		//options["timeScale"]= 0.1;
@@ -88,7 +89,9 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 	public isVisable():boolean { return(this.isObjectVisable); }
 	public getWorldId(): WorldId { return(this.worldId); }
 	public getOptions(): any { return(this.objectOptions); }
-
+	public isSelectable(): boolean { return(this.isObjectSelecteable); }
+	
+	public setSelectable(selectable:boolean): void { this.isObjectSelecteable = selectable; }
 	public setAnimated(animated:boolean):void { this.isObjectAnimated = animated; }
 	public setSelected(selected:boolean): void { this.isObjectSelected = selected; }
 	public setVisable(visable:boolean):void { this.isObjectVisable = visable; }

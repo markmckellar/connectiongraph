@@ -14,10 +14,12 @@ export interface WorldObject {
 	getDrawable():Drawable;
 	isAnimated(): boolean;
 	isSelected(): boolean;
+	isSelectable(): boolean;
 	isVisable():boolean;
 	getDrawable():Drawable;
 	setAnimated(animated:boolean): void;
 	setSelected(selected:boolean): void;
+	setSelectable(slecteable:boolean): void;
 	setVisable(visable:boolean):void;
 	getWorldId(): WorldId 
 	getOptions():any;	

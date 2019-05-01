@@ -34,6 +34,7 @@ export class SpringConnector extends SpringShape implements EngineConnector
 
        connectorShape.getDrawable().init(connectorShape,options);        
        drawableConnector.init(this,options);
+       this.setSelectable(false);
 
     }
 
@@ -97,10 +98,11 @@ export class SpringConnector extends SpringShape implements EngineConnector
             return(wantPosition);
         }
         let movePosition = new DistanceWorldPosition(shape.getWorldPosition().x,shape.getWorldPosition().y).getDistanceOnLinePointArrayClosest(            
-            connectedToPosition,
-            //distanceToPosition * stiffness
-            conectionLength-(conectionLength*stiffness)
+            wantPosition,
+            wantPosition.distance-(wantPosition.distance*stiffness)
                 );
+
+ 
 
         // add this position to the list of points this worldObject needs to move
         // to  

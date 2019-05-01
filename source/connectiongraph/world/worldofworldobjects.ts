@@ -50,7 +50,8 @@ export class WorldOfWorldObjects extends World{
             ////console.log("this.worldObjectArray.length="+this.worldObjectArray.length+":i="+i);
             let worldObject:WorldObject = this.worldObjectArray[i];
             ////console.log("    worldObject.position="+worldObject.getWorldPosition());
-            if(worldObject.containsWorldPosition(worldPosition) && worldObject!=this.worldEngine.getMouseAnchor()) foundObject = worldObject;
+            if(worldObject.isSelectable())
+                if(worldObject.containsWorldPosition(worldPosition) && worldObject!=this.worldEngine.getMouseAnchor()) foundObject = worldObject;
         }
         return(foundObject);
     }

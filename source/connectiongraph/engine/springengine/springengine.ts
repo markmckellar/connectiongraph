@@ -167,6 +167,7 @@ public addSpringShape(springShape:SpringShape):void {
       options,
       this
     );
+
     return circle;
   }
 
@@ -178,7 +179,7 @@ public addSpringShape(springShape:SpringShape):void {
     worldPosition: WorldPosition,
     options: any
   ): RectangleEngineShape {
-    let rectangle: SpringRectangle = new SpringRectangle(
+    let rectangle = new SpringRectangle(
       worldId,
       drawable,
       width,
@@ -199,6 +200,7 @@ public addSpringShape(springShape:SpringShape):void {
       options,
       this
     );
+
     return(rectangleText);
   }
 
@@ -210,7 +212,7 @@ public addSpringShape(springShape:SpringShape):void {
     worldPosition: WorldPosition,
     options: any
   ): PolygonEngineShape {
-    let ploygon: PolygonEngineShape = new SpringPolygon(
+    let ploygon = new SpringPolygon(
       worldId,
       drawable,
       numberOfSides,
@@ -219,6 +221,7 @@ public addSpringShape(springShape:SpringShape):void {
       options,
       this
     );
+
     return ploygon;
   }
 

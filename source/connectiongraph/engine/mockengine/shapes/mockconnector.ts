@@ -31,44 +31,15 @@ export class MockConnector extends MockShape implements EngineConnector
 
        connectorShape.getDrawable().init(connectorShape,options);
 
-    
-       /*
-       this.connectorCircleBody = new MockCircle(
-            new WorldId(this.worldId+"-connector-circle"),
-            new CircleDisplayShape(),
-            this.connectorCircleRadius,this.connectorCircleCurvePoints,
-            this.getWorldPosition(),
-            {},
-            mockEngine
-            );
-      	*/
-       //this.circleBody.collisionFilter.category = MatterEngine.boundsFilter;
-       //matterEngine.addMatterShape(this);
+       this.setSelectable(false);
         
        drawableConnector.init(this,options);
+       this.setSelectable(false);
 
-       /*
-       for(let i=0;i<this.matterConnectorDefArray.length;i++) {
-        let connectorDef:MatterConnectorDef = matterConnectorDefArray[i];
-        let matterConstraint = Matter.Constraint.create(
-            {
-                bodyA: this.connectorCircleBody,
-                bodyB: connectorDef.matterShape.getBody(),
-                pointA: { x: -0, y: -0 },
-                pointB: { x: -0, y: -0 },
-                length:connectorDef.length,
-                stiffness:connectorDef.stiffness
-            });
-        connectorDef.init(matterConstraint);
-       }
-       matterEngine.addMatterConnector(this);
-       */
     }
 
 
     public getShapePoints():Array<WorldPosition> {
-        //return( WorldDisplay.getPolygonPoints(Math.PI/4,4,this.getWidth()+this.get,this.getWorldPosition() ) ;
-        //return(this.connectorCircleBody.getShapePoints());
         return( this.connectorShape.getShapePoints());
     }
 
