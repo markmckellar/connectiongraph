@@ -9,7 +9,7 @@ import { EngineConnector } from "../../../connectiongraph/engine/connectors/engi
 import { EngineConnectorDef } from "../../../connectiongraph/engine/connectors/engineconnectordef";
 import { LineConnectorDisplay } from "../../../connectiongraph/display/drawableshapes/lineconnectordisplay";
 import { PositionerLockX } from "../../../connectiongraph/engine/connectors/connectorpositioners/positionerlockx";
-import { PositionerLockY } from "../../../connectiongraph/engine/connectors/connectorpositioners/positionerlockxy";
+import { PositionerLockY } from "../../engine/connectors/connectorpositioners/positionerlocky";
 /*
 import { ShapeAndText } from "../../../connectiongraph/engine/shapes/shapeandtext";
 import { RectangleEngineShape } from "../../../connectiongraph/engine/shapes/rectangleengineshape";

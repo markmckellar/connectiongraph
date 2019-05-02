@@ -7,7 +7,7 @@ import { EngineShape } from "../../shapes/engineshape";
 import { SpringShape } from "./springshape";
 import { SpringEngine } from "../springengine";
 import { SpringConnectorDef } from "./springconnectordef";
-import { DistanceWorldPosition } from "./distanceworldposition";
+import { WorldEngineBase } from "../../worldendginebase";
 
 export class SpringConnector extends SpringShape implements EngineConnector
 {
@@ -15,7 +15,6 @@ export class SpringConnector extends SpringShape implements EngineConnector
     private _springConnectorDefArray:Array<SpringConnectorDef>;
     private _connectorShape:EngineShape;
     public springShape:SpringShape;
-
 
     constructor(
         worldId:WorldId,
@@ -29,7 +28,6 @@ export class SpringConnector extends SpringShape implements EngineConnector
        this.drawableConnector = drawableConnector;
        this.springConnectorDefArray = springConnectorDefArray;
        this.connectorShape = connectorShape;
-
        this.springShape = springEngine.getSpringShape(connectorShape.getWorldId()); 
 
        connectorShape.getDrawable().init(connectorShape,options);        
@@ -59,7 +57,7 @@ export class SpringConnector extends SpringShape implements EngineConnector
             let shapePos = this.springShape.getWorldPosition();
             if(!this.springShape.isSelected())
             {
-                shapePos =  this.calulateSpringMovement(
+                shapePos =  WorldEngineBase.calulateSpringMovement(
                     this.springShape,
                     otherSpringShape.getWorldPosition(),
                     conectorDef.length,conectorDef.stiffness);
@@ -68,60 +66,13 @@ export class SpringConnector extends SpringShape implements EngineConnector
             }
             if(!otherSpringShape.isSelected())                        
                 otherSpringShape.moveList.push(
-                    this.calulateSpringMovement(
+                    WorldEngineBase.calulateSpringMovement(
                         otherSpringShape,
                         shapePos,
                         //this.springShape.getWorldPosition(),
                         conectorDef.length,conectorDef.stiffness) );
         }
     }
-
-    public calulateSpringMovement(shape:SpringShape,connectedToPosition:WorldPosition,conectionLength:number,stiffness:number):WorldPosition
-	{
-        //stiffness = 1.0;
-        let wantPosition = new DistanceWorldPosition(shape.getWorldPosition().x,shape.getWorldPosition().y).getDistanceOnLinePointArrayClosest(
-                connectedToPosition,
-                conectionLength//+randomStrengthFactor*Math.random()
-                );
-    
-        if(wantPosition.distance==0.0) {
-            let output = {
-                'NO MOVE shape':shape.getWorldId().id,
-                'conectionLength':conectionLength,
-                'stiffness':stiffness,
-                'current':shape.getWorldPosition(),
-                'connectedToPosition':connectedToPosition,
-                'wantPosition':wantPosition,
-                'distanceToPosition':wantPosition.distance,
-            }
-            //console.log(JSON.stringify(output));  
-            return(wantPosition);
-        }
-        // stiffness should use the refresh interval somehow to decide how far it moves each "click".. right now it is a default that is the same
-        // regardless of the animation interval
-        let movePosition = new DistanceWorldPosition(shape.getWorldPosition().x,shape.getWorldPosition().y).getDistanceOnLinePointArrayClosest(            
-            wantPosition,
-            wantPosition.distance-(wantPosition.distance*stiffness)
-                );
-
- 
-
-        // add this position to the list of points this worldObject needs to move
-        // to  
-        let output = {
-            'MOVE shape':shape.getWorldId().id,
-            'conectionLength':conectionLength,
-            'stiffness':stiffness,
-            'current':shape.getWorldPosition(),
-            'connectedToPosition':connectedToPosition,
-            'wantPosition':wantPosition,
-            'distanceToPosition':wantPosition.distance,
-            'movePosition':movePosition
-        }
-        //console.log(JSON.stringify(output));              
-        return(movePosition);
-	}
-
 
     public getShapePoints():Array<WorldPosition> {
         //return( WorldDisplay.getPolygonPoints(Math.PI/4,4,this.getWidth()+this.get,this.getWorldPosition() ) ;

@@ -1,4 +1,4 @@
-import { WorldPosition } from "../../../world/worldposition";
+import { WorldPosition } from "./worldposition";
 
 export class DistanceWorldPosition extends WorldPosition {
     public distance:number;
@@ -54,11 +54,13 @@ export class DistanceWorldPosition extends WorldPosition {
 			positionList.push(p1);
 		}
 
+		/*
 		let output = {
 			'this':this,
 			"otherPoint":otherPoint,
             'positionList':positionList
-        }
+		}
+		*/
         //console.log(JSON.stringify(output)); 
 		
 		return(positionList);

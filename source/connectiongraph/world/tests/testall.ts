@@ -11,12 +11,48 @@ import { WorldOfWorldObjects } from "../worldofworldobjects";
 import { Test3 } from "./test3";
 import { MouseCrossCircleDisplayShape } from "../../display/drawableshapes/mousecrosscircledisplayshape";
 import { WorldEngineParams } from "../../engine/worldengineparams";
+import { PedTest } from "./PedTest";
+import { Test4 } from "./test4";
 
 export class TestAll {
-    worldEngine:WorldEngine;
-    world:World;
-    canvasHolder:CanvasHolderHTML;
-    test:BaseTest;
+    public worldEngine:WorldEngine;
+    public world:World;
+    public canvasHolder:CanvasHolderHTML;
+    public test:BaseTest;
+    public registeredTests = 
+    [
+        {
+            'name':'ped',
+            'buildFunction': function(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML) {
+                return(new PedTest(worldEngine,world,canvasHolder));
+            }
+        },
+        {
+            'name':'test1',
+            'buildFunction': function(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML) {
+                return(new Test1(worldEngine,world,canvasHolder));
+            }
+        },
+        {
+            'name':'test2',
+            'buildFunction': function(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML) {
+                return(new Test2(worldEngine,world,canvasHolder));
+            }
+        },
+        {
+            'name':'test3',
+            'buildFunction': function(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML) {
+                return(new Test3(worldEngine,world,canvasHolder));
+            }
+        },
+        {
+            'name':'test4',
+            'buildFunction': function(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML) {
+                return(new Test4(worldEngine,world,canvasHolder));
+            }
+        }
+    ];
+
     
     constructor() {
     }
@@ -47,13 +83,19 @@ export class TestAll {
         if(engineName=='matter') return(new MatterEngine(worldEngineParams));
         else if(engineName=='mock') return(new MockEngine(worldEngineParams));
         else if(engineName=='spring') return(new SpringEngine(worldEngineParams));
+        throw new Error("getEngineFromName could not find a engine for :"+engineName);
     }
 
     public getTestFromName(testName:string,worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML):BaseTest {
-        if(testName=='test1') return(new Test1(worldEngine,world,canvasHolder));
-        else if(testName=='test2') return(new Test2(worldEngine,world,canvasHolder));
-        else if(testName=='test3') return(new Test3(worldEngine,world,canvasHolder));
+        for(let i=0;i<this.registeredTests.length;i++)
+        {
+            console.log("getTestFromName:"+this.registeredTests[i].name);
+
+            if(this.registeredTests[i].name==testName) return(this.registeredTests[i].buildFunction(worldEngine,world,canvasHolder));
+        }
+        throw new Error("getTestFromName could not find a test for :"+testName);
     }
+    
 }
 
 

@@ -7,11 +7,7 @@
                     <option>mock</option>
                     <option>spring</option>
                 </select>
-                test : <select id='testSelect'>
-                        <option>test1</option>
-                        <option>test2</option>
-                        <option>test3</option>
-                    </select>
+                test : <select id='testSelect'></select>
 
               <button onclick="runTest();">RUN ENGINE AND TEST</button>      
               <div id="mousePositionX">x=?</div>
@@ -20,12 +16,23 @@
         <canvas id="worldCanvas" width="800" height="600" style="border:1px solid #000000;">
            </canvas>
 
+        <script src="../dist/test_all.min.js"></script>
+
         <script>
+            populateSelectedValues();
+
             function getSelectedValue(elementId) {
                 var e = document.getElementById(elementId);
                 var value = e.options[e.selectedIndex].value;
                 var text = e.options[e.selectedIndex].text;
                 return(text);
+            }
+
+            function populateSelectedValues() {
+                var testSelect = document.getElementById('testSelect');
+                for(var i=0;i<testAll.registeredTests.length;i++)
+                    testSelect.options[testSelect.options.length] = new Option(testAll.registeredTests[i].name,testAll.registeredTests[i].name);
+
             }
 
             function updateDisplay(world) {
@@ -42,6 +49,5 @@
             }
         </script>
 
-        <script src="../dist/test_all.min.js"></script>
     </body>
 </html>
