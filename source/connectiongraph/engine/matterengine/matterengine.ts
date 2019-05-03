@@ -87,8 +87,16 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
 
     }
 
+    public clearAllHandlers() {
+      this.collisionEventHandlers = new Map<string,MatterCollisionEvent>();
+      this.compositeEventHandlers = new Map<string,MatterCompositeEvent>();
+      this.timestampEventHandlers = new Map<string,MatterTimestampedEvent>();
+    
+    }
+
     public stopEngine():void {
       super.stopEngine();
+      this.clearAllHandlers();
       Matter.World.clear(this.engine.world,true);
       Matter.Engine.clear(this.engine);
     }

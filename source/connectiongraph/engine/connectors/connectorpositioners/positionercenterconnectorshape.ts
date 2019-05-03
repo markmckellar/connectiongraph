@@ -26,12 +26,13 @@ export class PositionerCenterConnectorShape implements ConnectorPositioner {
             .1
         );
         let output = {
+            "currentPos":engineConnector.getWorldPosition(),
             "distanceAvaragePos:":distanceAvaragePos,
             "movePos":movePos
         };
         //console.log(output);
 
-        //console.log(JSON.stringify(output));
+        console.log(JSON.stringify(output));
 
         engineConnector.translate(averagePos);
 
