@@ -13,6 +13,8 @@ export abstract class EngineShapeBase implements EngineShape {
 	public objectOptions:any;
 	public worldObjectEventHandler:WorldObjectEventHandler;
     public isObjectSelecteable:boolean;
+    public collisionTags:Set<string>;
+
     
     constructor(worldId:WorldId,drawable:Drawable,options:any) {
 		this.worldId = worldId;
@@ -22,8 +24,19 @@ export abstract class EngineShapeBase implements EngineShape {
 		this.isObjectSelected = false;
 		this.isObjectSelecteable = true;
 		this.objectOptions = options;
-		this.worldObjectEventHandler = this.createMouseEventHandler();
+        this.worldObjectEventHandler = this.createMouseEventHandler();
+        this.collisionTags = new Set<string>();
 		drawable.init(this,options);
+    }
+
+    public checkCollissionTags(otherShape:EngineShape) {
+        let sharesTags = false;
+        let self = this;
+        this.collisionTags.forEach(function(item){
+            if(otherShape.collisionTags.has(item)) sharesTags = true;
+        });
+
+        return(sharesTags);
     }
     
     public abstract createMouseEventHandler():WorldObjectEventHandler;

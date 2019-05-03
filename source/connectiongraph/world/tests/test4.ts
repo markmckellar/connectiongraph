@@ -26,7 +26,7 @@ export class Test4 extends BaseTest {
        let circle1a:CircleEngineShape = world.worldEngine.createCircle(
           new WorldId("circle1a"),
           new CircleDisplayShape(),
-          25,8,
+          20,8,
           new WorldPosition(200,200),
           {restitution:restitution,density:density}
         );
@@ -34,7 +34,7 @@ export class Test4 extends BaseTest {
       let circle1b:CircleEngineShape = world.worldEngine.createCircle(
         new WorldId("circle1b"),
         new CircleDisplayShape(),
-        25,8,
+        30,8,
         //new WorldPosition(200+Math.sqrt(2)*100,200+Math.sqrt(2)*100),
         new WorldPosition(410,210),
         {restitution:restitution,density:density}
@@ -49,6 +49,9 @@ export class Test4 extends BaseTest {
           {restitution:restitution,density:density}
           );
               
+
+          circle1b.collisionTags.add("COLLIDE");          
+          circle1c.collisionTags.add("COLLIDE");          
       let connectorCircle:CircleEngineShape = world.worldEngine.createCircle(
         new WorldId("connectorCircle"),
         new CircleDisplayShape(),

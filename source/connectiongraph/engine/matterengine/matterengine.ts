@@ -36,6 +36,7 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
     private _collisionEventHandlers : Map<string,MatterCollisionEvent>;
     private _compositeEventHandlers : Map<string,MatterCompositeEvent>;
     private _timestampEventHandlers : Map<string,MatterTimestampedEvent>;
+    private matterBodyId2WorldIdMap : Map<number,MatterShape>;
     private _matterMouseConstraint:Matter.Constraint;
     private _engine : Matter.Engine;
     private _mouseAnchor:MatterCircle;
@@ -52,6 +53,7 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
         this.compositeEventHandlers = new Map<string,MatterCompositeEvent>();
         this.timestampEventHandlers = new Map<string,MatterTimestampedEvent>();
         this.matterShapes = new Map<WorldId,MatterShape>();
+        this.matterBodyId2WorldIdMap = new Map<number,MatterShape>();
         //this.connectorArray = new Array<MatterConnector>();
 
         this.engine = Matter.Engine.create(); 
@@ -109,6 +111,7 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
     public addMatterShape(matterShape:MatterShape):void {
       this.matterShapes.set(matterShape.worldId,matterShape);
       Matter.World.add(this.engine.world,[matterShape.getBody()]);
+      this.matterBodyId2WorldIdMap.set(matterShape.getBody().id,matterShape);
       
     }
 
@@ -132,8 +135,8 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
 
       if(mouseEventHandler.getCurrentWorldObject()!=null && this.matterMouseConstraint.bodyB==null)
       {
-        console.log("updateMouseConstraint:getCurrentWorldObject="+mouseEventHandler.getCurrentWorldObject().getWorldId().id+
-          ":Ax="+this.matterMouseConstraint.pointA.x+":Ay="+this.matterMouseConstraint.pointA.y);
+        //console.log("updateMouseConstraint:getCurrentWorldObject="+mouseEventHandler.getCurrentWorldObject().getWorldId().id+
+//          ":Ax="+this.matterMouseConstraint.pointA.x+":Ay="+this.matterMouseConstraint.pointA.y);
         
         if(this.matterShapes.has(mouseEventHandler.getCurrentWorldObject().getWorldId()) )
         {
@@ -143,11 +146,11 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
           // TODO do we really want this in the middle?  Should it be where thye grabbed it?!?!
           this.matterMouseConstraint.pointB = { x:0,y:0 };
 
-          console.log("-----updateMouseConstraint:getCurrentWorldObject="+mouseEventHandler.getCurrentWorldObject().getWorldId().id+
-          ":Ax="+this.matterMouseConstraint.pointA.x+":Ay="+this.matterMouseConstraint.pointA.y+
-            "");
-          console.log("-xx-------------:bodyB="+bodyB+":bodyB.position="+JSON.stringify(bodyB.position)+
-            ":MSx="+matterShape.getWorldPosition().x+":MSy="+matterShape.getWorldPosition().y);
+          //console.log("-----updateMouseConstraint:getCurrentWorldObject="+mouseEventHandler.getCurrentWorldObject().getWorldId().id+
+          //":Ax="+this.matterMouseConstraint.pointA.x+":Ay="+this.matterMouseConstraint.pointA.y+
+//            "");
+          //console.log("-xx-------------:bodyB="+bodyB+":bodyB.position="+JSON.stringify(bodyB.position)+
+//            ":MSx="+matterShape.getWorldPosition().x+":MSy="+matterShape.getWorldPosition().y);
 
         }
       }
@@ -327,6 +330,15 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
 
         if(this.hasCollisionHandler(pairs[i].bodyB,eventType))
           this.getCollisionHandler(pairs[i].bodyB,eventType)(this,eventType,event);
+
+        let shapeA = this.matterBodyId2WorldIdMap.get(pairs[i].bodyA.id);
+        let shapeB = this.matterBodyId2WorldIdMap.get(pairs[i].bodyB.id);
+        if(shapeA && shapeB) 
+          if(shapeA.checkCollissionTags(shapeB))
+          {
+              console.log(shapeA.getWorldId().id+" and "+shapeB.getWorldId().id+" hit");
+          }
+        
       }
     }
 
