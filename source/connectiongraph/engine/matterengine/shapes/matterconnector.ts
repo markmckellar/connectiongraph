@@ -10,7 +10,6 @@ import { EngineConnectorDef } from "../../connectors/engineconnectordef";
 import { WorldDisplay } from "../../../display/worlddisplay";
 import { EngineShape } from "../../shapes/engineshape";
 import { MatterConnectorDef } from "./matterconnectordef";
-import { MatterEvent } from "../events/matterevent";
 import { WorldObject } from "../../../world/worldobject";
 
 export class MatterConnector extends MatterShape implements EngineConnector
@@ -63,19 +62,22 @@ export class MatterConnector extends MatterShape implements EngineConnector
        }
        matterEngine.addMatterConnector(this);
 
+       /**************
        let self = this;
        matterEngine.registerCompositeEvent(
            this.worldId.id+"afterUpdate",
            MatterEvent.afterUpdate,           
            function(matterEngine:MatterEngine,eventType:MatterEvent,event:Matter.IEventComposite<Matter.Composite>):void
            {
+               
                 for(let i=0;i<self.getEngineConnectorDefArray().length;i++) {
                     let connectorDef = self.getEngineConnectorDefArray()[i];
-                    connectorDef.connectorPositioner.positionConnectorShape(self,connectorDef);
+                    connectorDef.connectorPositioner.positionConnectorShape(this,self,connectorDef);
                 }
+                
            }
         );
-
+        s***************/
        //let averagePos = EngineConnectorDef.GetAverageConnecterDefPositon(this.getEngineConnectorDefArray());
        //this.matterShape.translate(averagePos);
        

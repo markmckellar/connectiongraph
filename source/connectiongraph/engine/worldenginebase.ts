@@ -2,13 +2,17 @@ import { WorldEngineParams } from "./worldengineparams";
 import { WorldObject } from "../world/worldobject";
 import { WorldPosition } from "../world/worldposition";
 import { DistanceWorldPosition } from "../world/distanceworldposition";
+import { EngineConnector } from "./connectors/engineconnector";
 
 export abstract class WorldEngineBase {    
     public intervalId:any;
     public worldEngineParams:WorldEngineParams;
+    public connectorArray:Array<EngineConnector>;
 
     public constructor(worldEngineParams:WorldEngineParams) {
         this.worldEngineParams = worldEngineParams;
+        this.connectorArray = new Array<EngineConnector>();
+
     }
 
     public stopEngine():void {
@@ -21,12 +25,28 @@ export abstract class WorldEngineBase {
     public startEngine():void {
         let self = this;
         self.intervalId = setInterval(
-            function() { self.updateFunction(); },
+            function() 
+            { 
+                self.updateFunction();
+                self.processConnectorPositionerArray();
+            },
             self.worldEngineParams.updateInterval
         );
     }
 
-    public static calulateSpringMovement(worldObject:WorldObject,connectedToPosition:WorldPosition,conectionLength:number,stiffness:number):DistanceWorldPosition
+    public processConnectorPositionerArray()  {
+        for(let i=0;i<this.connectorArray.length;i++)
+        {
+          let connector = this.connectorArray[i];
+          for(let j=0;j<connector.getEngineConnectorDefArray().length;j++)
+          {
+            let connectorDef = connector.getEngineConnectorDefArray()[j];
+            connectorDef.connectorPositioner.positionConnectorShape(this,connector,connectorDef);
+          }
+        }
+      }
+
+    public static calulateSpringMovement(worldObject:WorldObject,connectedToPosition:WorldPosition,conectionLength:number,stiffness:number,time:number):DistanceWorldPosition
 	{
         //stiffness = 1.0;
         let wantPosition = new DistanceWorldPosition(worldObject.getWorldPosition().x,worldObject.getWorldPosition().y).getDistanceOnLinePointArrayClosest(

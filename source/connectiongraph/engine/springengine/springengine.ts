@@ -26,18 +26,16 @@ import { WorldEngineBase } from "../worldenginebase";
 
 export class SpringEngine extends WorldEngineBase implements WorldEngine {
   private _mouseAnchor: SpringCircle;
-  private _connectorArray:Array<SpringConnector>;
   private _springShapes : Map<WorldId,SpringShape>;
   //private springShapeArray : Array<SpringShape>;
-
+  private springConnectorArray:Array<SpringConnector>;
 
   public constructor(worldEngineParams:WorldEngineParams) {
     super(worldEngineParams);
-
+    this.springConnectorArray = new Array<SpringConnector>();
     this.springShapes = new Map<WorldId,SpringShape>();
     //this.springShapeArray = new Array<SpringConnector>();
 
-    this.connectorArray = new Array<SpringConnector>();
 
     this.mouseAnchor = new SpringCircle(
       new WorldId("mouseAnchor"),
@@ -60,30 +58,16 @@ export class SpringEngine extends WorldEngineBase implements WorldEngine {
 
   public updateFunction()  {
     this.animateCalculate();
-    this.animateFinalize();
-    for(let i=0;i<this.connectorArray.length;i++)
-    {
-      let connector = this.connectorArray[i];
-      
-      for(let j=0;j<connector.getEngineConnectorDefArray().length;j++)
-      {
-        let connectorDef = connector.getEngineConnectorDefArray()[j];
-        //console.log(
-        //  "SpringEngine:O1="+connector.getWorldId().id+
-        //  ":O2="+connectorDef.engineShape.getWorldId().id
-        //);
-      connectorDef.connectorPositioner.positionConnectorShape(connector,connectorDef);
-      }
-    }
+    this.animateFinalize();    
   }
 
   
   
 private animateCalculate()
 	{
-    for(let i=0;i<this.connectorArray.length;i++)
+    for(let i=0;i<this.springConnectorArray.length;i++)
     {
-      let connector = this.connectorArray[i];
+      let connector = this.springConnectorArray[i];
       connector.processConection();
 			}
 	}
@@ -91,9 +75,9 @@ private animateCalculate()
 	private animateFinalize()
 	{
 
-    for(let i=0;i<this.connectorArray.length;i++)
+    for(let i=0;i<this.springConnectorArray.length;i++)
     {
-      let connector = this.connectorArray[i];
+      let connector = this.springConnectorArray[i];
       let allShapes = connector.getAllSpringShapes();
       for(let j=0;j<allShapes.length;j++) {
         let shape = allShapes[j];
@@ -147,6 +131,7 @@ public addSpringShape(springShape:SpringShape):void {
         options,
         this);
         this.connectorArray.push(connector);
+        this.springConnectorArray.push(connector);
     return(connector);
   }
 
@@ -288,21 +273,6 @@ public addSpringShape(springShape:SpringShape):void {
 		this._springShapes = value;
 	}
 
-    /**
-     * Getter connectorArray
-     * @return {Array<MockConnector>}
-     */
-	public get connectorArray(): Array<SpringConnector> {
-		return this._connectorArray;
-	}
-
-    /**
-     * Setter connectorArray
-     * @param {Array<MockConnector>} value
-     */
-	public set connectorArray(value: Array<SpringConnector>) {
-		this._connectorArray = value;
-	}
 
 
 }

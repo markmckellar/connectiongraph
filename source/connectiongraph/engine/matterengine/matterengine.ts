@@ -39,6 +39,7 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
     private _matterMouseConstraint:Matter.Constraint;
     private _engine : Matter.Engine;
     private _mouseAnchor:MatterCircle;
+    //private connectorArray:Array<MatterConnector>;
 
 
     public static boundsFilter:number = 1;//0x0001;
@@ -51,7 +52,8 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
         this.compositeEventHandlers = new Map<string,MatterCompositeEvent>();
         this.timestampEventHandlers = new Map<string,MatterTimestampedEvent>();
         this.matterShapes = new Map<WorldId,MatterShape>();
-        
+        //this.connectorArray = new Array<MatterConnector>();
+
         this.engine = Matter.Engine.create(); 
         
         this.engine.world.gravity.x = 0.0;
@@ -195,6 +197,7 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
           matterConnectorDefArray,
           options,
           this);
+      this.connectorArray.push(connector);
       return(connector);
     }
 

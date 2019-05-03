@@ -16,6 +16,7 @@ export class SpringConnector extends SpringShape implements EngineConnector
     private _springConnectorDefArray:Array<SpringConnectorDef>;
     private _connectorShape:EngineShape;
     public springShape:SpringShape;
+    public springEngine:SpringEngine;
 
     constructor(
         worldId:WorldId,
@@ -26,6 +27,7 @@ export class SpringConnector extends SpringShape implements EngineConnector
         springEngine:SpringEngine)
 	{
        super(worldId,drawableConnector,connectorShape.getWorldPosition(),options,springEngine);
+       this.springEngine = springEngine;
        this.drawableConnector = drawableConnector;
        this.springConnectorDefArray = springConnectorDefArray;
        this.connectorShape = connectorShape;
@@ -66,7 +68,9 @@ export class SpringConnector extends SpringShape implements EngineConnector
                 shapePos =  WorldEngineBase.calulateSpringMovement(
                     this.springShape,
                     otherSpringShape.getWorldPosition(),
-                    conectorDef.length,conectorDef.stiffness);
+                    conectorDef.length,
+                    conectorDef.stiffness,
+                    this.springEngine.worldEngineParams.updateInterval);
 
                 this.springShape.moveList.push(shapePos);
             }
@@ -76,7 +80,8 @@ export class SpringConnector extends SpringShape implements EngineConnector
                         otherSpringShape,
                         shapePos,
                         //this.springShape.getWorldPosition(),
-                        conectorDef.length,conectorDef.stiffness) );
+                        conectorDef.length,conectorDef.stiffness,
+                        this.springEngine.worldEngineParams.updateInterval) );
         }
     }
 

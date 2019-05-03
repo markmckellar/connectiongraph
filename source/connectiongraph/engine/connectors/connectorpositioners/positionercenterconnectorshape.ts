@@ -2,11 +2,9 @@ import { EngineConnector } from "../engineconnector";
 import { EngineConnectorDef } from "../engineconnectordef";
 import { ConnectorPositioner } from "./connectorpositioner";
 import { WorldEngineBase } from "../../worldenginebase";
-import { DistanceWorldPosition } from "../../../world/distanceworldposition";
 
 
 export class PositionerCenterConnectorShape implements ConnectorPositioner {
-
 
 
     constructor() {
@@ -14,16 +12,17 @@ export class PositionerCenterConnectorShape implements ConnectorPositioner {
 
 
 
-    public positionConnectorShape(engineConnector:EngineConnector,engineConnectorDef:EngineConnectorDef):void {
+    public positionConnectorShape(worldEngine:WorldEngineBase,engineConnector:EngineConnector,engineConnectorDef:EngineConnectorDef):void {
         
         let averagePos = EngineConnectorDef.GetAverageConnecterDefPositon(engineConnector.getEngineConnectorDefArray());
-        let distanceAvaragePos = DistanceWorldPosition.CreateDistanceWorldPosition(engineConnector.getWorldPosition(),averagePos);
+        //let distanceAvaragePos = DistanceWorldPosition.CreateDistanceWorldPosition(engineConnector.getWorldPosition(),averagePos);
 
         let movePos = WorldEngineBase.calulateSpringMovement(
             engineConnector,
             averagePos,
             0,
-            .1
+            .1,
+            worldEngine.worldEngineParams.updateInterval
         );
 
         engineConnector.translate(movePos);

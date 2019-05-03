@@ -25,7 +25,6 @@ import { WorldEngineBase } from "../worldenginebase";
 
 export class MockEngine extends WorldEngineBase implements WorldEngine {
   private _mouseAnchor: MockCircle;
-  private _connectorArray:Array<MockConnector>;
 
   public constructor(worldEngineParams:WorldEngineParams) {
     super(worldEngineParams);
@@ -39,7 +38,6 @@ export class MockEngine extends WorldEngineBase implements WorldEngine {
       { restitution: 0.9, isSensor: true },
       this
     );
-    this.connectorArray = new Array<MockConnector>();
   }
   
   public getMouseAnchor(): EngineShape {
@@ -52,15 +50,6 @@ export class MockEngine extends WorldEngineBase implements WorldEngine {
 
 
   public updateFunction()  {
-    for(let i=0;i<this.connectorArray.length;i++)
-    {
-      let connector = this.connectorArray[i];
-      for(let j=0;j<connector.getEngineConnectorDefArray().length;j++)
-      {
-        let connectorDef = connector.getEngineConnectorDefArray()[j];
-        connectorDef.connectorPositioner.positionConnectorShape(connector,connectorDef);
-      }
-    }
   }
 
   public createCircle(
@@ -209,23 +198,6 @@ export class MockEngine extends WorldEngineBase implements WorldEngine {
   public set mouseAnchor(value: MockCircle) {
     this._mouseAnchor = value;
   }
-
-
-    /**
-     * Getter connectorArray
-     * @return {Array<MockConnector>}
-     */
-	public get connectorArray(): Array<MockConnector> {
-		return this._connectorArray;
-	}
-
-    /**
-     * Setter connectorArray
-     * @param {Array<MockConnector>} value
-     */
-	public set connectorArray(value: Array<MockConnector>) {
-		this._connectorArray = value;
-	}
 
 
 }

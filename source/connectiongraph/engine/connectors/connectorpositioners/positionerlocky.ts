@@ -2,6 +2,7 @@ import { EngineConnector } from "../engineconnector";
 import { EngineConnectorDef } from "../engineconnectordef";
 import { ConnectorPositioner } from "./connectorpositioner";
 import { WorldPosition } from "../../../world/worldposition";
+import { WorldEngineBase } from "../../worldenginebase";
 
 
 export class PositionerLockY implements ConnectorPositioner {
@@ -11,7 +12,7 @@ export class PositionerLockY implements ConnectorPositioner {
     constructor() {
     }
 
-    public positionConnectorShape(engineConnector:EngineConnector,engineConnectorDef:EngineConnectorDef):void {
+    public positionConnectorShape(worldEngine:WorldEngineBase,engineConnector:EngineConnector,engineConnectorDef:EngineConnectorDef):void {
         if(engineConnectorDef.engineShape.isSelected())
         {
             engineConnector.translate(
