@@ -7,7 +7,7 @@ import { EngineShape } from "../../shapes/engineshape";
 import { SpringShape } from "./springshape";
 import { SpringEngine } from "../springengine";
 import { SpringConnectorDef } from "./springconnectordef";
-import { WorldEngineBase } from "../../worldendginebase";
+import { WorldEngineBase } from "../../worldenginebase";
 
 export class SpringConnector extends SpringShape implements EngineConnector
 {

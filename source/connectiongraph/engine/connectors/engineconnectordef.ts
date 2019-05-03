@@ -1,5 +1,6 @@
 import { EngineShape } from "../shapes/engineshape";
 import { ConnectorPositioner } from "./connectorpositioners/connectorpositioner";
+import { WorldPosition } from "../../world/worldposition";
 
 export class EngineConnectorDef {
     private _engineShape:EngineShape;
@@ -25,6 +26,15 @@ export class EngineConnectorDef {
    }
 */
 
+    public static GetAverageConnecterDefPositon(connectorDefArray:Array<EngineConnectorDef>):WorldPosition {
+        let allDefPos = new Array<WorldPosition>();
+        for(let i=0;i<connectorDefArray.length;i++) {
+            let ecd = connectorDefArray[i];
+            allDefPos.push(ecd.engineShape.getWorldPosition());            
+        }
+        let averagePos = WorldPosition.getAveragePostionFromWorldPositionList(allDefPos);
+        return(averagePos);
+       }   
     /**
      * Getter connectorPositioner
      * @return {ConnectorPositioner}

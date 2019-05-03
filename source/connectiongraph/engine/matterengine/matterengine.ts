@@ -28,7 +28,7 @@ import { EngineConnector } from "../connectors/engineconnector";
 import { MatterConnector } from "./shapes/matterconnector";
 import { MatterConnectorDef } from "./shapes/matterconnectordef";
 import { WorldEngineParams } from "../worldengineparams";
-import { WorldEngineBase } from "../worldendginebase";
+import { WorldEngineBase } from "../worldenginebase";
 
 export  class MatterEngine extends WorldEngineBase implements WorldEngine {
     private _matterTools:MatterTools ;
@@ -89,6 +89,7 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
 
     public stopEngine():void {
       super.stopEngine();
+      Matter.World.clear(this.engine.world,true);
       Matter.Engine.clear(this.engine);
     }
 

@@ -5,7 +5,14 @@ export class DistanceWorldPosition extends WorldPosition {
 
     public constructor(x:number,y:number) {
         super(x,y);
-    }
+	}
+	
+	public static CreateDistanceWorldPosition(from:WorldPosition,to:WorldPosition):DistanceWorldPosition
+	{
+		let distanceWorldPosition = new DistanceWorldPosition(to.x,to.y);
+		distanceWorldPosition.distance = from.getDistance(to);
+		return (distanceWorldPosition);
+	}
 
     public getDistanceOnLinePointArray(otherPoint:WorldPosition,distance:number):Array<DistanceWorldPosition>
 	{
@@ -66,6 +73,11 @@ export class DistanceWorldPosition extends WorldPosition {
 		return(positionList);
 	}
 
+
+	public getWorldPosition():WorldPosition {
+		return(new WorldPosition(this.x,this.y));
+	}
+	
 	public getDistanceOnLinePointArrayClosest(position:WorldPosition,distance:number):DistanceWorldPosition
 	{
 		let positionList = this.getDistanceOnLinePointArray(position,distance);

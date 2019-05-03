@@ -1,5 +1,4 @@
 import { WorldObject } from "./worldobject";
-//import { DistanceWorldPosition } from "../engine/springengine/shapes/distanceworldposition";
 
 
 export class WorldPosition {

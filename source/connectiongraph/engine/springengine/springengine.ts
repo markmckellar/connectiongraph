@@ -22,7 +22,7 @@ import { SpringConnectorDef } from "./shapes/springconnectordef";
 import { SpringConnector } from "./shapes/springconnector";
 import { SpringShape } from "./shapes/springshape";
 import { WorldEngineParams } from "../worldengineparams";
-import { WorldEngineBase } from "../worldendginebase";
+import { WorldEngineBase } from "../worldenginebase";
 
 export class SpringEngine extends WorldEngineBase implements WorldEngine {
   private _mouseAnchor: SpringCircle;

@@ -21,7 +21,7 @@ import { EngineConnector } from "../connectors/engineconnector";
 import { MockConnectorDef } from "./shapes/mockconnectordef";
 import { MockConnector } from "./shapes/mockconnector";
 import { WorldEngineParams } from "../worldengineparams";
-import { WorldEngineBase } from "../worldendginebase";
+import { WorldEngineBase } from "../worldenginebase";
 
 export class MockEngine extends WorldEngineBase implements WorldEngine {
   private _mouseAnchor: MockCircle;

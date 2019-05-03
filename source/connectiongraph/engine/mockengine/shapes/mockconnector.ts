@@ -7,6 +7,7 @@ import { EngineShape } from "../../shapes/engineshape";
 import { MockShape } from "./mockshape";
 import { MockEngine } from "../mockengine";
 import { MockConnectorDef } from "./mockconnectordef";
+import { DistanceWorldPosition } from "../../../world/distanceworldposition";
 
 export class MockConnector extends MockShape implements EngineConnector
 {

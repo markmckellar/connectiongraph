@@ -2,7 +2,8 @@ import { EngineConnector } from "../engineconnector";
 import { EngineConnectorDef } from "../engineconnectordef";
 import { ConnectorPositioner } from "./connectorpositioner";
 import { WorldPosition } from "../../../world/worldposition";
-import { WorldEngineBase } from "../../worldendginebase";
+import { WorldEngineBase } from "../../worldenginebase";
+import { DistanceWorldPosition } from "../../../world/distanceworldposition";
 
 
 export class PositionerCenterConnectorShape implements ConnectorPositioner {
@@ -12,23 +13,27 @@ export class PositionerCenterConnectorShape implements ConnectorPositioner {
     constructor() {
     }
 
+
+
     public positionConnectorShape(engineConnector:EngineConnector,engineConnectorDef:EngineConnectorDef):void {
-        let allDefPos = new Array<WorldPosition>();
-        for(let i=0;i<engineConnector.getEngineConnectorDefArray().length;i++) {
-            let ecd = engineConnector.getEngineConnectorDefArray()[i];
-            allDefPos.push(ecd.engineShape.getWorldPosition());            
-        }
-        let avaragePos = WorldPosition.getAveragePostionFromWorldPositionList(allDefPos);
-        let distnace = engineConnector.getWorldPosition().getDistance(avaragePos);
+        let averagePos = EngineConnectorDef.GetAverageConnecterDefPositon(engineConnector.getEngineConnectorDefArray());
+        let distanceAvaragePos = DistanceWorldPosition.CreateDistanceWorldPosition(engineConnector.getWorldPosition(),averagePos);
 
         let movePos = WorldEngineBase.calulateSpringMovement(
             engineConnector,
-            avaragePos,
+            averagePos,
             0,
-            .01
+            .1
         );
+        let output = {
+            "distanceAvaragePos:":distanceAvaragePos,
+            "movePos":movePos
+        };
+        //console.log(output);
 
-        engineConnector.translate(movePos);
+        //console.log(JSON.stringify(output));
+
+        engineConnector.translate(averagePos);
 
 /*
         if(engineConnectorDef.engineShape.isSelected())

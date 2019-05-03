@@ -9,7 +9,6 @@ import { EngineConnector } from "../../../connectiongraph/engine/connectors/engi
 import { EngineConnectorDef } from "../../../connectiongraph/engine/connectors/engineconnectordef";
 import { LineConnectorDisplay } from "../../../connectiongraph/display/drawableshapes/lineconnectordisplay";
 import { BaseTest } from "./basetest";
-import { PositionerFree } from "../../engine/connectors/connectorpositioners/positionerfree";
 import { PositionerCenterConnectorShape } from "../../engine/connectors/connectorpositioners/positionercenterconnectorshape";
 export class Test4 extends BaseTest {
 
