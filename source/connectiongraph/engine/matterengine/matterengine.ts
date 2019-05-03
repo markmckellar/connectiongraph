@@ -87,17 +87,8 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
 
     }
 
-    public clearAllHandlers() {
-      this.collisionEventHandlers = new Map<string,MatterCollisionEvent>();
-      this.compositeEventHandlers = new Map<string,MatterCompositeEvent>();
-      this.timestampEventHandlers = new Map<string,MatterTimestampedEvent>();
-    
-    }
-
     public stopEngine():void {
       super.stopEngine();
-      this.clearAllHandlers();
-      Matter.World.clear(this.engine.world,true);
       Matter.Engine.clear(this.engine);
     }
 
@@ -136,6 +127,7 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
     public updateMouseConstraint(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void {
       var newPosition = new WorldPosition(event.x- canvasMouse.offset.x,event.y- canvasMouse.offset.y);
       this.mouseAnchor.translate(newPosition);
+
       if(mouseEventHandler.getCurrentWorldObject()!=null && this.matterMouseConstraint.bodyB==null)
       {
         console.log("updateMouseConstraint:getCurrentWorldObject="+mouseEventHandler.getCurrentWorldObject().getWorldId().id+

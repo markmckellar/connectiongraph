@@ -1,6 +1,7 @@
 
 import { EngineShape } from "../shapes/engineshape";
 import { EngineConnectorDef } from "./engineconnectordef";
+import { WorldObject } from "../../world/worldobject";
 
 export  interface EngineConnector extends EngineShape
 {
@@ -27,5 +28,7 @@ export  interface EngineConnector extends EngineShape
         * two bodies
     */
    
+   getConnectorWorldObject():WorldObject;
+
    getEngineConnectorDefArray():Array<EngineConnectorDef>;
 }

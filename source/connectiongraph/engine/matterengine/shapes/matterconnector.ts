@@ -11,6 +11,7 @@ import { WorldDisplay } from "../../../display/worlddisplay";
 import { EngineShape } from "../../shapes/engineshape";
 import { MatterConnectorDef } from "./matterconnectordef";
 import { MatterEvent } from "../events/matterevent";
+import { WorldObject } from "../../../world/worldobject";
 
 export class MatterConnector extends MatterShape implements EngineConnector
 {
@@ -80,6 +81,11 @@ export class MatterConnector extends MatterShape implements EngineConnector
        
     }
 
+    public getConnectorWorldObject():WorldObject {
+        return(this.connectorShape);
+    }
+
+
     public getBody():Matter.Body {
         return(this.matterShape.getBody());
     }
@@ -101,6 +107,7 @@ export class MatterConnector extends MatterShape implements EngineConnector
     }
 
 	public translate(worldPosition:WorldPosition):void {
+        this.connectorShape.translate(worldPosition);
     }
 
 	public setWorldPosition(worldPosition:WorldPosition):void {

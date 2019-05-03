@@ -41,6 +41,7 @@ export class MockEngine extends WorldEngineBase implements WorldEngine {
     );
     this.connectorArray = new Array<MockConnector>();
   }
+  
   public getMouseAnchor(): EngineShape {
     return this.mouseAnchor;
   }

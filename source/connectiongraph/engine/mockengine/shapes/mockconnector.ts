@@ -7,6 +7,7 @@ import { EngineShape } from "../../shapes/engineshape";
 import { MockShape } from "./mockshape";
 import { MockEngine } from "../mockengine";
 import { MockConnectorDef } from "./mockconnectordef";
+import { WorldObject } from "../../../world/worldobject";
 
 export class MockConnector extends MockShape implements EngineConnector
 {
@@ -36,6 +37,10 @@ export class MockConnector extends MockShape implements EngineConnector
        drawableConnector.init(this,options);
        this.setSelectable(false);
 
+    }
+
+    public getConnectorWorldObject():WorldObject {
+        return(this.connectorShape);
     }
 
 

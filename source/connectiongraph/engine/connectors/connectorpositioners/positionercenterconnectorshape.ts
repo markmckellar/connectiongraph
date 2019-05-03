@@ -15,6 +15,7 @@ export class PositionerCenterConnectorShape implements ConnectorPositioner {
 
 
     public positionConnectorShape(engineConnector:EngineConnector,engineConnectorDef:EngineConnectorDef):void {
+        
         let averagePos = EngineConnectorDef.GetAverageConnecterDefPositon(engineConnector.getEngineConnectorDefArray());
         let distanceAvaragePos = DistanceWorldPosition.CreateDistanceWorldPosition(engineConnector.getWorldPosition(),averagePos);
 
@@ -24,17 +25,8 @@ export class PositionerCenterConnectorShape implements ConnectorPositioner {
             0,
             .1
         );
-        let output = {
-            "currentPos":engineConnector.getWorldPosition(),
-            "distanceAvaragePos:":distanceAvaragePos,
-            "movePos":movePos
-        };
-        //console.log(output);
 
-        //console.log(JSON.stringify(output));
-
-        engineConnector.translate(averagePos);
-
+        engineConnector.translate(movePos);
 /*
         if(engineConnectorDef.engineShape.isSelected())
         {

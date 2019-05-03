@@ -8,6 +8,7 @@ import { SpringShape } from "./springshape";
 import { SpringEngine } from "../springengine";
 import { SpringConnectorDef } from "./springconnectordef";
 import { WorldEngineBase } from "../../worldenginebase";
+import { WorldObject } from "../../../world/worldobject";
 
 export class SpringConnector extends SpringShape implements EngineConnector
 {
@@ -35,6 +36,11 @@ export class SpringConnector extends SpringShape implements EngineConnector
        this.setSelectable(false);
 
     }
+
+    public getConnectorWorldObject():WorldObject {
+        return(this.connectorShape);
+    }
+
 
     public getAllSpringShapes():Array<SpringShape> {
         let allShapes = new Array<SpringShape>();
