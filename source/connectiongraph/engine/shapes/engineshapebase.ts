@@ -31,11 +31,9 @@ export abstract class EngineShapeBase implements EngineShape {
 
     public checkCollissionTags(otherShape:EngineShape) {
         let sharesTags = false;
-        let self = this;
         this.collisionTags.forEach(function(item){
             if(otherShape.collisionTags.has(item)) sharesTags = true;
         });
-
         return(sharesTags);
     }
     
