@@ -1,7 +1,6 @@
 import { EngineConnector } from "../engineconnector";
 import { EngineConnectorDef } from "../engineconnectordef";
 import { ConnectorPositioner } from "./connectorpositioner";
-import { WorldPosition } from "../../../world/worldposition";
 import { WorldEngineBase } from "../../worldenginebase";
 import { DistanceWorldPosition } from "../../../world/distanceworldposition";
 
@@ -32,7 +31,7 @@ export class PositionerCenterConnectorShape implements ConnectorPositioner {
         };
         //console.log(output);
 
-        console.log(JSON.stringify(output));
+        //console.log(JSON.stringify(output));
 
         engineConnector.translate(averagePos);
 

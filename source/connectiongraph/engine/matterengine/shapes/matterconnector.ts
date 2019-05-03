@@ -11,7 +11,6 @@ import { WorldDisplay } from "../../../display/worlddisplay";
 import { EngineShape } from "../../shapes/engineshape";
 import { MatterConnectorDef } from "./matterconnectordef";
 import { MatterEvent } from "../events/matterevent";
-import { DistanceWorldPosition } from "../../../world/distanceworldposition";
 
 export class MatterConnector extends MatterShape implements EngineConnector
 {
@@ -76,8 +75,8 @@ export class MatterConnector extends MatterShape implements EngineConnector
            }
         );
 
-       let averagePos = EngineConnectorDef.GetAverageConnecterDefPositon(this.getEngineConnectorDefArray());
-       this.matterShape.translate(averagePos);
+       //let averagePos = EngineConnectorDef.GetAverageConnecterDefPositon(this.getEngineConnectorDefArray());
+       //this.matterShape.translate(averagePos);
        
     }
 
