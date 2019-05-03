@@ -18,7 +18,7 @@ export class  AreaRuleObject {
     public processAllRules() {
         for(let i=0;i<this.areaRuleArray.length;i++){
             let areaRule = this.areaRuleArray[i];
-            for(let j=0;i<this.engineShapeList.length;j++) {
+            for(let j=0;j<this.engineShapeList.length;j++) {
                 let engineShape = this.engineShapeList[j];
                 areaRule.processRule(this,engineShape);
             }

@@ -14,17 +14,20 @@ export  class ContainInsideShape extends AreaRuleObject {
                     new PostionIsOutsideTrigger(),
                     function(areaRuleObject:AreaRuleObject,shape:EngineShape):void
                     {
-                        //let distanceAvaragePos = DistanceWorldPosition.CreateDistanceWorldPosition(engineConnector.getWorldPosition(),averagePos);
-                
-                        let movePos = WorldEngineBase.calulateSpringMovement(
-                            shape,
-                            areaRuleObject.areaEngineShape.getWorldPosition(),
-                            0,
-                            .1,
-                            worldEngine.worldEngineParams.updateInterval
-                        );
-                
-                        shape.translate(movePos);               
+                        if(!shape.isSelected())
+                        {
+                            //let distanceAvaragePos = DistanceWorldPosition.CreateDistanceWorldPosition(engineConnector.getWorldPosition(),averagePos);
+                    
+                            let movePos = WorldEngineBase.calulateSpringMovement(
+                                shape,
+                                areaRuleObject.areaEngineShape.getWorldPosition(),
+                                0,
+                                .1,
+                                worldEngine.worldEngineParams.updateInterval
+                            );
+                    
+                            shape.translate(movePos);               
+                        }
                     }
                 )
         );

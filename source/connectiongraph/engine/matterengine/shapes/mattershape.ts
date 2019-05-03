@@ -10,23 +10,27 @@ import { MatterEngine } from "../matterengine";
 import { WorldObjectEventHandler } from "../../../world/worldobjecteventhandler";
 import { World } from "../../../world/world";
 import { CanvasMouse } from "../../../display/canvas/canvasmouse";
+import { EngineShapeBase } from "../../shapes/engineshapebase";
 //import { worker } from "cluster";
 
 //import { World } from "../../walkerworld/world";
 //import { WorldObjectDisplay } from "../worldobjectdisplay";
 
-export abstract class MatterShape  implements WorldObject //implements EngineShape
+export abstract class MatterShape  extends EngineShapeBase implements WorldObject //implements EngineShape
 {
+	/*
 	private _drawable:Drawable;
 	private _worldId:WorldId;
 	private _isObjectAnimated:boolean;
-	private _isObjectVisable:boolean;
+	private _isObjectVisable:boolean;s
 	private _isObjectSelected:boolean;
 	private _objectOptions:any;
 	private _worldObjectEventHandler:WorldObjectEventHandler;
 	private isObjectSelecteable:boolean;
-
+*/
     constructor(worldId:WorldId,drawable:Drawable,options:any,matterEngine:MatterEngine) {
+		super(worldId,drawable,options);
+		/*
 		this.worldId = worldId;
 		this.drawable = drawable;
 		this.isObjectAnimated = true;
@@ -37,8 +41,8 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 		this.worldObjectEventHandler = this.createMouseEventHandler();
 		//options["timeScale"]= 0.1;
 		//options["frictionAir"]= 0.9;
-
 		drawable.init(this,options);
+		*/
 	}
 
 	public stopRotation():void {
@@ -51,6 +55,8 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 	}
 
 	
+
+
 	public 	createMouseEventHandler():WorldObjectEventHandler {
 	 	let woe:WorldObjectEventHandler = 
 		{
@@ -60,7 +66,7 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 		}
 		return(woe);
 	}
-
+/*
 	public getWorldObjectEventHandler():WorldObjectEventHandler {
 		return(this.worldObjectEventHandler);
 	}
@@ -70,14 +76,15 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 	}
 
 
-    
+  */  
 	public abstract getBody():Matter.Body;
 
+	
 	public scaleShape(scaleX:number,scaleY:number):void {
 		Matter.Body.scale(this.getBody(),scaleX,scaleY,this.getBody().position);
 		
 	}
-	
+	/*
 	
 	//public getWorldPosition():WorldPosition;
 	//public translate(worldPosition:WorldPosition):void;
@@ -95,7 +102,7 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 	public setAnimated(animated:boolean):void { this.isObjectAnimated = animated; }
 	public setSelected(selected:boolean): void { this.isObjectSelected = selected; }
 	public setVisable(visable:boolean):void { this.isObjectVisable = visable; }
-	
+*/	
 
 	public getShapePoints():Array<WorldPosition> {
         return( MatterTools.getWorldPostionArrayFromVectorArray(this.getBody().vertices) );     
@@ -125,7 +132,7 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 
 		return( Matter.Vertices.contains( this. getBody().vertices, MatterTools.getVectorFromWorldPostion(worldPosition)) );
 	}
-
+/*
     public getDrawable():Drawable {
         return(this.drawable);
     }
@@ -147,19 +154,13 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 	public set worldId(value: WorldId) {
 		this._worldId = value;
 	}
+*/
 
-    /**
-     * Getter worldObjectEventHandler
-     * @return {WorldObjectEventHandler}
-     */
+/*
 	public get worldObjectEventHandler(): WorldObjectEventHandler {
 		return this._worldObjectEventHandler;
 	}
 
-    /**
-     * Setter worldObjectEventHandler
-     * @param {WorldObjectEventHandler} value
-     */
 	public set worldObjectEventHandler(value: WorldObjectEventHandler) {
 		this._worldObjectEventHandler = value;
 	}
@@ -197,5 +198,5 @@ export abstract class MatterShape  implements WorldObject //implements EngineSha
 	public set objectOptions(value: any) {
 		this._objectOptions = value;
 	}
-
+*/
 }

@@ -5,12 +5,14 @@ import { WorldId } from "../../../world/worldid";
 import { WorldObjectEventHandler } from "../../../world/worldobjecteventhandler";
 import { World } from "../../../world/world";
 import { CanvasMouse } from "../../../display/canvas/canvasmouse";
+import { EngineShapeBase } from "../../shapes/engineshapebase";
 
 //import { World } from "../../walkerworld/world";
 //import { WorldObjectDisplay } from "../worldobjectdisplay";
 
-export abstract class MockShape implements WorldObject  
+export abstract class MockShape extends EngineShapeBase implements WorldObject  
 {
+	/*
 	private _drawable:Drawable;
 	private _worldId:WorldId;
 	private _isObjectAnimated:boolean;
@@ -19,9 +21,12 @@ export abstract class MockShape implements WorldObject
 	private _objectOptions:any;
 	private _worldObjectEventHandler:WorldObjectEventHandler;
 	private isObjectSelecteable:boolean;
-	private _position:WorldPosition; 
+	*/
+	private position:WorldPosition; 
 
     constructor(worldId:WorldId,drawable:Drawable,position:WorldPosition,options:any) {
+		super(worldId,drawable,options);
+
 		this.worldId = worldId;
 		this.drawable = drawable;
 		this.isObjectAnimated = true;
@@ -47,6 +52,7 @@ export abstract class MockShape implements WorldObject
 	   }
 	   return(woe);
    }
+   /*
    public getWorldObjectEventHandler():WorldObjectEventHandler {
 	return(this.worldObjectEventHandler);
 
@@ -67,7 +73,7 @@ export abstract class MockShape implements WorldObject
 	public setSelected(selected:boolean): void { this.isObjectSelected = selected; }
 	public setSelectable(selectable:boolean): void { this.isObjectSelecteable = selectable; }
 	public setVisable(visable:boolean):void { this.isObjectVisable = visable; }
-	
+	*/
 	public scaleShape(scaleX:number,scaleY:number):void {
 		console.error("scaleShape NOT IMPLMENTED");
 		
@@ -89,24 +95,20 @@ export abstract class MockShape implements WorldObject
 		
 	}
 
-    /**
-     * Getter worldObjectEventHandler
-     * @return {WorldObjectEventHandler}
-     */
+/*
 	public get worldObjectEventHandler(): WorldObjectEventHandler {
 		return this._worldObjectEventHandler;
 	}
 
-    /**
-     * Setter worldObjectEventHandler
-     * @param {WorldObjectEventHandler} value
-     */
+
 	public set worldObjectEventHandler(value: WorldObjectEventHandler) {
 		this._worldObjectEventHandler = value;
 	}
+	*/
 
 	public abstract containsWorldPosition(worldPosition:WorldPosition):boolean;
 
+	/*
     public getDrawable():Drawable {
         return(this.drawable);
     }
@@ -168,5 +170,5 @@ export abstract class MockShape implements WorldObject
 	public set objectOptions(value: any) {
 		this._objectOptions = value;
 	}
-
+*/
 }

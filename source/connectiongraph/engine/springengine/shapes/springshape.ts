@@ -6,12 +6,14 @@ import { WorldObjectEventHandler } from "../../../world/worldobjecteventhandler"
 import { World } from "../../../world/world";
 import { CanvasMouse } from "../../../display/canvas/canvasmouse";
 import { SpringEngine } from "../springengine";
+import { EngineShapeBase } from "../../shapes/engineshapebase";
 
 //import { World } from "../../walkerworld/world";
 //import { WorldObjectDisplay } from "../worldobjectdisplay";
 
-export abstract class SpringShape implements WorldObject  
+export abstract class SpringShape extends EngineShapeBase implements WorldObject  
 {
+	/*
 	private _drawable:Drawable;
 	private _worldId:WorldId;
 	private _isObjectAnimated:boolean;
@@ -19,12 +21,16 @@ export abstract class SpringShape implements WorldObject
 	private _isObjectSelected:boolean;
 	private _objectOptions:any;
 	private _worldObjectEventHandler:WorldObjectEventHandler;
-	private _position:WorldPosition; 
+	*/
+	private position:WorldPosition; 
 	public moveList:Array<WorldPosition>;
-	private isObjectSelecteable:boolean;
+	//private isObjectSelecteable:boolean;
 
 
     constructor(worldId:WorldId,drawable:Drawable,position:WorldPosition,options:any,springEngine:SpringEngine) {
+		super(worldId,drawable,options);
+
+		/*
 		this.worldId = worldId;
 		this.drawable = drawable;
 		this.isObjectAnimated = true;
@@ -32,6 +38,7 @@ export abstract class SpringShape implements WorldObject
 		this.isObjectSelected = false;
 		this.isObjectSelecteable = true;
 		this.drawable = drawable;
+		*/
 		this.position = position;
 		this.worldObjectEventHandler = this.createMouseEventHandler();	
 		this.moveList = new Array<WorldPosition>();
@@ -52,6 +59,7 @@ export abstract class SpringShape implements WorldObject
 	   }
 	   return(woe);
    }
+   /*
    public getWorldObjectEventHandler():WorldObjectEventHandler {
 	return(this.worldObjectEventHandler);
 
@@ -74,11 +82,12 @@ export abstract class SpringShape implements WorldObject
 	public setSelectable(selectable:boolean): void { this.isObjectSelecteable = selectable; }
 
 	public setVisable(visable:boolean):void { this.isObjectVisable = visable; }
-	
+	*/
 	public scaleShape(scaleX:number,scaleY:number):void {
 		console.error("scaleShape NOT IMPLMENTED");
 		
 	}
+
     public getWorldPosition():WorldPosition {
 		return(this.position );
 	}
@@ -95,25 +104,20 @@ export abstract class SpringShape implements WorldObject
 		this.position.translate(worldPosition);
 		
 	}
-
-    /**
-     * Getter worldObjectEventHandler
-     * @return {WorldObjectEventHandler}
-     */
+/*
+   
 	public get worldObjectEventHandler(): WorldObjectEventHandler {
 		return this._worldObjectEventHandler;
 	}
 
-    /**
-     * Setter worldObjectEventHandler
-     * @param {WorldObjectEventHandler} value
-     */
+   
 	public set worldObjectEventHandler(value: WorldObjectEventHandler) {
 		this._worldObjectEventHandler = value;
 	}
-
+*/
 	public abstract containsWorldPosition(worldPosition:WorldPosition):boolean;
 
+	/*
     public getDrawable():Drawable {
         return(this.drawable);
     }
@@ -175,5 +179,5 @@ export abstract class SpringShape implements WorldObject
 	public set objectOptions(value: any) {
 		this._objectOptions = value;
 	}
-
+*/
 }
