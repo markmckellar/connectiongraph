@@ -3,16 +3,18 @@ import { WorldObject } from "../world/worldobject";
 import { WorldPosition } from "../world/worldposition";
 import { DistanceWorldPosition } from "../world/distanceworldposition";
 import { EngineConnector } from "./connectors/engineconnector";
+import { AreaRuleObject } from "./arearule/arearuleobject/arearuleobject";
 
 export abstract class WorldEngineBase {    
     public intervalId:any;
     public worldEngineParams:WorldEngineParams;
     public connectorArray:Array<EngineConnector>;
+    public areaRuleObjectArray:Array<AreaRuleObject>;
 
     public constructor(worldEngineParams:WorldEngineParams) {
         this.worldEngineParams = worldEngineParams;
         this.connectorArray = new Array<EngineConnector>();
-
+        this.areaRuleObjectArray = new Array<AreaRuleObject>();
     }
 
     public stopEngine():void {
@@ -28,11 +30,20 @@ export abstract class WorldEngineBase {
             function() 
             { 
                 self.updateFunction();
-                self.processConnectorPositionerArray();
+                self.processAreaRuleObjectArray();
+                self.processConnectorPositionerArray();                
             },
             self.worldEngineParams.updateInterval
         );
     }
+
+    public processAreaRuleObjectArray()  {        
+        for(let i=0;i<this.areaRuleObjectArray.length;i++)
+        {
+          let areaRuleObject = this.areaRuleObjectArray[i];
+          areaRuleObject.processAllRules();
+        }
+      }
 
     public processConnectorPositionerArray()  {
         for(let i=0;i<this.connectorArray.length;i++)
@@ -49,6 +60,8 @@ export abstract class WorldEngineBase {
     public static calulateSpringMovement(worldObject:WorldObject,connectedToPosition:WorldPosition,conectionLength:number,stiffness:number,time:number):DistanceWorldPosition
 	{
         //stiffness = 1.0;
+        //let fps60 = 1000/60;
+
         let wantPosition = new DistanceWorldPosition(worldObject.getWorldPosition().x,worldObject.getWorldPosition().y).getDistanceOnLinePointArrayClosest(
                 connectedToPosition,
                 conectionLength//+randomStrengthFactor*Math.random()

@@ -14,10 +14,12 @@ import { EngineConnector } from "./connectors/engineconnector";
 import { EngineConnectorDef } from "./connectors/engineconnectordef";
 import { DrawableConnector } from "../display/drawableshapes/drawableconnector";
 import { WorldEngineParams } from "./worldengineparams";
+import { AreaRuleObject } from "./arearule/arearuleobject/arearuleobject";
 
 
 export interface WorldEngine {
     worldEngineParams:WorldEngineParams;
+    areaRuleObjectArray:Array<AreaRuleObject>;
 
     // an area that contains/exclues a list of world objects.  the area of this filed is streatchy
     // a grouping of objects that applies a connection/repulsion between each member of the group
