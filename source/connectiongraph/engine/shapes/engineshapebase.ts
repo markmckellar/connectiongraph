@@ -13,7 +13,7 @@ export abstract class EngineShapeBase implements EngineShape {
 	public objectOptions:any;
 	public worldObjectEventHandler:WorldObjectEventHandler;
     public isObjectSelecteable:boolean;
-    public collisionTags:Set<string>;
+    private collisionTags:Array<string>;
 
     
     constructor(worldId:WorldId,drawable:Drawable,options:any) {
@@ -25,18 +25,71 @@ export abstract class EngineShapeBase implements EngineShape {
 		this.isObjectSelecteable = true;
 		this.objectOptions = options;
         this.worldObjectEventHandler = this.createMouseEventHandler();
-        this.collisionTags = new Set<string>();
+        this.collisionTags = new Array<string>();
 		drawable.init(this,options);
     }
-
+/*
     public checkCollissionTags(otherShape:EngineShape) {
-        let sharesTags = false;
-        this.collisionTags.forEach(function(item){
-            if(otherShape.collisionTags.has(item)) sharesTags = true;
+        return( EngineShapeBase.checkCollissionTagSets(this.collisionTags,otherShape.collisionTags));
+	}
+*/	
+	public static checkCollissionTagSetsx(o1:Set<string>,o2:Set<string>) {
+		let sharesTags = false;
+		if(!o1)
+        o1.forEach(function(item){
+            if(o2.has(item)) sharesTags = true;
         });
         return(sharesTags);
+	}
+	// collisionTags
+	public static  checkCollissionTags(filterA:any, filterB:any) {
+	//console.log(JSON.stringify(filterA));
+/*
+		let message = ""
+	
+
+		if(!filterA.collisionTags || !filterB.collisionTags){
+//			message += "A="+JSON.stringify(filterA);
+//			message += ":B="+JSON.stringify(filterB);
+//			document.getElementById("messages").innerHTML = message;
+			return(false);
+		}
+/*
+		message += "A="+JSON.stringify(filterA.collisionTags);
+		message += ":B="+JSON.stringify(filterB.collisionTags); 
+		message += ":alen="+filterB.collisionTags.length; 
+		message += ":blen="+JSON.stringify(filterB); 
+*/
+		for(var i=0;i<filterB.collisionTags.length;i++)
+		{
+		  if(filterA.collisionTags.includes(filterB.collisionTags[i]))
+			 return(true);
+		}
+		for(var i=0;i<filterA.collisionTags.length;i++)
+		{
+		  if(filterB.collisionTags.includes(filterA.collisionTags[i]))
+			 return(true);
+		}
+		//document.getElementById("messages").innerHTML = message;
+
+	   return(false);
+	  }
+	public  getCollisionTagList():Array<string> {
+		return(this.collisionTags);
+
+	}
+
+
+	public addToCollissionTags(tagName:string) {
+        this.collisionTags.push(tagName);
+        //engineShape.collisionTags.push(this.areaEngineShape.getWorldId().id);
     }
-    
+    public removeFromCollisionTags(tagName:string) {
+        let index = this.collisionTags.indexOf(tagName, 0);
+        if (index > -1)  this.collisionTags.splice(index, 1);
+        //engineShape.collisionTags.push(this.areaEngineShape.getWorldId().id);
+    }  
+
     public abstract createMouseEventHandler():WorldObjectEventHandler;
     public abstract scaleShape(scaleX:number,scaleY:number):void;
 	public abstract getShapePoints():Array<WorldPosition>;

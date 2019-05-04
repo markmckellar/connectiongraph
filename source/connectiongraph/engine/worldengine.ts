@@ -24,6 +24,7 @@ export interface WorldEngine {
     // an area that contains/exclues a list of world objects.  the area of this filed is streatchy
     // a grouping of objects that applies a connection/repulsion between each member of the group
     
+    getWorldStructureCollisionTag():string;
 
     createCircle(worldId:WorldId,drawable:Drawable,radius:number,numberOfSides:number,
         worldPosition:WorldPosition,options:any):CircleEngineShape;

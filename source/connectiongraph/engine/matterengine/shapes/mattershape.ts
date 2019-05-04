@@ -15,6 +15,8 @@ export abstract class MatterShape  extends EngineShapeBase implements WorldObjec
 {
     constructor(worldId:WorldId,drawable:Drawable,options:any,matterEngine:MatterEngine) {
 		super(worldId,drawable,options);
+		options['collisionFilter'] = this.getCollisionFilter();
+
 	}
 
 	public stopRotation():void {
@@ -35,6 +37,14 @@ export abstract class MatterShape  extends EngineShapeBase implements WorldObjec
 	}
 	public abstract getBody():Matter.Body;
 
+	public getCollisionFilter() {
+		let collisionFilter = {
+			collisionTags:this.getCollisionTagList(),
+			group:1,
+			collidesWith:[-1]
+		};
+		return(collisionFilter);
+	}
 	
 	public scaleShape(scaleX:number,scaleY:number):void {
 		Matter.Body.scale(this.getBody(),scaleX,scaleY,this.getBody().position);

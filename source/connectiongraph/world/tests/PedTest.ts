@@ -68,20 +68,20 @@ export class PedTest extends BaseTest {
         
         
         let container:RectangleEngineShape = world.worldEngine.createRectangle(
-          new WorldId("childGroup3_1"),
+          new WorldId("containerInsideShape1"),
           new RectangleDisplayShape(),
-          300,100,
+          300,20,
           new WorldPosition(300,100),
           {}
         );           
 
       let containInsideShape = new ContainInsideShape(world.worldEngine,container);
-      containInsideShape.engineShapeList.push(childGroup1_1);
-      containInsideShape.engineShapeList.push(childGroup1_2);
-      containInsideShape.engineShapeList.push(childGroup1_3);
-      containInsideShape.engineShapeList.push(childGroup2_1);
-      containInsideShape.engineShapeList.push(childGroup2_2);
-      containInsideShape.engineShapeList.push(childGroup3_1);
+      containInsideShape.addToAffectedShapeList(childGroup1_1);
+      containInsideShape.addToAffectedShapeList(childGroup1_2);
+      containInsideShape.addToAffectedShapeList(childGroup1_3);
+      containInsideShape.addToAffectedShapeList(childGroup2_1);
+      containInsideShape.addToAffectedShapeList(childGroup2_2);
+      containInsideShape.addToAffectedShapeList(childGroup3_1);
 
       
 

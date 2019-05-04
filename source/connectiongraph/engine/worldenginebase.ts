@@ -24,6 +24,10 @@ export abstract class WorldEngineBase {
 
     public abstract updateFunction():void;
 
+    public getWorldStructureCollisionTag():string {
+      return("StructureCollisionTag");
+    }
+
     public startEngine():void {
         let self = this;
         self.intervalId = setInterval(

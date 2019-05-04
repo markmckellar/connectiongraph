@@ -50,8 +50,8 @@ export class Test4 extends BaseTest {
           );
               
 
-          circle1b.collisionTags.add("COLLIDE");          
-          circle1c.collisionTags.add("COLLIDE");          
+          circle1b.addToCollissionTags("COLLIDE");          
+          circle1c.addToCollissionTags("COLLIDE");          
       let connectorCircle:CircleEngineShape = world.worldEngine.createCircle(
         new WorldId("connectorCircle"),
         new CircleDisplayShape(),

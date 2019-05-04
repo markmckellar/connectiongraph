@@ -29,6 +29,7 @@ import { MatterConnector } from "./shapes/matterconnector";
 import { MatterConnectorDef } from "./shapes/matterconnectordef";
 import { WorldEngineParams } from "../worldengineparams";
 import { WorldEngineBase } from "../worldenginebase";
+import { EngineShapeBase } from "../shapes/engineshapebase";
 
 export  class MatterEngine extends WorldEngineBase implements WorldEngine {
     private _matterTools:MatterTools ;
@@ -47,6 +48,26 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
     
     public constructor(worldEngineParams:WorldEngineParams) {
       super(worldEngineParams);
+      let tempMatter:any = Matter;
+      tempMatter.Detector.canCollide = EngineShapeBase.checkCollissionTags;
+
+      tempMatter.Detector.canCollidexx = function (filterA:any, filterB:any) {
+        let collides =  EngineShapeBase.checkCollissionTags(filterA,filterB);
+        /*var collides =
+            (filterB.collidesWith.includes(filterA.group) || filterB.group == 0) 
+            &&                 
+            (filterA.collidesWith.includes(filterB.group) || filterA.group == 0)
+         ;
+        let statusText =//.innerHTML = 
+          //"b="+filterB.groupN+
+          //":a="+filterA.groupN+
+          ":b="+JSON.stringify(filterB.collidesWithN)+
+          ":a="+filterA.collidesWithN.length+
+          ":cnew="+cnew+
+          ":collides="+collides+" "+JSON.stringify(filterA); 
+          */
+        return(collides);
+      }
 
         this.matterTools = new MatterTools();
         this.collisionEventHandlers = new Map<string,MatterCollisionEvent>(); 
@@ -243,10 +264,21 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
         this); 
       return(ploygon);
     }   
+
+
     
+    public getCollisionFilterWorldStructure() {
+      let collisionFilter = {
+        collisionTags:this.getWorldStructureCollisionTag(),
+        group:1,
+        collidesWith:[-1]
+      };
+      return(collisionFilter);
+    }
 
     public createBounds(width:number,height:number,options:any):void {
-      let wallBoundsRect = Matter.Bodies.rectangle(width/2,height/2,width,height,{});
+      options['collisionFilter'] = this.getCollisionFilterWorldStructure();
+      let wallBoundsRect = Matter.Bodies.rectangle(width/2,height/2,width,height,options);
       let walls:Matter.Body = MatterTools.createBoundObject(wallBoundsRect,1,10,options);
       walls.collisionFilter.category = MatterEngine.boundsFilter;
       walls.restitution = 1.0;
@@ -330,7 +362,7 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
 
         if(this.hasCollisionHandler(pairs[i].bodyB,eventType))
           this.getCollisionHandler(pairs[i].bodyB,eventType)(this,eventType,event);
-
+/*
         let shapeA = this.matterBodyId2WorldIdMap.get(pairs[i].bodyA.id);
         let shapeB = this.matterBodyId2WorldIdMap.get(pairs[i].bodyB.id);
         if(shapeA && shapeB) 
@@ -338,7 +370,7 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
           {
               console.log(shapeA.getWorldId().id+" and "+shapeB.getWorldId().id+" hit");
           }
-        
+  */      
       }
     }
 
@@ -478,6 +510,154 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
 	public set mouseAnchor(value: MatterCircle) {
 		this._mouseAnchor = value;
 	}
+/****
+ * 
+ * https://codepen.io/anon/pen/qGWpJa?editors=1010
+   <div id="collideStatus">-</div>
+<div id="container">
+  <canvas id="maincanvas"></canvas>
+</div>https://codepen.io/swendude/pen/pRoYEY?editors=1010
 
 
+
+  var greent=1234567;redt=7654321;bluet=1234321;
+  // Monkeypatch for the Matter.detector.Detector.canCollide method
+  Matter.Detector.canCollide = function (filterA, filterB) {
+    var cnew = testIt(filterA, filterB);
+    var cnewN = testIt(filterA, filterB);
+    var collides =
+        (filterB.collidesWith.includes(filterA.group) || filterB.group == 0) 
+        &&                 
+        (filterA.collidesWith.includes(filterB.group) || filterA.group == 0)
+     ;
+    statusText.innerHTML = 
+      //"b="+filterB.groupN+
+      //":a="+filterA.groupN+
+      ":b="+JSON.stringify(filterB.collidesWithN)+
+      ":a="+filterA.collidesWithN.length+
+      ":cnew="+cnew+
+      ":cnewn="+cnewN+
+      ":collides="+collides+" "+JSON.stringify(filterA); 
+    return(collides||cnewN);
+  }
+  
+  function testItN(filterA, filterB) {
+    if(!filterA.collidesWithN || !filterB.collidesWithN) return(false);
+    for(var i=0;i<filterB.collidesWithN.length;i++) {
+      if(filterA.collidesWithN.includes(filterB.groupN))
+         return(true);
+    }
+   return(false);
+  }
+  
+  function testIt(filterA, filterB) {
+    for(var i=0;i<filterB.collidesWith.length;i++) {
+      if(filterA.collidesWith.includes(filterB.group))
+         return(true);
+    }
+   return(false);
+  }
+  
+  // module aliases
+  var Engine = Matter.Engine,
+    Render = Matter.Render,
+    World = Matter.World,
+    Bodies = Matter.Bodies,
+    Body = Matter.Body,
+    Vector = Matter.Vector,
+    Composite = Matter.Composite,
+    Constraint = Matter.Constraint,
+    MouseConstraint = Matter.MouseConstraint;
+  
+  // create an engine
+  var engine = Engine.create();
+  
+  // create a renderer
+  var container = document.getElementById("container");
+  var canvas = document.getElementById("maincanvas");
+  var statusText =  document.getElementById("collideStatus");
+  
+  var render = Render.create({
+    element: container,
+    canvas: canvas,
+    engine: engine,
+    options: {
+      height: 800,
+      width: 800,
+      wireframes: false
+    }
+  });
+  
+  // This makes collision much easier to test
+  engine.world.gravity = {
+    x: 0,
+    y: 0
+  };
+  
+  // Add a mouseconstraint to test
+  var mc = MouseConstraint.create(engine, {
+    element: render.canvas,
+    collisionFilter: {
+      group: 0,
+      collidesWith: []
+    }
+  });
+  Composite.add(engine.world, mc);
+  
+  var bodies1 = []
+  var bodies2 = []
+  var bodies3 = []
+  var xpos = 30
+  var ypos = 30
+  for (var i = 0; i < 5; i++) {
+    bodies1.push(Bodies.circle(xpos, ypos, 10, {
+      collisionFilter: {
+        groupN:"green",collidesWithN: ["green"],
+        group: greent,
+        collidesWith: [0, greent]
+      },
+      render: {
+        fillStyle: "green"
+      }
+    }));
+    xpos += 30;
+  }
+  for (var i = 0; i < 5; i++) {
+    bodies2.push(Bodies.circle(xpos, ypos, 10, {
+      collisionFilter: {
+        groupN:"red",collidesWithN: ["red"],
+        group: redt,
+        collidesWith: [0, redt]
+      },
+      render: {
+        fillStyle: "red"
+      }
+    }));
+    xpos += 30;
+  }
+  for (var i = 0; i < 5; i++) {
+    bodies3.push(Bodies.circle(xpos, ypos, 10, {
+      collisionFilter: {
+        groupN:"blue",collidesWithN: ["blue"],
+        group: bluet,
+        collidesWith: [0, bluet,greent]
+      },
+      render: {
+        fillStyle: "blue"
+      }
+    }));
+    xpos += 30;
+  }
+  var composite1 = Composite.create();
+  Composite.add(composite1, bodies1);
+  var composite2 = Composite.create();
+  Composite.add(composite2, bodies2);
+  var composite3 = Composite.create();
+  Composite.add(composite3, bodies3);
+  
+  Composite.add(engine.world, [composite1, composite2,composite3]);
+  
+  Engine.run(engine);
+  Render.run(render);
+  ****/
 }
