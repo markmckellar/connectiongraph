@@ -14,7 +14,7 @@ export abstract class EngineShapeBase implements EngineShape {
 	public worldObjectEventHandler:WorldObjectEventHandler;
     public isObjectSelecteable:boolean;
     private collisionTags:Array<string>;
-
+	public static WorldStructureCollisionTag = "WorldStructureCollisionTag";
     
     constructor(worldId:WorldId,drawable:Drawable,options:any) {
 		this.worldId = worldId;
@@ -42,24 +42,18 @@ export abstract class EngineShapeBase implements EngineShape {
         return(sharesTags);
 	}
 	// collisionTags
-	public static  checkCollissionTags(filterA:any, filterB:any) {
-	//console.log(JSON.stringify(filterA));
-/*
-		let message = ""
-	
 
+	public getWorldStructureCollisionTag():string {
+		return(EngineShapeBase.WorldStructureCollisionTag);
+	}
+	public static  checkCollissionTags(filterA:any, filterB:any):boolean {
 		if(!filterA.collisionTags || !filterB.collisionTags){
-//			message += "A="+JSON.stringify(filterA);
-//			message += ":B="+JSON.stringify(filterB);
-//			document.getElementById("messages").innerHTML = message;
 			return(false);
 		}
-/*
-		message += "A="+JSON.stringify(filterA.collisionTags);
-		message += ":B="+JSON.stringify(filterB.collisionTags); 
-		message += ":alen="+filterB.collisionTags.length; 
-		message += ":blen="+JSON.stringify(filterB); 
-*/
+		if(filterA.collisionTags.includes(EngineShapeBase.WorldStructureCollisionTag))
+			return(true);
+		if(filterB.collisionTags.includes(EngineShapeBase.WorldStructureCollisionTag))
+			return(true)
 		for(var i=0;i<filterB.collisionTags.length;i++)
 		{
 		  if(filterA.collisionTags.includes(filterB.collisionTags[i]))
