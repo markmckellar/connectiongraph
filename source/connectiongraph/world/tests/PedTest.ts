@@ -7,6 +7,7 @@ import { BaseTest } from "./basetest";
 import { RectangleEngineShape } from "../../engine/shapes/rectangleengineshape";
 import { RectangleDisplayShape } from "../../display/drawableshapes/rectangledisplayshape";
 import { ContainInsideShape } from "../../engine/arearule/arearuleobject/containinsideshape";
+import { EngineShape } from "../../engine/shapes/engineshape";
 export class PedTest extends BaseTest {
 
     constructor(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML)  {
@@ -76,13 +77,19 @@ export class PedTest extends BaseTest {
         );           
 
       let containInsideShape = new ContainInsideShape(world.worldEngine,container);
-      containInsideShape.addToAffectedShapeList(childGroup1_1);
-      containInsideShape.addToAffectedShapeList(childGroup1_2);
-      containInsideShape.addToAffectedShapeList(childGroup1_3);
-      containInsideShape.addToAffectedShapeList(childGroup2_1);
-      containInsideShape.addToAffectedShapeList(childGroup2_2);
-      containInsideShape.addToAffectedShapeList(childGroup3_1);
 
+      let shapes = new Array<EngineShape>();
+      
+      shapes.push(childGroup1_1);
+      shapes.push(childGroup1_2);
+      shapes.push(childGroup1_3);
+      shapes.push(childGroup2_1);
+      shapes.push(childGroup2_2);
+      shapes.push(childGroup3_1);
+
+      containInsideShape.addListToAffectedShapeList(shapes);
+      for(let i=0;i<shapes.length;i++) shapes[i].stopRotation();
+      containInsideShape.areaEngineShape.stopRotation();
       
 
       world.addWorldObject(container);

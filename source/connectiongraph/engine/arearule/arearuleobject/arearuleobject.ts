@@ -16,6 +16,14 @@ export class  AreaRuleObject {
 
     }
 
+    public addListToAffectedShapeList(engineShapeList:Array<EngineShape>) {
+        for(let i=0;i<engineShapeList.length;i++) this.addToAffectedShapeList(engineShapeList[i]);
+    }
+
+    public removeListFromoAfectedShapeList(engineShapeList:Array<EngineShape>) {
+        for(let i=0;i<engineShapeList.length;i++) this.removeFromoAfectedShapeList(engineShapeList[i]);
+    }
+
     public addToAffectedShapeList(engineShape:EngineShape) {
         this.engineShapeList.push(engineShape);
         engineShape.addToCollissionTags(this.areaEngineShape.getWorldId().id);
