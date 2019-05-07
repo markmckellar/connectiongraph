@@ -3,10 +3,10 @@ import { WorldEngine } from "../../worldengine";
 import { EngineShape } from "../../shapes/engineshape";
 import { AreaRule } from "../arearule/arearule";
 import { ObjectIsOutsideTrigger } from "../arearuletrigger/objectisoutsidetrigger";
-import { DistanceWorldPosition } from "../../../world/distanceworldposition";
 import { RectangleEngineShape } from "../../shapes/rectangleengineshape";
 import { WorldPosition } from "../../../world/worldposition";
 import { ChildrenHaveTheSameYTrigger } from "../arearuletrigger/childrendhavesameytrigger";
+import { BoundingBox } from "../../shapes/boundingbox";
 
 export  class ContainInsideRectangle extends AreaRuleObject {
 
@@ -42,19 +42,19 @@ export  class ContainInsideRectangle extends AreaRuleObject {
 
                         let averageMove = WorldPosition.getAveragePostionFromWorldPositionList(moves);
                         let averagePos = new WorldPosition(shape.getWorldPosition().x+averageMove.x,shape.getWorldPosition().y+averageMove.y);
-                        let distance = shape.getWorldPosition().getDistance(averagePos);
-
+                        //let distance = shape.getWorldPosition().getDistance(averagePos);
+                        /*
                         let span = 0;
                         if(moves.length==1) span = 5;
                         else if(moves.length==2) span = 20;
                         else if(moves.length=3) span = 20;
                         else if(moves.length=4) span = 20;
-
-                        self.addRandomToWorldPosition(moves.length^2,averagePos);
+                        */
+                        //self.addRandomToWorldPosition(span,averagePos);
 
                         
-                        let movePos = DistanceWorldPosition.calulateSpringPositionMovement(
-                            shape.getWorldPosition(),averagePos,distance*0.75,1,worldEngine.worldEngineParams.updateInterval);
+                        //let movePos = DistanceWorldPosition.calulateSpringPositionMovement(
+                        //    shape.getWorldPosition(),averagePos,distance*0.75,1,worldEngine.worldEngineParams.updateInterval);
                         /*let message = {
                         running:new Date(), 
                         moves:moves,                          
@@ -74,15 +74,33 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                                 {
                                     if(!shape.isSelected())
                                     {
-                                        let wantX = new WorldPosition(shape.getWorldPosition().x,areaRuleObject.areaEngineShape.getWorldPosition().y,);
-                                        let distance = shape.getWorldPosition().getDistance(wantX);
+                                        let wantPos = new WorldPosition(shape.getWorldPosition().x,areaRuleObject.areaEngineShape.getWorldPosition().y);
+
+                                        for(let i=0;i<areaRuleObject.engineShapeList.length;i++) {
+                                            let otherShape = areaRuleObject.engineShapeList[i];
+                                            if(!shape.getWorldId().matches(otherShape.getWorldId()))
+                                            {
+                                                let deltaX = shape.getWorldPosition().x-otherShape.getWorldPosition().x;
+                                                if(deltaX==0) deltaX = (Math.random()*2.0) - 2.0/2.0;
+                                                let boundingBox = new BoundingBox(shape.getShapePoints());
+                                                if( boundingBox.width>Math.abs(deltaX)) {
+                                                    let rect = self.rectangleEngineShape;
+                                                    let left = rect.getWorldPosition().x-rect.getWidth()/2.0;
+                                                    let right = rect.getWorldPosition().x+rect.getWidth()/2.0;
+                                                    let moveX = boundingBox.width - boundingBox.width/Math.abs(deltaX);
+                                                    moveX = moveX * (Math.abs(deltaX)/deltaX) * 0.25;
+                                                    if(wantPos.x>left && wantPos.x<right) wantPos.x = wantPos.x + moveX;
+                                                }                                                
+                                            }
+                                        }
+
+                                        //let distance = shape.getWorldPosition().getDistance(wantPos);
                                         //let distanceAvaragePos = DistanceWorldPosition.CreateDistanceWorldPosition(engineConnector.getWorldPosition(),averagePos);
                                 
-                                        let movePos = DistanceWorldPosition.calulateSpringPositionMovement(
-                                            shape.getWorldPosition(),wantX,distance*0.75,1,worldEngine.worldEngineParams.updateInterval);
-                                        
+                                        //let movePos = DistanceWorldPosition.calulateSpringPositionMovement(
+                                            //shape.getWorldPosition(),wantPos,distance*0.75,1,worldEngine.worldEngineParams.updateInterval);
                                         //self.addRandomToWorldPosition(wantX);
-                                        shape.translate(wantX);               
+                                        shape.translate(wantPos);               
                                     }
                                 }
                             )

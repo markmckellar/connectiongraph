@@ -6,7 +6,6 @@ import { World } from "../world";
 import { BaseTest } from "./basetest";
 import { RectangleEngineShape } from "../../engine/shapes/rectangleengineshape";
 import { RectangleDisplayShape } from "../../display/drawableshapes/rectangledisplayshape";
-import { EngineShape } from "../../engine/shapes/engineshape";
 import { ContainInsideRectangle } from "../../engine/arearule/arearuleobject/containinsiderectangle";
 export class ContainerTest extends BaseTest {
 
@@ -27,7 +26,8 @@ export class ContainerTest extends BaseTest {
           new WorldPosition(100+50*i,100),
           {}
         ));
-        let container:RectangleEngineShape = world.worldEngine.createRectangle(
+
+      let container:RectangleEngineShape = world.worldEngine.createRectangle(
           new WorldId("containerInsideShape1"),
           new RectangleDisplayShape(),
           320,90,
@@ -46,22 +46,6 @@ export class ContainerTest extends BaseTest {
       for(let i=0;i<rects.length;i++) world.addWorldObject(rects[i]);
 
       world.worldEngine.areaRuleObjectArray.push(containInsideShape);
-
-      
-    /*
-      let cd1:EngineConnectorDef = new EngineConnectorDef(circle1a,new PositionerFree(),200,0.01);
-      let connector1:EngineConnector = world.worldEngine.createConnector(
-        new WorldId("connector1"),
-        new LineConnectorDisplay(),//drawableConnector:DrawableConnector,
-        circle1b,//connectorShape:EngineShape,
-        [cd1],
-        {}
-      );
-
-            world.addWorldObject(connector1);
-
-    */
-    
 
     
     
