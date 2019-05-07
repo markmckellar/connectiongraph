@@ -78,6 +78,11 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
         //this.connectorArray = new Array<MatterConnector>();
 
         this.engine = Matter.Engine.create(); 
+
+        if(this.worldEngineParams.updateInterval>500)
+        {
+          this.engine.timing.timeScale = 400 / this.worldEngineParams.updateInterval;
+        }
         
         this.engine.world.gravity.x = 0.0;
         //this.engine.world.gravity.y = 1.0;

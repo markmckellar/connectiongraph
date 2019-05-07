@@ -13,6 +13,7 @@ import { MouseCrossCircleDisplayShape } from "../../display/drawableshapes/mouse
 import { WorldEngineParams } from "../../engine/worldengineparams";
 import { PedTest } from "./PedTest";
 import { Test4 } from "./test4";
+import { ContainerTest } from "./containertest";
 
 export class TestAll {
     public worldEngine:WorldEngine;
@@ -50,6 +51,12 @@ export class TestAll {
             'buildFunction': function(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML) {
                 return(new Test4(worldEngine,world,canvasHolder));
             }
+        },
+        {
+            'name':'container',
+            'buildFunction': function(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML) {
+                return(new ContainerTest(worldEngine,world,canvasHolder));
+            }
         }
     ];
 
@@ -57,13 +64,13 @@ export class TestAll {
     constructor() {
     }
 
-    public runTest(engineName:string,testName:string,canvasName:string,updateFunction: (world: World) => void):void {
+    public runTest(engineName:string,testName:string,canvasName:string,updateFunction: (world: World) => void,engineRefreshInterval:number):void {
 
         console.log("runTest:engineName="+engineName+":testName="+testName+":canvasName="+canvasName);
 
         if(this.test) this.test.stopCurrent();
 
-        this.worldEngine = this.getEngineFromName(engineName,updateFunction);
+        this.worldEngine = this.getEngineFromName(engineName,updateFunction,engineRefreshInterval);
         this.world = new WorldOfWorldObjects(this.worldEngine);
         this.canvasHolder = new CanvasHolderHTML(canvasName,this.world);
         this.test = this.getTestFromName(testName,this.worldEngine,this.world,this.canvasHolder);
@@ -72,12 +79,12 @@ export class TestAll {
         this.test.runTests();
     }
 
-    public getEngineFromName(engineName:string,updateFunction: (world: World) => void):WorldEngine {
+    public getEngineFromName(engineName:string,updateFunction: (world: World) => void,engineRefreshInterval:number):WorldEngine {
         let worldEngineParams:WorldEngineParams =
         {
             mouseDrawableShape:new MouseCrossCircleDisplayShape(),
             updateFunction: updateFunction,
-            updateInterval: (1000/30)
+            updateInterval: engineRefreshInterval
             //updateInterval: 5000
         };
         if(engineName=='matter') return(new MatterEngine(worldEngineParams));

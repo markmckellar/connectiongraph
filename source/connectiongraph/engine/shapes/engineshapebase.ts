@@ -103,7 +103,15 @@ export abstract class EngineShapeBase implements EngineShape {
 	public setSelectable(selectable:boolean): void { this.isObjectSelecteable = selectable; }
 	public setAnimated(animated:boolean):void { this.isObjectAnimated = animated; }
 	public setSelected(selected:boolean): void { this.isObjectSelected = selected; }
-    public setVisable(visable:boolean):void { this.isObjectVisable = visable; }
+	public setVisable(visable:boolean):void { this.isObjectVisable = visable; }
+	
+    public containsEngineShape(engineShape:EngineShape):boolean {
+		let containsEngineShape = true;
+		let shapePoints = engineShape.getShapePoints();
+		for(let i=0;i<shapePoints.length;i++) if(!this.containsWorldPosition(shapePoints[i])) return(false);
+		return(containsEngineShape);
+	}	
+
     
     public getDrawable():Drawable {
         return(this.drawable);

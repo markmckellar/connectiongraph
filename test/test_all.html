@@ -8,6 +8,7 @@
                     <option>spring</option>
                 </select>
                 test : <select id='testSelect'></select>
+                refresh(ms 33=30fps) : <input id='engineRefresh' type='text' value='33' size='6'>
 
               <button onclick="runTest();">RUN ENGINE AND TEST</button>      
               <div id="mousePositionX">x=?</div>
@@ -45,7 +46,8 @@
                 testAll.runTest(
                     getSelectedValue('engineSelect'),
                     getSelectedValue('testSelect'),'worldCanvas',
-                    updateDisplay
+                    updateDisplay,
+                    document.getElementById("engineRefresh").value
                     );
             }
         </script>

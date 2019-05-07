@@ -108,5 +108,4 @@ export class WorldPosition {
 		return(positions);
 	}
 
-
 }

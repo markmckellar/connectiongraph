@@ -7,8 +7,8 @@ import { EngineShape } from "../../shapes/engineshape";
 import { SpringShape } from "./springshape";
 import { SpringEngine } from "../springengine";
 import { SpringConnectorDef } from "./springconnectordef";
-import { WorldEngineBase } from "../../worldenginebase";
 import { WorldObject } from "../../../world/worldobject";
+import { DistanceWorldPosition } from "../../../world/distanceworldposition";
 
 export class SpringConnector extends SpringShape implements EngineConnector
 {
@@ -65,8 +65,8 @@ export class SpringConnector extends SpringShape implements EngineConnector
             let shapePos = this.springShape.getWorldPosition();
             if(!this.springShape.isSelected())
             {
-                shapePos =  WorldEngineBase.calulateSpringMovement(
-                    this.springShape,
+                shapePos =  DistanceWorldPosition.calulateSpringPositionMovement(
+                    this.springShape.getWorldPosition(),
                     otherSpringShape.getWorldPosition(),
                     conectorDef.length,
                     conectorDef.stiffness,
@@ -76,8 +76,8 @@ export class SpringConnector extends SpringShape implements EngineConnector
             }
             if(!otherSpringShape.isSelected())                        
                 otherSpringShape.moveList.push(
-                    WorldEngineBase.calulateSpringMovement(
-                        otherSpringShape,
+                    DistanceWorldPosition.calulateSpringPositionMovement(
+                        otherSpringShape.getWorldPosition(),
                         shapePos,
                         //this.springShape.getWorldPosition(),
                         conectorDef.length,conectorDef.stiffness,

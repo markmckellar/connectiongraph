@@ -22,6 +22,7 @@ export abstract class MatterShape  extends EngineShapeBase implements WorldObjec
 	public stopRotation():void {
 		Matter.Body.setAngularVelocity(this.getBody(),0);
 		Matter.Body.setAngle(this.getBody(),0);
+		Matter.Body.setInertia(this.getBody(),Infinity);
 		//Matter.Body.setInertia(rectangle.getBody(),Infinity);
 	    //Matter.Body.setStatic(rectangle.getBody(),true);
 	}

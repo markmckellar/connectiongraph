@@ -138,5 +138,74 @@ export class DistanceWorldPosition extends WorldPosition {
 		return (distanceList);
 	}
 
+	public static getClosest(worldDistancePositionList:Array<DistanceWorldPosition>):DistanceWorldPosition {
+		let closest:DistanceWorldPosition = null;
+		for(let i=0;i<worldDistancePositionList.length;i++)
+		{
+			if(closest==null) closest = worldDistancePositionList[i];
+			else
+			{
+				if(worldDistancePositionList[i].distance<closest.distance)
+					closest = worldDistancePositionList[i];
+			}
+		}
+		return (closest);
+	}
+
+	public static getFarthest(worldDistancePositionList:Array<DistanceWorldPosition>):DistanceWorldPosition {
+		let farthest:DistanceWorldPosition = null;
+		for(let i=0;i<worldDistancePositionList.length;i++)
+		{
+			if(farthest==null) farthest = worldDistancePositionList[i];
+			else
+			{
+				if(worldDistancePositionList[i].distance>farthest.distance) 
+					farthest = worldDistancePositionList[i];
+			}
+		}
+		return (farthest);
+	}
+
+	public static getDistanceArray(worldPosition:WorldPosition,worldPositionList:Array<WorldPosition>):Array<DistanceWorldPosition> {
+		let distanceList = new Array<DistanceWorldPosition>();
+		for(let i=0;i<worldPositionList.length;i++)
+		{
+			let p = worldPositionList[i];
+			let d = worldPosition.getDistance(p);
+			let position = new DistanceWorldPosition(p.x, p.y);
+			position.distance = d;
+			distanceList.push(position);
+		}
+		return (distanceList);
+	}
+
+	public static calulateSpringPositionMovement(worldPosition1:WorldPosition,worldPosition2:WorldPosition,conectionLength:number,stiffness:number,time:number):DistanceWorldPosition {
+	    let wantPosition = new DistanceWorldPosition(worldPosition1.x,worldPosition1.y).getDistanceOnLinePointArrayClosest(worldPosition2,conectionLength);
+    
+        if(wantPosition.distance==0.0) {
+            return(wantPosition);
+        }
+        // stiffness should use the refresh interval somehow to decide how far it moves each "click".. right now it is a default that is the same
+        // regardless of the animation interval
+        let movePosition = new DistanceWorldPosition(worldPosition1.x,worldPosition1.y).getDistanceOnLinePointArrayClosest(            
+            wantPosition,
+            wantPosition.distance-(wantPosition.distance*stiffness)
+            );
+
+        /*
+        let output = {
+            'MOVE shape':shape.getWorldId().id,
+            'conectionLength':conectionLength,
+            'stiffness':stiffness,
+            'current':shape.getWorldPosition(),
+            'connectedToPosition':connectedToPosition,
+            'wantPosition':wantPosition,
+            'distanceToPosition':wantPosition.distance,
+            'movePosition':movePosition
+        }
+        */
+        //console.log(JSON.stringify(output));              
+        return(movePosition);
+	}
 
 }

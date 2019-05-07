@@ -32,7 +32,7 @@ export abstract class BaseTest {
         let canvasHolder = this.canvasHolder;
 
         worldEngine.createBounds(canvasHolder.getWidth(),canvasHolder.getHeight(),{restitution:0.9});
-        let interval:number = 1000/30; //one millisecond over beat per second
+        let interval = worldEngine.worldEngineParams.updateInterval;
         console.log("drawing every : "+interval+"ms");
         this.intervalId =  setInterval(doDraw,interval);
         

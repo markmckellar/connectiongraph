@@ -6,8 +6,8 @@ import { World } from "../world";
 import { BaseTest } from "./basetest";
 import { RectangleEngineShape } from "../../engine/shapes/rectangleengineshape";
 import { RectangleDisplayShape } from "../../display/drawableshapes/rectangledisplayshape";
-import { ContainInsideShape } from "../../engine/arearule/arearuleobject/containinsideshape";
 import { EngineShape } from "../../engine/shapes/engineshape";
+import { ContainInsideRectangle } from "../../engine/arearule/arearuleobject/containinsiderectangle";
 export class PedTest extends BaseTest {
 
     constructor(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML)  {
@@ -71,12 +71,12 @@ export class PedTest extends BaseTest {
         let container:RectangleEngineShape = world.worldEngine.createRectangle(
           new WorldId("containerInsideShape1"),
           new RectangleDisplayShape(),
-          300,20,
+          320,60,
           new WorldPosition(300,100),
           {}
         );           
 
-      let containInsideShape = new ContainInsideShape(world.worldEngine,container);
+      let containInsideShape = new ContainInsideRectangle(world.worldEngine,container);
 
       let shapes = new Array<EngineShape>();
       

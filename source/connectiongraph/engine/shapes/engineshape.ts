@@ -7,4 +7,6 @@ export interface EngineShape extends WorldObject {
     addToCollissionTags(tagName:string):void;
     removeFromCollisionTags(tagName:string):void;
     getCollisionTagList():Array<string>;
+    containsEngineShape(engineShape:EngineShape):boolean;
+
 };
