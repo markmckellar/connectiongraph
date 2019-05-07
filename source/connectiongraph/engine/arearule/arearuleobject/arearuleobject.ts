@@ -5,7 +5,7 @@ import { WorldEngine } from "../../worldengine";
 export class  AreaRuleObject {    
     public worldEngine:WorldEngine;
     public areaEngineShape:EngineShape;
-    private engineShapeList:Array<EngineShape>;
+    public engineShapeList:Array<EngineShape>;
     public areaRuleArray:Array<AreaRule>;
 
     constructor(worldEngine:WorldEngine,areaEngineShape:EngineShape) {
