@@ -7,6 +7,7 @@ import { RectangleEngineShape } from "../../shapes/rectangleengineshape";
 import { WorldPosition } from "../../../world/worldposition";
 import { ChildrenHaveTheSameYTrigger } from "../arearuletrigger/childrendhavesameytrigger";
 import { BoundingBox } from "../../shapes/boundingbox";
+import { DistanceWorldPosition } from "../../../world/distanceworldposition";
 
 export  class ContainInsideRectangle extends AreaRuleObject {
 
@@ -21,6 +22,8 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                     function(areaRuleObject:AreaRuleObject,shape:EngineShape):void
                     {
                         if(shape.isSelected()) return;               
+                        document.getElementById("messages1").innerHTML = "START stay in rec";
+
                         let shapePoints = shape.getShapePoints();
                         let moves = new Array<WorldPosition>();
                         let rect = self.rectangleEngineShape;
@@ -63,7 +66,9 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                        };
                        document.getElementById("messages2").innerHTML = JSON.stringify(JSON.stringify(message));
                        */
-                       shape.translate(averagePos);               
+                       shape.translate(averagePos);    
+                       document.getElementById("messages1").innerHTML = "DONE stay in rec";
+           
                     }           
                     ));
 
@@ -74,6 +79,8 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                                 {
                                     if(!shape.isSelected())
                                     {
+                                        document.getElementById("messages2").innerHTML = "START moving to same Y";
+
                                         let wantPos = new WorldPosition(shape.getWorldPosition().x,areaRuleObject.areaEngineShape.getWorldPosition().y);
 
                                         for(let i=0;i<areaRuleObject.engineShapeList.length;i++) {
@@ -83,24 +90,26 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                                                 let deltaX = shape.getWorldPosition().x-otherShape.getWorldPosition().x;
                                                 if(deltaX==0) deltaX = (Math.random()*2.0) - 2.0/2.0;
                                                 let boundingBox = new BoundingBox(shape.getShapePoints());
-                                                if( boundingBox.width>Math.abs(deltaX)) {
+                                                if( Math.abs(deltaX) < boundingBox.width ) {
                                                     let rect = self.rectangleEngineShape;
                                                     let left = rect.getWorldPosition().x-rect.getWidth()/2.0;
                                                     let right = rect.getWorldPosition().x+rect.getWidth()/2.0;
                                                     let moveX = boundingBox.width - boundingBox.width/Math.abs(deltaX);
-                                                    moveX = moveX * (Math.abs(deltaX)/deltaX) * 0.25;
+                                                    moveX = moveX * (Math.abs(deltaX)/deltaX) * 0.5;
                                                     if(wantPos.x>left && wantPos.x<right) wantPos.x = wantPos.x + moveX;
                                                 }                                                
                                             }
                                         }
 
-                                        //let distance = shape.getWorldPosition().getDistance(wantPos);
+                                         let distance = shape.getWorldPosition().getDistance(wantPos);
                                         //let distanceAvaragePos = DistanceWorldPosition.CreateDistanceWorldPosition(engineConnector.getWorldPosition(),averagePos);
                                 
-                                        //let movePos = DistanceWorldPosition.calulateSpringPositionMovement(
-                                            //shape.getWorldPosition(),wantPos,distance*0.75,1,worldEngine.worldEngineParams.updateInterval);
+                                        let movePos = DistanceWorldPosition.calulateSpringPositionMovement(
+                                            shape.getWorldPosition(),wantPos,distance*0.75,1,worldEngine.worldEngineParams.updateInterval);
                                         //self.addRandomToWorldPosition(wantX);
-                                        shape.translate(wantPos);               
+                                        shape.translate(movePos);               
+                                        //shape.translate(wantPos);               
+                                        document.getElementById("messages2").innerHTML = "DONE moving to same Y";
                                     }
                                 }
                             )

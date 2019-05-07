@@ -30,9 +30,17 @@ export abstract class WorldEngineBase {
         self.intervalId = setInterval(
             function() 
             { 
+
+                document.getElementById("messages3").innerHTML = "START updates";
+                let startTime = new Date().getTime();
+                document.getElementById("messages3").innerHTML = "START updates:US-";
                 self.updateFunction();
+                document.getElementById("messages3").innerHTML = "START updates:US-US:R-";
                 self.processAreaRuleObjectArray();
-                self.processConnectorPositionerArray();                
+                document.getElementById("messages3").innerHTML = "START updates:US-US:R-R:C-";
+                self.processConnectorPositionerArray();                                
+                let endTime = new Date().getTime()-startTime;
+                document.getElementById("messages3").innerHTML = "START updates:US-US:R-R:C-C:endTime="+endTime;
             },
             self.worldEngineParams.updateInterval
         );
