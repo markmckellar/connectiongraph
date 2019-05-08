@@ -17,13 +17,18 @@ export class ContainerTest extends BaseTest {
       console.log("building PedTest");
       let world = this.world;
       let containers = new Array<ContainInsideRectangle>();
+      let  drawShapeParams =  {
+        fillStyle:"ff0000ff",
+        strokeStyle:"0000ffff",
+        lineWidth:2
+    }
 
       for(let r=0;r<3;r++)
       {        
         let rects = new Array<RectangleEngineShape>();
         for(let i=0;i<5;i++) rects.push(world.worldEngine.createRectangle(
             new WorldId("rect_"+r+"."+i),
-            new RectangleDisplayShape(),
+            new RectangleDisplayShape(drawShapeParams),
             50,50,
             new WorldPosition(100+50*i,100),
             {}
@@ -31,7 +36,7 @@ export class ContainerTest extends BaseTest {
 
         let containerShape:RectangleEngineShape = world.worldEngine.createRectangle(
             new WorldId("containerInsideShape"+r),
-            new RectangleDisplayShape(),
+            new RectangleDisplayShape(drawShapeParams),
             50*(rects.length)+25,50+25,
             new WorldPosition(300,100),
             {}

@@ -26,6 +26,13 @@ export class Test1 extends BaseTest {
 
     public buildTest() {
       console.log("building Test1");
+
+      let  drawShapeParams =  {
+        fillStyle:"ff0000ff",
+        strokeStyle:"0000ffff",
+        lineWidth:2
+    }
+
       let world = this.world;
        let circle1:CircleEngineShape = world.worldEngine.createCircle(
           new WorldId("circle1"),
@@ -46,7 +53,7 @@ export class Test1 extends BaseTest {
         
       let rectangle1:RectangleEngineShape = world.worldEngine.createRectangle(
         new WorldId("rectangle1"),
-        new RectangleDisplayShape(),
+        new RectangleDisplayShape(drawShapeParams),
         100,100,
         new WorldPosition(100,100),
         {}
@@ -64,7 +71,7 @@ export class Test1 extends BaseTest {
       let textBox1:TextEngineShape = world.worldEngine.createTextBox(
         new WorldId("textbox1"),
         new TextDisplayShape(
-          new RectangleDisplayShape(),
+          new RectangleDisplayShape(drawShapeParams),
           "SomeText Mg\nAnd more text Mg"),
         100,100,
         new WorldPosition(550,550),
@@ -76,7 +83,7 @@ export class Test1 extends BaseTest {
       let textBox2:TextEngineShape = world.worldEngine.createTextBox(
         new WorldId("textbox2"),
         new TextDisplayShape(
-          new RectangleDisplayShape(),
+          new RectangleDisplayShape(drawShapeParams),
           "hey there friend Mg"),
         //80,20,
         100,100,
@@ -87,7 +94,7 @@ export class Test1 extends BaseTest {
       let textBox3:TextEngineShape = world.worldEngine.createTextBox(
         new WorldId("textbox3"),
         new TextDisplayShape(
-          new RectangleDisplayShape(),
+          new RectangleDisplayShape(drawShapeParams),
           "SomeText Mg\nAnd more text Mg\nSomeText Mg\nAnd more text Mg\nSomeText Mg\nAnd more text Mg\nSomeText Mg\nAnd MOOORE text Mg"),
           100,100,
           new WorldPosition(550,250),

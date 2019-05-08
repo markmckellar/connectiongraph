@@ -6,7 +6,6 @@ import { World } from "../world";
 import { BaseTest } from "./basetest";
 import { RectangleEngineShape } from "../../engine/shapes/rectangleengineshape";
 import { RectangleDisplayShape } from "../../display/drawableshapes/rectangledisplayshape";
-import { EngineShape } from "../../engine/shapes/engineshape";
 import { ContainInsideRectangle } from "../../engine/arearule/arearuleobject/containinsiderectangle";
 export class PedTest extends BaseTest {
 
@@ -17,114 +16,95 @@ export class PedTest extends BaseTest {
     public buildTest() {
       console.log("building PedTest");
       let world = this.world;
-        
-      let childGroup1_1:RectangleEngineShape = world.worldEngine.createRectangle(
-          new WorldId("childGroup1_1"),
-          new RectangleDisplayShape(),
-          50,50,
-          new WorldPosition(100,100),
-          {}
-        );
-
-      let childGroup1_2:RectangleEngineShape = world.worldEngine.createRectangle(
-          new WorldId("childGroup1_2"),
-          new RectangleDisplayShape(),
-          50,50,
-          new WorldPosition(100,100),
-          {}
-        );      
-        
-        let childGroup1_3:RectangleEngineShape = world.worldEngine.createRectangle(
-          new WorldId("childGroup1_3"),
-          new RectangleDisplayShape(),
-          50,50,
-          new WorldPosition(100,100),
-          {}
-        );               
-
-      let childGroup2_1:RectangleEngineShape = world.worldEngine.createRectangle(
-          new WorldId("childGroup2_1"),
-          new RectangleDisplayShape(),
-          50,50,
-          new WorldPosition(100,100),
-          {}
-        );    
-        
-
-      let childGroup2_2:RectangleEngineShape = world.worldEngine.createRectangle(
-          new WorldId("childGroup2_2"),
-          new RectangleDisplayShape(),
-          50,50,
-          new WorldPosition(100,100),
-          {}
-        );  
-        
-        let childGroup3_1:RectangleEngineShape = world.worldEngine.createRectangle(
-          new WorldId("childGroup3_1"),
-          new RectangleDisplayShape(),
-          50,50,
-          new WorldPosition(100,100),
-          {}
-        );  
-        
-        
-        let container:RectangleEngineShape = world.worldEngine.createRectangle(
-          new WorldId("containerInsideShape1"),
-          new RectangleDisplayShape(),
-          320,60,
-          new WorldPosition(300,100),
-          {}
-        );           
-
-      let containInsideShape = new ContainInsideRectangle(world.worldEngine,container);
-
-      let shapes = new Array<EngineShape>();
       
-      shapes.push(childGroup1_1);
-      shapes.push(childGroup1_2);
-      shapes.push(childGroup1_3);
-      shapes.push(childGroup2_1);
-      shapes.push(childGroup2_2);
-      shapes.push(childGroup3_1);
+      let c1 = this.buildContainedRects(3,6,30);
+      let c2 = this.buildContainedRects(3,2,30);
+      let c3 = this.buildContainedRects(1,2,30);
 
-      containInsideShape.addListToAffectedShapeList(shapes);
-      for(let i=0;i<shapes.length;i++) shapes[i].stopRotation();
-      containInsideShape.areaEngineShape.stopRotation();
-      
-
-      world.addWorldObject(container);
-
-      world.addWorldObject(childGroup1_1);
-      world.addWorldObject(childGroup1_2);
-      world.addWorldObject(childGroup1_3);
-
-      world.addWorldObject(childGroup2_1);
-      world.addWorldObject(childGroup2_2);
-
-      world.addWorldObject(childGroup3_1);
+      let all1 = this.buildContainrsAroundContainers("all1",c1);
+      let all2 = this.buildContainrsAroundContainers("all2",c2);
 
 
-      world.worldEngine.areaRuleObjectArray.push(containInsideShape);
-
-      
-    /*
-      let cd1:EngineConnectorDef = new EngineConnectorDef(circle1a,new PositionerFree(),200,0.01);
-      let connector1:EngineConnector = world.worldEngine.createConnector(
-        new WorldId("connector1"),
-        new LineConnectorDisplay(),//drawableConnector:DrawableConnector,
-        circle1b,//connectorShape:EngineShape,
-        [cd1],
-        {}
-      );
-
-            world.addWorldObject(connector1);
-
-    */
-    
-
-    
-    
       world.addWorldObject(world.worldEngine.getMouseAnchor());
     }
+
+    public buildContainrsAroundContainers(containerName:string,toAdd:Array<ContainInsideRectangle>):ContainInsideRectangle {
+      let  drawShapeParams =  {
+        fillStyle:"0000ff4f",
+        strokeStyle:"0000ffff",
+        lineWidth:2
+    };
+      let containerShape:RectangleEngineShape = this.world.worldEngine.createRectangle(
+        new WorldId(containerName),
+        new RectangleDisplayShape(drawShapeParams),
+        //rectSize*(rects.length)+rectSize/2,rectSize+rectSize/2,
+        1,1,
+        new WorldPosition(300,100),
+        {}
+      );    
+      containerShape.addToCollissionTags("ContainerShapeCollissionTagOuter");
+      containerShape.stopRotation();
+      let container = new ContainInsideRectangle(this.world.worldEngine,containerShape);      
+      container.areaEngineShape.stopRotation();
+      this.world.addWorldObject(containerShape);
+      containerShape.stopRotation();
+      for(let i=0;i<toAdd.length;i++) {
+        console.log("Adding "+toAdd[i].areaEngineShape.getWorldId().id+" to "+container.areaEngineShape.getWorldId().id);
+        container.addToAffectedShapeList(toAdd[i].areaEngineShape);
+      }
+      this.world.worldEngine.areaRuleObjectArray.push(container);
+      return(container);
+    }
+
+
+    public buildContainedRects(      
+      numbContainers:number,
+      numbRectsInContainer:number,
+      rectSize:number):Array<ContainInsideRectangle> {
+      let containers = new Array<ContainInsideRectangle>();
+
+      
+      let  drawShapeParams =  {
+        fillStyle:"00ff004f",
+        strokeStyle:"0000ffff",
+        lineWidth:2
+    };
+
+
+      for(let r=0;r<numbContainers;r++)
+      {        
+        let rects = new Array<RectangleEngineShape>();
+
+        for(let i=0;i<numbRectsInContainer;i++) rects.push(this.world.worldEngine.createRectangle(
+            new WorldId("rect_"+r+"."+i),
+            new RectangleDisplayShape(drawShapeParams),
+            rectSize,rectSize,
+            new WorldPosition(100+rectSize*i,100),
+            {}
+          ));
+
+        let containerShape:RectangleEngineShape = this.world.worldEngine.createRectangle(
+            new WorldId("containerInsideShape"+r),
+            new RectangleDisplayShape(drawShapeParams),
+            //rectSize*(rects.length)+rectSize/2,rectSize+rectSize/2,
+            1,1,
+            new WorldPosition(300,100),
+            {}
+          );    
+        containerShape.addToCollissionTags("ContainerShapeCollissionTag");
+
+        let container = new ContainInsideRectangle(this.world.worldEngine,containerShape);
+        containers.push(container);
+
+        container.addListToAffectedShapeList(rects);
+        for(let i=0;i<rects.length;i++) rects[i].stopRotation();
+        container.areaEngineShape.stopRotation();
+
+        this.world.addWorldObject(containerShape);
+        for(let i=0;i<rects.length;i++) this.world.addWorldObject(rects[i]);
+        this.world.worldEngine.areaRuleObjectArray.push(container);
+      }
+      return(containers);
+    } 
 
 }

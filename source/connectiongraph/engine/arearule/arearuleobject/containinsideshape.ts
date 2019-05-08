@@ -61,4 +61,8 @@ export  class ContainInsideShape extends AreaRuleObject {
 
     }
 
+    public numberOfAffectedChanged():void {
+        
+    }
+
 }

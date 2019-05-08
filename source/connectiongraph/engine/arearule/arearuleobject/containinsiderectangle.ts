@@ -11,7 +11,7 @@ import { DistanceWorldPosition } from "../../../world/distanceworldposition";
 
 export  class ContainInsideRectangle extends AreaRuleObject {
 
-    private rectangleEngineShape:RectangleEngineShape;
+    public rectangleEngineShape:RectangleEngineShape;
     constructor(worldEngine:WorldEngine,rectangleEngineShape:RectangleEngineShape) {
         super(worldEngine,rectangleEngineShape);
         this.rectangleEngineShape = rectangleEngineShape;
@@ -92,7 +92,7 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                                 {
                                     if(!shape.isSelected())
                                     {
-                                        document.getElementById("messages2").innerHTML = "START moving to same Y";
+                                        //document.getElementById("messages2").innerHTML = "START moving to same Y";
 
                                         let wantPos = new WorldPosition(shape.getWorldPosition().x,areaRuleObject.areaEngineShape.getWorldPosition().y);
                                         //let moveList = new Array<any>();   
@@ -158,7 +158,7 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                                        shape.translate(movePos);               
 
                                         //shape.translate(wantPos);               
-                                        document.getElementById("messages2").innerHTML = "DONE moving to same Y";
+                                       // document.getElementById("messages2").innerHTML = "DONE moving to same Y";
                                     }
                                 }
                             )
@@ -168,5 +168,34 @@ export  class ContainInsideRectangle extends AreaRuleObject {
     public addRandomToWorldPosition(span:number,worldPosition:WorldPosition):void {
         worldPosition.x = worldPosition.x+ (Math.random()*span) - span/2.0;
         worldPosition.y = worldPosition.y+ (Math.random()*span) - span/2.0;
+    }
+
+    public numberOfAffectedChanged():void {
+        let totalLength = 0;
+        let maxHeight = 0;
+        let averageWidth = 0;
+        //let averageHeight = 0;
+        for(let i=0;i<this.engineShapeList.length;i++) {
+            let bb = new BoundingBox(this.engineShapeList[i].getShapePoints());
+            totalLength += bb.width;
+            //averageHeight += this.engineShapeList[i].getWorldPosition().x;
+            if(bb.height>maxHeight) maxHeight = bb.height;
+        }
+        averageWidth = totalLength/this.engineShapeList.length;
+        //averageHeight = averageHeight/this.engineShapeList.length;        
+        if(totalLength==0) totalLength = 1;
+        if(maxHeight==0) maxHeight = 1;
+
+        console.log(JSON.stringify({
+            totalLength:totalLength,
+            maxHeight:maxHeight
+        }));
+        this.rectangleEngineShape.setSize(
+            totalLength+averageWidth*0.5,
+            maxHeight+maxHeight*0.5
+        );
+
+
+
     }
 }

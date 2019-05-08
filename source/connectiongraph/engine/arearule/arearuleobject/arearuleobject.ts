@@ -2,7 +2,7 @@ import { EngineShape } from "../../shapes/engineshape";
 import { AreaRule } from "../arearule/arearule";
 import { WorldEngine } from "../../worldengine";
 
-export class  AreaRuleObject {    
+export abstract class AreaRuleObject {    
     public worldEngine:WorldEngine;
     public areaEngineShape:EngineShape;
     public engineShapeList:Array<EngineShape>;
@@ -16,6 +16,8 @@ export class  AreaRuleObject {
 
     }
 
+    public abstract numberOfAffectedChanged():void;
+
     public addListToAffectedShapeList(engineShapeList:Array<EngineShape>) {
         for(let i=0;i<engineShapeList.length;i++) this.addToAffectedShapeList(engineShapeList[i]);
     }
@@ -27,12 +29,14 @@ export class  AreaRuleObject {
     public addToAffectedShapeList(engineShape:EngineShape) {
         this.engineShapeList.push(engineShape);
         engineShape.addToCollissionTags(this.areaEngineShape.getWorldId().id);
+        this.numberOfAffectedChanged();
 
     }
     public removeFromoAfectedShapeList(engineShape:EngineShape) {
         let index = this.engineShapeList.indexOf(engineShape, 0);
         if (index > -1)  this.engineShapeList.splice(index, 1);
         engineShape.removeFromCollisionTags(this.areaEngineShape.getWorldId().id);
+        this.numberOfAffectedChanged();
     }
 
     public processAllRules() {
