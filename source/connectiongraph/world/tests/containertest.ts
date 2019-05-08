@@ -16,37 +16,42 @@ export class ContainerTest extends BaseTest {
     public buildTest() {
       console.log("building PedTest");
       let world = this.world;
-        
-      let rects = new Array<RectangleEngineShape>();
-      for(let i=0;i<1;i++)
-      rects.push(world.worldEngine.createRectangle(
-          new WorldId("rect_"+i),
-          new RectangleDisplayShape(),
-          50,50,
-          new WorldPosition(100+50*i,100),
-          {}
-        ));
+      let containers = new Array<ContainInsideRectangle>();
 
-      let container:RectangleEngineShape = world.worldEngine.createRectangle(
-          new WorldId("containerInsideShape1"),
-          new RectangleDisplayShape(),
-          320,90,
-          new WorldPosition(300,100),
-          {}
-        );           
+      for(let r=0;r<3;r++)
+      {        
+        let rects = new Array<RectangleEngineShape>();
+        for(let i=0;i<5;i++) rects.push(world.worldEngine.createRectangle(
+            new WorldId("rect_"+r+"."+i),
+            new RectangleDisplayShape(),
+            50,50,
+            new WorldPosition(100+50*i,100),
+            {}
+          ));
 
-      let containInsideShape = new ContainInsideRectangle(world.worldEngine,container);
+        let containerShape:RectangleEngineShape = world.worldEngine.createRectangle(
+            new WorldId("containerInsideShape"+r),
+            new RectangleDisplayShape(),
+            50*(rects.length)+25,50+25,
+            new WorldPosition(300,100),
+            {}
+          );    
+        containerShape.addToCollissionTags("ContainerShapeCollissionTag");
 
-      containInsideShape.addListToAffectedShapeList(rects);
-      for(let i=0;i<rects.length;i++) rects[i].stopRotation();
-      containInsideShape.areaEngineShape.stopRotation();
-      
+        let container = new ContainInsideRectangle(world.worldEngine,containerShape);
+        containers.push(container);
 
-      world.addWorldObject(container);
-      for(let i=0;i<rects.length;i++) world.addWorldObject(rects[i]);
+        container.addListToAffectedShapeList(rects);
+        for(let i=0;i<rects.length;i++) rects[i].stopRotation();
+        container.areaEngineShape.stopRotation();
 
-      world.worldEngine.areaRuleObjectArray.push(containInsideShape);
+        world.addWorldObject(containerShape);
+        for(let i=0;i<rects.length;i++) world.addWorldObject(rects[i]);
+        world.worldEngine.areaRuleObjectArray.push(container);
+      }
 
+      for(let i=0;i<containers.length;i++) {
+      }
     
     
       world.addWorldObject(world.worldEngine.getMouseAnchor());

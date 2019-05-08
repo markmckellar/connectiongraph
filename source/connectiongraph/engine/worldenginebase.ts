@@ -1,6 +1,7 @@
 import { WorldEngineParams } from "./worldengineparams";
 import { EngineConnector } from "./connectors/engineconnector";
 import { AreaRuleObject } from "./arearule/arearuleobject/arearuleobject";
+import { EngineShapeBase } from "./shapes/engineshapebase";
 
 export abstract class WorldEngineBase {    
     public intervalId:any;
@@ -22,7 +23,7 @@ export abstract class WorldEngineBase {
     public abstract updateFunction():void;
 
     public getWorldStructureCollisionTag():string {
-      return("StructureCollisionTag");
+      return(EngineShapeBase.WorldStructureCollisionTag);
     }
 
     public startEngine():void {

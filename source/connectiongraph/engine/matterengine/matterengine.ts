@@ -274,7 +274,7 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
     
     public getCollisionFilterWorldStructure() {
       let collisionFilter = {
-        collisionTags:this.getWorldStructureCollisionTag(),
+        collisionTags:[this.getWorldStructureCollisionTag()],
         group:1,
         collidesWith:[-1]
       };
@@ -285,7 +285,7 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
       options['collisionFilter'] = this.getCollisionFilterWorldStructure();
       let wallBoundsRect = Matter.Bodies.rectangle(width/2,height/2,width,height,options);
       let walls:Matter.Body = MatterTools.createBoundObject(wallBoundsRect,1,10,options);
-      walls.collisionFilter.category = MatterEngine.boundsFilter;
+      //walls.collisionFilter.category = MatterEngine.boundsFilter;
       walls.restitution = 1.0;
       Matter.Body.setStatic(walls,true);
       Matter.World.add(this.engine.world, [walls]);

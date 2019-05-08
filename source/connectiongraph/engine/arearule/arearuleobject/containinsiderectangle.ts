@@ -66,6 +66,19 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                        };
                        document.getElementById("messages2").innerHTML = JSON.stringify(JSON.stringify(message));
                        */
+                      if(averagePos.x>1000||averagePos.x<-1000||averagePos.y>1000||averagePos.y<-1000) {
+                        console.log("ObjectIsOutsideTrigger:"+JSON.stringify(
+                            {
+                                shapeId:shape.getWorldId().id,
+                                shapePos:shape.getWorldPosition(),
+                                beforeLoop:{x:shape.getWorldPosition().x,y:areaRuleObject.areaEngineShape.getWorldPosition().y},
+                                averagePos:averagePos,
+                                averageMove:averageMove
+                            }
+                        ));
+                        throw new Error("ObjectIsOutsideTrigger:BIG NUMBER!!!");		
+                    }
+                    else
                        shape.translate(averagePos);    
                        document.getElementById("messages1").innerHTML = "DONE stay in rec";
            
@@ -82,21 +95,37 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                                         document.getElementById("messages2").innerHTML = "START moving to same Y";
 
                                         let wantPos = new WorldPosition(shape.getWorldPosition().x,areaRuleObject.areaEngineShape.getWorldPosition().y);
-
+                                        //let moveList = new Array<any>();   
+                                        // we need to look at all of the other shapes to see if we are "hung up" on one of them...
+                                        // if we are then we need to move to one side or the other
                                         for(let i=0;i<areaRuleObject.engineShapeList.length;i++) {
                                             let otherShape = areaRuleObject.engineShapeList[i];
                                             if(!shape.getWorldId().matches(otherShape.getWorldId()))
                                             {
                                                 let deltaX = shape.getWorldPosition().x-otherShape.getWorldPosition().x;
-                                                if(deltaX==0) deltaX = (Math.random()*2.0) - 2.0/2.0;
                                                 let boundingBox = new BoundingBox(shape.getShapePoints());
-                                                if( Math.abs(deltaX) < boundingBox.width ) {
+                                                if(deltaX==0 || Math.abs(deltaX)<(boundingBox.width*0.1)) deltaX = (Math.random()*(boundingBox.width*0.1)) - (boundingBox.width*0.1);
+                                                let absDeltaX = Math.abs(deltaX);
+                                                let signDeltaX = (deltaX<0) ? -1.0 : 1.0;
+                                                if(absDeltaX < boundingBox.width ) {
                                                     let rect = self.rectangleEngineShape;
                                                     let left = rect.getWorldPosition().x-rect.getWidth()/2.0;
                                                     let right = rect.getWorldPosition().x+rect.getWidth()/2.0;
-                                                    let moveX = boundingBox.width - boundingBox.width/Math.abs(deltaX);
-                                                    moveX = moveX * (Math.abs(deltaX)/deltaX) * 0.5;
+                                                    let moveXPre = boundingBox.width - boundingBox.width/absDeltaX;
+                                                    if(Math.abs(moveXPre)>boundingBox.width) moveXPre =  boundingBox.width*signDeltaX;
+                                                    let moveX = moveXPre * signDeltaX * 0.5;
                                                     if(wantPos.x>left && wantPos.x<right) wantPos.x = wantPos.x + moveX;
+                                                    /*
+                                                    moveList.push({
+                                                        otherShape:otherShape.getWorldId().id,
+                                                        otherX:otherShape.getWorldPosition().x,
+                                                        deltaX:deltaX,
+                                                        shapeBB:boundingBox.width,
+                                                        left:left,
+                                                        right:right,
+                                                        moveXPre:moveXPre,
+                                                        moveX:moveX
+                                                    });*/
                                                 }                                                
                                             }
                                         }
@@ -107,7 +136,27 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                                         let movePos = DistanceWorldPosition.calulateSpringPositionMovement(
                                             shape.getWorldPosition(),wantPos,distance*0.75,1,worldEngine.worldEngineParams.updateInterval);
                                         //self.addRandomToWorldPosition(wantX);
-                                        shape.translate(movePos);               
+/*
+                                        if(movePos.x>1000||movePos.x<-1000||movePos.y>1000||movePos.y<-1000) {
+                                            console.log("ChildrenHaveTheSameYTrigger:"+JSON.stringify(
+                                                {
+                                                    shapeId:shape.getWorldId().id,
+                                                    shapePos:shape.getWorldPosition(),
+                                                    beforeLoop:{x:shape.getWorldPosition().x,y:areaRuleObject.areaEngineShape.getWorldPosition().y},
+                                                    wantPos:wantPos,
+                                                    movePos:movePos,
+                                                    moveList:moveList
+                                                }
+                                            ));
+                                            throw new Error("ChildrenHaveTheSameYTrigger:BIG NUMBER!!!");		
+                                        }
+                                        else 
+                                        {
+                                            shape.translate(movePos);               
+                                        }
+                                        */
+                                       shape.translate(movePos);               
+
                                         //shape.translate(wantPos);               
                                         document.getElementById("messages2").innerHTML = "DONE moving to same Y";
                                     }

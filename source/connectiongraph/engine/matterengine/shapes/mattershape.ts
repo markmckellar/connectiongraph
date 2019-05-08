@@ -63,15 +63,13 @@ export abstract class MatterShape  extends EngineShapeBase implements WorldObjec
 	public translate(worldPosition:WorldPosition):void {
 		let newX = worldPosition.x-this.getBody().position.x;
 		let newY = worldPosition.y-this.getBody().position.y;
-
 		Matter.Body.translate( this.getBody(),Matter.Vector.create(
-			newX,newY ));
+			newX,newY ));			
 	}
 	
 	public setWorldPosition(worldPosition:WorldPosition):void {
 		let newX = worldPosition.x-this.getBody().position.x;
 		let newY = worldPosition.y-this.getBody().position.y;
-
 		Matter.Body.translate( this.getBody(),Matter.Vector.create(
 			newX,newY ));
 	}
