@@ -21,6 +21,8 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                     new ObjectIsOutsideTrigger(),
                     function(areaRuleObject:AreaRuleObject,shape:EngineShape):void
                     {
+                        self.rectangleEngineShape.stopRotation();
+
                         if(shape.isSelected()) return;               
                         document.getElementById("messages1").innerHTML = "START stay in rec";
 
@@ -90,6 +92,7 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                                 new ChildrenHaveTheSameYTrigger(),
                                 function(areaRuleObject:AreaRuleObject,shape:EngineShape):void
                                 {
+                                    self.rectangleEngineShape.stopRotation();
                                     if(!shape.isSelected())
                                     {
                                         //document.getElementById("messages2").innerHTML = "START moving to same Y";

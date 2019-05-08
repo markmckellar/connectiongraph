@@ -43,11 +43,11 @@ export class PedTest extends BaseTest {
         {}
       );    
       containerShape.addToCollissionTags("ContainerShapeCollissionTagOuter");
-      containerShape.stopRotation();
+      //containerShape.stopRotation();
       let container = new ContainInsideRectangle(this.world.worldEngine,containerShape);      
       container.areaEngineShape.stopRotation();
       this.world.addWorldObject(containerShape);
-      containerShape.stopRotation();
+      //containerShape.stopRotation();
       for(let i=0;i<toAdd.length;i++) {
         console.log("Adding "+toAdd[i].areaEngineShape.getWorldId().id+" to "+container.areaEngineShape.getWorldId().id);
         container.addToAffectedShapeList(toAdd[i].areaEngineShape);
