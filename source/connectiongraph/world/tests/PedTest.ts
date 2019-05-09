@@ -12,7 +12,7 @@ export class PedTest extends BaseTest {
     constructor(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML)  {
       super(worldEngine,world,canvasHolder);
     }
-
+  
     public buildTest() {
       console.log("building PedTest");
       let world = this.world;
