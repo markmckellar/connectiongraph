@@ -11,7 +11,7 @@ import { WorldOfWorldObjects } from "../worldofworldobjects";
 import { Test3 } from "./test3";
 import { MouseCrossCircleDisplayShape } from "../../display/drawableshapes/mousecrosscircledisplayshape";
 import { WorldEngineParams } from "../../engine/worldengineparams";
-import { PedTest } from "./ptests";
+import { PedTest } from "./pedtest";
 import { Test4 } from "./test4";
 import { ContainerTest } from "./containertest";
 
