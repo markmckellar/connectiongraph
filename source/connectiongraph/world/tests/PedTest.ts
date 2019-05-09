@@ -24,6 +24,7 @@ export class PedTest extends BaseTest {
       let all1 = this.buildContainrsAroundContainers("all1",c1);
       let all2 = this.buildContainrsAroundContainers("all2",c2);
 
+      
 
       world.addWorldObject(world.worldEngine.getMouseAnchor());
     }
