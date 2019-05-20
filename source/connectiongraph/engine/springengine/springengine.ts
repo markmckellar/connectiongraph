@@ -25,8 +25,8 @@ import { WorldEngineParams } from "../worldengineparams";
 import { WorldEngineBase } from "../worldenginebase";
 
 export class SpringEngine extends WorldEngineBase implements WorldEngine {
-  private _mouseAnchor: SpringCircle;
-  private _springShapes : Map<WorldId,SpringShape>;
+  public mouseAnchor: SpringCircle;
+  public springShapes : Map<WorldId,SpringShape>;
   //private springShapeArray : Array<SpringShape>;
   private springConnectorArray:Array<SpringConnector>;
 
@@ -257,22 +257,7 @@ public addSpringShape(springShape:SpringShape):void {
     mouseEventHandler: MouseEventHandler
   ): void {}
 
-  public get mouseAnchor(): SpringCircle {
-    return this._mouseAnchor;
-  }
-
-  public set mouseAnchor(value: SpringCircle) {
-    this._mouseAnchor = value;
-  }
-
-  public get springShapes(): Map<WorldId,SpringShape> {
-		return this._springShapes;
-	}
-
-	public set springShapes(value: Map<WorldId,SpringShape>) {
-		this._springShapes = value;
-	}
-
+  
 
 
 }

@@ -7,7 +7,11 @@ import { BaseTest } from "./basetest";
 import { RectangleEngineShape } from "../../engine/shapes/rectangleengineshape";
 import { RectangleDisplayShape } from "../../display/drawableshapes/rectangledisplayshape";
 import { ContainInsideRectangle } from "../../engine/arearule/arearuleobject/containinsiderectangle";
-export class PedTest extends BaseTest {
+import { EngineConnectorDef } from "../../engine/connectors/engineconnectordef";
+import { EngineConnector } from "../../engine/connectors/engineconnector";
+import { LineConnectorDisplay } from "../../display/drawableshapes/lineconnectordisplay";
+import { PositionerLockX } from "../../engine/connectors/connectorpositioners/positionerlockx";
+export class PedTest2 extends BaseTest {
 
     constructor(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML)  {
       super(worldEngine,world,canvasHolder);
@@ -21,13 +25,40 @@ export class PedTest extends BaseTest {
       let c2 = this.buildContainedRects(3,2,30);
       let c3 = this.buildContainedRects(1,2,30);
 
-      let all1 = this.buildContainrsAroundContainers("all1",c1);
+      //let all1 = this.buildContainrsAroundContainers("all1",c1);
       let all2 = this.buildContainrsAroundContainers("all2",c2);
+      //let all3 = this.buildContainrsAroundContainers("all2",c3);
 
+      this.connectParentChildContainers(c2[0],c1[0]);
+      this.connectParentChildContainers(c2[1],c1[1]);
+      this.connectParentChildContainers(c2[2],c1[2]);
+
+      this.connectParentChildContainers(c3[0],all2);
+   
+
+
+
+      
       // want to keep the visiual that you get a return value for these calls
-      if(c3&&all1&&all2) {};
 
       world.addWorldObject(world.worldEngine.getMouseAnchor());
+    }
+
+    public connectParentChildContainers(
+      //parent:ContainInsideRectangle,child:ContainInsideRectangle
+      child:ContainInsideRectangle,parent:ContainInsideRectangle
+      ) {
+      
+      let engineConnectorDef:EngineConnectorDef = new EngineConnectorDef(parent.areaEngineShape,new PositionerLockX(),150,0.01);
+      let connector:EngineConnector = this.world.worldEngine.createConnector(
+        new WorldId(parent.areaEngineShape.getWorldId()+":childConnector"),
+        new LineConnectorDisplay(),//drawableConnector:DrawableConnector,
+        child.areaEngineShape,//connectorShape:EngineShape,
+        [engineConnectorDef],
+        {}
+      );
+      this.world.addWorldObject(connector)
+      return(connector);
     }
 
     public buildContainrsAroundContainers(containerName:string,toAdd:Array<ContainInsideRectangle>):ContainInsideRectangle {
@@ -64,6 +95,7 @@ export class PedTest extends BaseTest {
       this.world.worldEngine.areaRuleObjectArray.push(container);
       return(container);
     }
+
 
     
     public buildContainedRects(      

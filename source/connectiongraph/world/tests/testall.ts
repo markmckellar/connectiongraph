@@ -14,6 +14,7 @@ import { WorldEngineParams } from "../../engine/worldengineparams";
 import { PedTest } from "./pedtest";
 import { Test4 } from "./test4";
 import { ContainerTest } from "./containertest";
+import { PedTest2 } from "./pedtest2";
 
 export class TestAll {
     public worldEngine:WorldEngine;
@@ -22,6 +23,12 @@ export class TestAll {
     public test:BaseTest;
     public registeredTests = 
     [
+        {
+            'name':'ped2',
+            'buildFunction': function(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML) {
+                return(new PedTest2(worldEngine,world,canvasHolder));
+            }
+        },
         {
             'name':'ped',
             'buildFunction': function(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML) {
