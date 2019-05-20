@@ -205,7 +205,17 @@ export class DistanceWorldPosition extends WorldPosition {
 			// we can only move as far as the time interval
 		}
 		//let percentToMove =  wantPosition.distance*wantPosition.distance*^2 s^2 *i   /   1000;
-		let percentToMove = Math.pow(wantPosition.distance,1.5+stiffness) * (stiffness/1000);
+		//let percentToMove = Math.pow(wantPosition.distance,1.5+stiffness) * (stiffness/1000);
+		let adjsutedStiffness = stiffness;
+
+		let startIncreaseOfStiness = 0.5;
+		let increaseBumpAtZero = 0.35;
+
+		if(adjsutedStiffness<startIncreaseOfStiness) {
+			adjsutedStiffness =  ( (startIncreaseOfStiness-increaseBumpAtZero)/startIncreaseOfStiness ) * adjsutedStiffness + increaseBumpAtZero;
+		}
+
+		let percentToMove = wantPosition.distance * adjsutedStiffness * timeInterval/1000;
 		if(percentToMove>0.5) percentToMove = 0.5;
 		if(percentToMove<0) percentToMove = 0;
 		//percentToMove = stiffness;
