@@ -190,37 +190,21 @@ export class DistanceWorldPosition extends WorldPosition {
         if(wantPosition.distance==0.0) {
             return(wantPosition);
 		}
-		/*
-		the greater wantPosition.distance is the more we should moveBy
-		* at timeInterval==33/1000 
-		* and stifness = 0.01
-		* percent move will be a function that increases as wantPosition.distance icreases -- as wantPosition.distance apraoches 0 stiffness should apraoch 0 (rapidly)
-		
-		
-		let percentOfDistanceToMove = 0.5;	
-		*/
+
         // stiffness should use the refresh interval somehow to decide how far it moves each "click".. right now it is a default that is the same
 		// regardless of the animation interval
-		if( Math.pow(wantPosition.distance*stiffness,2) > timeInterval) {
-			// we can only move as far as the time interval
-		}
-		//let percentToMove =  wantPosition.distance*wantPosition.distance*^2 s^2 *i   /   1000;
-		//let percentToMove = Math.pow(wantPosition.distance,1.5+stiffness) * (stiffness/1000);
 		let adjsutedStiffness = stiffness;
-
-		let startIncreaseOfStiness = 0.5;
-		let increaseBumpAtZero = 0.35;
+		let startIncreaseOfStiness = 1.0;
+		let increaseBumpAtZero = 0.45;
 
 		if(adjsutedStiffness<startIncreaseOfStiness) {
 			adjsutedStiffness =  ( (startIncreaseOfStiness-increaseBumpAtZero)/startIncreaseOfStiness ) * adjsutedStiffness + increaseBumpAtZero;
 		}
 
 		let percentToMove = wantPosition.distance * adjsutedStiffness * timeInterval/1000;
-		if(percentToMove>0.5) percentToMove = 0.5;
-		if(percentToMove<0) percentToMove = 0;
-		//percentToMove = stiffness;
-		//console.log(JSON.stringify({conectionLength:conectionLength,stiffness:stiffness,timeInterval:timeInterval,interval:interval}));
-
+		if(percentToMove>0.75) percentToMove = 0.75;
+		else if(percentToMove<0) percentToMove = 0;
+		
 		let movePosition = 
 			new DistanceWorldPosition(worldPosition1.x,worldPosition1.y).
 					getDistanceOnLinePointArrayClosest(            
