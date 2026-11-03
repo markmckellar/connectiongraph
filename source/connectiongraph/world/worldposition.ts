@@ -2,8 +2,8 @@ import { WorldObject } from "./worldobject";
 
 
 export class WorldPosition {
-    private _x:number;
-    private _y:number;
+    private _x!:number;
+    private _y!:number;
 
     public constructor(x:number,y:number) {
         this.x = x;

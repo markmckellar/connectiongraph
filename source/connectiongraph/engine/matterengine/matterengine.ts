@@ -4,6 +4,9 @@ import { MatterCollisionEvent } from "./events/mattercollisionevent";
 import { MatterCompositeEvent } from "./events/mattercompositeevent";
 import { MatterTimestampedEvent } from "./events/mattertimestampedevent";
 import * as Matter from "matter-js";
+import decomp from "poly-decomp";
+
+Matter.Common.setDecomp(decomp);
 import { WorldEngine } from "../worldengine";
 import { WorldId } from "../../world/worldid";
 import { World } from "../../world/world";
@@ -32,15 +35,16 @@ import { WorldEngineBase } from "../worldenginebase";
 import { EngineShapeBase } from "../shapes/engineshapebase";
 
 export  class MatterEngine extends WorldEngineBase implements WorldEngine {
-    private _matterTools:MatterTools ;
-    private _matterShapes : Map<WorldId,MatterShape>;
-    private _collisionEventHandlers : Map<string,MatterCollisionEvent>;
-    private _compositeEventHandlers : Map<string,MatterCompositeEvent>;
-    private _timestampEventHandlers : Map<string,MatterTimestampedEvent>;
+    private _matterTools!:MatterTools ;
+    private _matterShapes! : Map<WorldId,MatterShape>;
+    private _collisionEventHandlers! : Map<string,MatterCollisionEvent>;
+    private _compositeEventHandlers! : Map<string,MatterCompositeEvent>;
+    private _timestampEventHandlers! : Map<string,MatterTimestampedEvent>;
     private matterBodyId2WorldIdMap : Map<number,MatterShape>;
-    private _matterMouseConstraint:Matter.Constraint;
-    private _engine : Matter.Engine;
-    private _mouseAnchor:MatterCircle;
+    private _matterMouseConstraint!:Matter.Constraint;
+    private _engine! : Matter.Engine;
+    private runner! : Matter.Runner;
+    private _mouseAnchor!:MatterCircle;
     //private connectorArray:Array<MatterConnector>;
 
 
@@ -84,9 +88,8 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
           this.engine.timing.timeScale = 400 / this.worldEngineParams.updateInterval;
         }
         
-        this.engine.world.gravity.x = 0.0;
-        //this.engine.world.gravity.y = 1.0;
-        this.engine.world.gravity.y = 0.0;
+        this.engine.gravity.x = 0.0;
+        this.engine.gravity.y = 0.0;
 
         this.mouseAnchor = new MatterCircle(
           new WorldId("mouseAnchor"),
@@ -119,12 +122,14 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
 
     public stopEngine():void {
       super.stopEngine();
+      if(this.runner) Matter.Runner.stop(this.runner);
       Matter.Engine.clear(this.engine);
     }
 
     public startEngine():void {
       super.startEngine();
-      Matter.Engine.run(this.engine);
+      // Matter.Engine.run was removed in matter-js 0.20; a Runner drives the engine now.
+      this.runner = Matter.Runner.run(Matter.Runner.create(),this.engine);
     }
 
     public updateFunction()  {      
@@ -156,17 +161,18 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
     }
 
     public updateMouseConstraint(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void {
-      var newPosition = new WorldPosition(event.x- canvasMouse.offset.x,event.y- canvasMouse.offset.y);
+      var newPosition = new WorldPosition(event.pageX- canvasMouse.offset.x,event.pageY- canvasMouse.offset.y);
       this.mouseAnchor.translate(newPosition);
 
-      if(mouseEventHandler.getCurrentWorldObject()!=null && this.matterMouseConstraint.bodyB==null)
+      const currentWorldObject = mouseEventHandler.getCurrentWorldObject();
+      if(currentWorldObject!=null && this.matterMouseConstraint.bodyB==null)
       {
         //console.log("updateMouseConstraint:getCurrentWorldObject="+mouseEventHandler.getCurrentWorldObject().getWorldId().id+
 //          ":Ax="+this.matterMouseConstraint.pointA.x+":Ay="+this.matterMouseConstraint.pointA.y);
         
-        if(this.matterShapes.has(mouseEventHandler.getCurrentWorldObject().getWorldId()) )
+        const matterShape = this.matterShapes.get(currentWorldObject.getWorldId());
+        if(matterShape)
         {
-          let matterShape:MatterShape = this.matterShapes.get(mouseEventHandler.getCurrentWorldObject().getWorldId());
           let bodyB =  matterShape.getBody();
           this.matterMouseConstraint.bodyB = bodyB;
           // TODO do we really want this in the middle?  Should it be where thye grabbed it?!?!
@@ -180,10 +186,12 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
 
         }
       }
-      else if(mouseEventHandler.getCurrentWorldObject()==null)
+      else if(currentWorldObject==null)
       {
-        this.matterMouseConstraint.bodyB = null        
-        this.matterMouseConstraint.pointB = null;   
+        // Matter supports a free (null) end on a constraint at runtime; its type defs just don't say so.
+        const constraint = this.matterMouseConstraint as unknown as { bodyB: Matter.Body|null, pointB: Matter.Vector|null };
+        constraint.bodyB = null;
+        constraint.pointB = null;
       }
     }
 
@@ -334,7 +342,7 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
       return(this.collisionEventHandlers.has(this.getCollisionEventMapId(body,eventType)))
     }
 
-    public getCollisionHandler(body:Matter.Body,eventType:MatterEvent):MatterCollisionEvent {
+    public getCollisionHandler(body:Matter.Body,eventType:MatterEvent):MatterCollisionEvent|undefined {
       return( this.collisionEventHandlers.get(this.getCollisionEventMapId(body,eventType)) );
     }
 
@@ -342,11 +350,11 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
       let me:MatterEngine = this;
 
       Matter.Events.on(render,MatterEvent.beforeRender,
-        function(event:Matter.IEventTimestamped<Matter.Engine>)
+        function(event:any)
         { me.processTimestampedEvent(MatterEvent.beforeRender,event) } );    
 
       Matter.Events.on(render,MatterEvent.afterRender,
-        function(event:Matter.IEventTimestamped<Matter.Engine>)
+        function(event:any)
         { me.processTimestampedEvent(MatterEvent.afterRender,event) } );   
     }
   
@@ -359,14 +367,11 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
     }
 
     private processCollisionPairsEvent(eventType:MatterEvent,event: Matter.IEventCollision<Matter.Engine>):void {
-      var pairs:Matter.IPair[] = event.pairs;
+      var pairs:Matter.Pair[] = event.pairs;
       for(let i=0;i<pairs.length;i++){
         // TODO this is the collision loop...  we can probably drop from 4 hash lookps to 2
-        if(this.hasCollisionHandler(pairs[i].bodyA,eventType))
-          this.getCollisionHandler(pairs[i].bodyA,eventType)(this,eventType,event);
-
-        if(this.hasCollisionHandler(pairs[i].bodyB,eventType))
-          this.getCollisionHandler(pairs[i].bodyB,eventType)(this,eventType,event);
+        this.getCollisionHandler(pairs[i].bodyA,eventType)?.(this,eventType,event);
+        this.getCollisionHandler(pairs[i].bodyB,eventType)?.(this,eventType,event);
 /*
         let shapeA = this.matterBodyId2WorldIdMap.get(pairs[i].bodyA.id);
         let shapeB = this.matterBodyId2WorldIdMap.get(pairs[i].bodyB.id);
@@ -390,8 +395,7 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
         
         if(name.endsWith(eventType)) {
           //console.log("----------MatterEngine:processTimestampedEvent:has:name="+name);
-          let handler:MatterTimestampedEvent =  this.timestampEventHandlers.get(name);
-          handler(this,eventType,event);
+          this.timestampEventHandlers.get(name)?.(this,eventType,event);
         }          
       }
     }
@@ -407,8 +411,7 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
         
         if(name.endsWith(eventType)) {
           //console.log("----------MatterEngine:processCompositeEvent:has:name="+name);
-          let handler:MatterCompositeEvent =  this.compositeEventHandlers.get(name);
-          handler(this,eventType,event);
+          this.compositeEventHandlers.get(name)?.(this,eventType,event);
         }          
       }
     
@@ -431,19 +434,19 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
         { me.processCollisionPairsEvent(MatterEvent.collisionEnd,event) } ); 
             
       Matter.Events.on(this.engine,MatterEvent.beforeUpdate,
-        function(event:Matter.IEventTimestamped<Matter.Engine>)
+        function(event:any)
         { me.processTimestampedEvent(MatterEvent.collisionEnd,event) } ); 
   
       Matter.Events.on(this.engine,MatterEvent.afterUpdate,
-        function(event:Matter.IEventComposite<Matter.Composite>)
+        function(event:any)
         { me.processCompositeEvent(MatterEvent.afterUpdate,event) } ); 
     
       Matter.Events.on(this.engine,MatterEvent.beforeAdd,
-        function(event:Matter.IEventComposite<Matter.Composite>)
+        function(event:any)
         { me.processCompositeEvent(MatterEvent.beforeAdd,event) } ); 
   
       Matter.Events.on(this.engine,MatterEvent.afterAdd,
-        function(event:Matter.IEventComposite<Matter.Composite>)
+        function(event:any)
         { me.processCompositeEvent(MatterEvent.afterAdd,event) } ); 
 
   }

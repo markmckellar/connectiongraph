@@ -11,9 +11,9 @@ import { RectangleEngineShape } from "../../shapes/rectangleengineshape";
 
 export class MatterRectangle extends MatterShape implements RectangleEngineShape
 {
-	private _rectangleBody:Matter.Body;
-	private _width:number;
-	private _height:number;
+	private _rectangleBody!:Matter.Body;
+	private _width!:number;
+	private _height!:number;
 	
 
 	constructor(worldId:WorldId,drawable:Drawable,width:number,height:number,position:WorldPosition,options:any,matterEngine:MatterEngine)

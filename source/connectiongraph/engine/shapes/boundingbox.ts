@@ -3,10 +3,10 @@ import { WorldPosition } from "../../world/worldposition";
 
 export class BoundingBox
 {
-	private _pointList:Array<WorldPosition>;
-	private _width:number;
-	private _height:number;
-	private _position:WorldPosition;
+	private _pointList!:Array<WorldPosition>;
+	private _width!:number;
+	private _height!:number;
+	private _position!:WorldPosition;
 
 	constructor(pointList:Array<WorldPosition>)
 	{
@@ -34,19 +34,14 @@ export class BoundingBox
 	private initBoundingBox()
 	{
 		
-		let xMin:number = null;
-		let xMax:number = null;
-		let yMin:number = null;
-		let yMax:number = null;
+		let xMin = Infinity;
+		let xMax = -Infinity;
+		let yMin = Infinity;
+		let yMax = -Infinity;
 
 		for(var i=0;i<this.pointList.length;i++)
 		{
 			var p:WorldPosition = this.pointList[i];
-			if(xMin==null) xMin = p.x;
-			if(xMax==null) xMax = p.x;
-			if(yMin==null) yMin = p.y;
-			if(yMax==null) yMax = p.y;
-			
 			if(p.x<xMin) xMin = p.x;
 			if(p.x>xMax) xMax = p.x;
 			if(p.y<yMin) yMin = p.y;

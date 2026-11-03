@@ -3,8 +3,8 @@ import { RectangleEngineShape } from "./rectangleengineshape";
 
 export class CircleAndText {
 
-    private _circle:CircleEngineShape;
-    private _textBox:RectangleEngineShape;
+    private _circle!:CircleEngineShape;
+    private _textBox!:RectangleEngineShape;
     constructor() {
 
     }

@@ -35,7 +35,7 @@ export abstract class EngineShapeBase implements EngineShape {
 */	
 	public static checkCollissionTagSetsx(o1:Set<string>,o2:Set<string>) {
 		let sharesTags = false;
-		if(!o1)
+		if(o1 && o2)
         o1.forEach(function(item){
             if(o2.has(item)) sharesTags = true;
         });

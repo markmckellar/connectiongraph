@@ -7,8 +7,8 @@ import { MockEngine } from "../mockengine";
 
 export class MockRectangle extends MockShape implements RectangleEngineShape
 {
-	private _width:number;
-	private _height:number;
+	private _width!:number;
+	private _height!:number;
 
 	constructor(worldId:WorldId,drawable:Drawable,width:number,height:number,position:WorldPosition,options:any,mockEngine:MockEngine)
 	{

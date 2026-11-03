@@ -9,9 +9,9 @@ import { WorldDisplay } from "../worlddisplay";
 
 
 export class MouseEventHandlerWorldObject implements MouseEventHandler {
-   private _mouseStatus:MouseStatus;
-   private _currentWorldObject:WorldObject;
-   private _lastWorldObject:WorldObject;
+   private _mouseStatus!:MouseStatus;
+   private _currentWorldObject!:WorldObject|null;
+   private _lastWorldObject!:WorldObject|null;
 
     constructor()
     {
@@ -32,7 +32,7 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 
 	}
 
-	public getCurrentWorldObject():WorldObject {
+	public getCurrentWorldObject():WorldObject|null {
 		return(this.currentWorldObject);
 	}
 	
@@ -60,7 +60,7 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 			this.currentWorldObject = null;
 		}
 		
-		let clickWorldObject:WorldObject =  world.getWorldObjectContainingPosition(eventPosition);
+		let clickWorldObject:WorldObject|null =  world.getWorldObjectContainingPosition(eventPosition);
 	
 		if(clickWorldObject!=null && clickWorldObject!=this.lastWorldObject)
 		{
@@ -202,20 +202,20 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 	}
 
 
-	public get currentWorldObject(): WorldObject {
+	public get currentWorldObject(): WorldObject|null {
 		return this._currentWorldObject;
 	}
 
-	public set currentWorldObject(value: WorldObject) {
+	public set currentWorldObject(value: WorldObject|null) {
 		this._currentWorldObject = value;
 	}
 
 
-	public get lastWorldObject(): WorldObject {
+	public get lastWorldObject(): WorldObject|null {
 		return this._lastWorldObject;
 	}
 
-	public set lastWorldObject(value: WorldObject) {
+	public set lastWorldObject(value: WorldObject|null) {
 		this._lastWorldObject = value;
 	}
     

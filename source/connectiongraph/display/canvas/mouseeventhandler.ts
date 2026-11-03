@@ -8,7 +8,7 @@ export interface MouseEventHandler {
     pointerDownEvent(world:World,canvasMouse:CanvasMouse,event:UIEvent ):void;
     pointerMoveEvent(world:World,canvasMouse:CanvasMouse,event:UIEvent ):void;
     pointerUpEvent(world:World,canvasMouse:CanvasMouse,event:UIEvent ):void;
-    getCurrentWorldObject():WorldObject;
+    getCurrentWorldObject():WorldObject|null;
     getMouseStatus():MouseStatus;
    // drag(mouseStatus:MouseStatus):void;
 }

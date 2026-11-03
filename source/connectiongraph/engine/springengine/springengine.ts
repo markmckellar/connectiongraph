@@ -98,9 +98,9 @@ private animateCalculate()
  
 
   public getSpringShape(worldId:WorldId):SpringShape {
-    if(this.springShapes.has(worldId))
-      return(this.springShapes.get(worldId)); 
-      throw new Error("getSpringShape:shape not found! worldId="+worldId.id);
+    const springShape = this.springShapes.get(worldId);
+    if(springShape) return(springShape);
+    throw new Error("getSpringShape:shape not found! worldId="+worldId.id);
 
   }
 
@@ -224,12 +224,13 @@ public addSpringShape(springShape:SpringShape):void {
     mouseEventHandler: MouseEventHandler
   ): void {
     var newPosition = new WorldPosition(
-      event.x - canvasMouse.offset.x,
-      event.y - canvasMouse.offset.y
+      event.pageX - canvasMouse.offset.x,
+      event.pageY - canvasMouse.offset.y
     );
     this.mouseAnchor.translate(newPosition);
 
-    if (mouseEventHandler.getCurrentWorldObject() != null) {
+    const currentWorldObject = mouseEventHandler.getCurrentWorldObject();
+    if (currentWorldObject != null) {
       var deltaPosition = mouseEventHandler
         .getMouseStatus()
         .startPosition.getDelta(mouseEventHandler.getMouseStatus().position);
@@ -244,9 +245,7 @@ public addSpringShape(springShape:SpringShape):void {
         deltaPosition.y +
         mouseEventHandler.getMouseStatus().clickOffset.y;
 
-      mouseEventHandler
-        .getCurrentWorldObject()
-        .setWorldPosition(new WorldPosition(newX, newY));
+      currentWorldObject.setWorldPosition(new WorldPosition(newX, newY));
     }
   }
 

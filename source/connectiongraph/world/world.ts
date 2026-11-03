@@ -13,7 +13,7 @@ import { WorldId } from "./worldid";
 export abstract class World {
 
    // private _displayHolder:DisplayHolder;
-	private _worldEngine:WorldEngine;
+	private _worldEngine!:WorldEngine;
 
     constructor(worldEngine:WorldEngine){
 		this.worldEngine = worldEngine;
@@ -21,9 +21,9 @@ export abstract class World {
 
 	public abstract addWorldObject(worldObject:WorldObject):void;
 
-    public abstract getWorldObjectMatchingWorldId(worldId:WorldId):WorldObject;
+    public abstract getWorldObjectMatchingWorldId(worldId:WorldId):WorldObject|null;
 	
-	public abstract getWorldObjectContainingPosition(worldPosition:WorldPosition):WorldObject;
+	public abstract getWorldObjectContainingPosition(worldPosition:WorldPosition):WorldObject|null;
 
 	public abstract drawWorld(canvasHolder:CanvasHolder):void;
 

@@ -4,11 +4,10 @@ import { WorldDisplay } from "../worlddisplay";
 
 export class PolygonDisplayShape implements Drawable
 {
-	private _polygonEngineShape:PolygonEngineShape;
+	private _polygonEngineShape!:PolygonEngineShape;
 
 	constructor()
 	{
-		this.polygonEngineShape = null;
 	}
 
 	public init(polygonEngineShape:PolygonEngineShape,options:any):void {

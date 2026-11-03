@@ -16,11 +16,11 @@ import { TextDisplayShape } from "../../display/drawableshapes/textdisplayshape"
 
 export class ShapeAndText implements TextUpdateHandler {
 
-    private _objectShape:EngineShape;
-	private _textEngineShape:TextEngineShape;
-	private _spacerLength:number;
-	private _connector:EngineConnector;
-	private _connectorShape:CircleEngineShape;
+    private _objectShape!:EngineShape;
+	private _textEngineShape!:TextEngineShape;
+	private _spacerLength!:number;
+	private _connector!:EngineConnector;
+	private _connectorShape!:CircleEngineShape;
 	
     constructor(world:World,objectShape:EngineShape,textEngineShape:TextEngineShape,spacerLength:number) {
 		this.objectShape = objectShape;

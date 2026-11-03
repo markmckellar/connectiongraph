@@ -11,9 +11,9 @@ import { MatterEngine } from "../matterengine";
 
 export class MatterCircle extends MatterShape implements CircleEngineShape
 {
-	private _circleBody:Matter.Body;
-	private _curvePoints:number;
-	private _radius:number;
+	private _circleBody!:Matter.Body;
+	private _curvePoints!:number;
+	private _radius!:number;
 	
 
 	constructor(worldId:WorldId,drawable:Drawable,radius:number,curvePoints:number,position:WorldPosition,options:any,matterEngine:MatterEngine)

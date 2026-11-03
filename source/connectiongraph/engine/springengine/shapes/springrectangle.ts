@@ -7,8 +7,8 @@ import { SpringEngine } from "../springengine";
 
 export class SpringRectangle extends SpringShape implements RectangleEngineShape
 {
-	private _width:number;
-	private _height:number;
+	private _width!:number;
+	private _height!:number;
 
 	constructor(worldId:WorldId,drawable:Drawable,width:number,height:number,position:WorldPosition,options:any,springEngine:SpringEngine)
 	{

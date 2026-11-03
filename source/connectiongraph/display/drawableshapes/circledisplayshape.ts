@@ -8,11 +8,10 @@ import { CircleEngineShape } from "../../engine/shapes/circleengineshape";
 
 export class CircleDisplayShape implements Drawable
 {
-	private _circleEngineShape:CircleEngineShape;
+	private _circleEngineShape!:CircleEngineShape;
 
 	constructor()
 	{
-		this.circleEngineShape = null;
 	}
 
 	public init(circleEngineShape:CircleEngineShape,options:any):void {

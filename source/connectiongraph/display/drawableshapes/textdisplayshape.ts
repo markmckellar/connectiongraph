@@ -10,15 +10,14 @@ import { TextUpdateHandler } from "./textupdatehandler";
 
 export class TextDisplayShape implements DrawableText
 {
-    private _rectangleDisplayShape:RectangleDisplayShape;
-    private _displayText:string;
-	private _rectangleEngineShape:RectangleEngineShape;
-	private _textImageData:ImageData;
-	private _textUpdateHandler:TextUpdateHandler;
+    private _rectangleDisplayShape!:RectangleDisplayShape;
+    private _displayText!:string;
+	private _rectangleEngineShape!:RectangleEngineShape;
+	private _textImageData!:ImageData|null;
+	private _textUpdateHandler!:TextUpdateHandler|null;
 
 	constructor(rectangleDisplayShape:RectangleDisplayShape,displayText:string)
 	{
-		this.rectangleEngineShape = null;
 		this.rectangleDisplayShape = rectangleDisplayShape;
 		this.displayText = displayText;
 		this.textImageData = null;
@@ -45,8 +44,6 @@ export class TextDisplayShape implements DrawableText
 		{
 			pointerDownEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void
 			{
-				console.log("LOOOOOLZZZZZ! HEY FELLA XXXXXXX");
-				console.log("setSize:"+JSON.stringify({"width":this.width,"height":this.height}))
 			},
 			pointerMoveEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {},
 			pointerUpEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {}
@@ -59,7 +56,7 @@ export class TextDisplayShape implements DrawableText
      * Getter textUpdateHandler
      * @return {TextUpdateHandler}
      */
-	public get textUpdateHandler(): TextUpdateHandler {
+	public get textUpdateHandler(): TextUpdateHandler|null {
 		return this._textUpdateHandler;
 	}
 
@@ -67,7 +64,7 @@ export class TextDisplayShape implements DrawableText
      * Setter textUpdateHandler
      * @param {TextUpdateHandler} value
      */
-	public set textUpdateHandler(value: TextUpdateHandler) {
+	public set textUpdateHandler(value: TextUpdateHandler|null) {
 		this._textUpdateHandler = value;
 	}
 
@@ -76,7 +73,7 @@ export class TextDisplayShape implements DrawableText
      * Getter textImageData
      * @return {ImageData}
      */
-	public get textImageData(): ImageData {
+	public get textImageData(): ImageData|null {
 		return this._textImageData;
 	}
 
@@ -84,7 +81,7 @@ export class TextDisplayShape implements DrawableText
      * Setter textImageData
      * @param {ImageData} value
      */
-	public set textImageData(value: ImageData) {
+	public set textImageData(value: ImageData|null) {
 		this._textImageData = value;
 	}
 
@@ -185,11 +182,12 @@ export class TextDisplayShape implements DrawableText
 			}			
 
 			this.rectangleDisplayShape.draw(context);
-			context.putImageData(
-					this.textImageData,
-					x-this.textImageData.width/2,
-					y-this.textImageData.height/2
-			
+			const textImageData = this.textImageData;
+			if(textImageData)
+				context.putImageData(
+					textImageData,
+					x-textImageData.width/2,
+					y-textImageData.height/2
 				);
 			if(this.textUpdateHandler) this.textUpdateHandler.handleTextUpdate(this);
 		}

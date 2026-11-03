@@ -3,7 +3,7 @@ import { MockShape } from "./mockshape";
 import { MockEngine } from "../mockengine";
 
 export class MockConnectorDef extends EngineConnectorDef {
-    private _mockShape:MockShape;
+    private _mockShape!:MockShape;
 
     /*
     constructor(matterShape:MatterShape,length:number,stiffness:number) {

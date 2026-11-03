@@ -4,9 +4,9 @@ import { WorldEngineParams } from "../worldengineparams";
 
 export class MatterEngineRender  extends MatterEngine {
   
-    private _render : Matter.Render;  
-    private _mouse:Matter.Mouse;
-    private _mouseConstraint:Matter.MouseConstraint;
+    private _render! : Matter.Render;  
+    private _mouse!:Matter.Mouse;
+    private _mouseConstraint!:Matter.MouseConstraint;
     
     
     public constructor(worldEngineParams:WorldEngineParams) {

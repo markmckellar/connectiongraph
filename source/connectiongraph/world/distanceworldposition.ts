@@ -1,7 +1,7 @@
 import { WorldPosition } from "./worldposition";
 
 export class DistanceWorldPosition extends WorldPosition {
-    public distance:number;
+    public distance!:number;
 
     public constructor(x:number,y:number) {
         super(x,y);
@@ -28,8 +28,8 @@ export class DistanceWorldPosition extends WorldPosition {
 		}
 	
 		let position = new WorldPosition(otherPoint.x + modX, otherPoint.y + modY);
-		let p1:DistanceWorldPosition = null;
-		let p2:DistanceWorldPosition = null;
+		let p1:DistanceWorldPosition;
+		let p2:DistanceWorldPosition;
 		// this is when the slope is undefined (totally horizontal line)
 		if (position.x == this.x) {
 			p1 = new DistanceWorldPosition(position.x,position.y+distance);
@@ -138,8 +138,8 @@ export class DistanceWorldPosition extends WorldPosition {
 		return (distanceList);
 	}
 
-	public static getClosest(worldDistancePositionList:Array<DistanceWorldPosition>):DistanceWorldPosition {
-		let closest:DistanceWorldPosition = null;
+	public static getClosest(worldDistancePositionList:Array<DistanceWorldPosition>):DistanceWorldPosition|null {
+		let closest:DistanceWorldPosition|null = null;
 		for(let i=0;i<worldDistancePositionList.length;i++)
 		{
 			if(closest==null) closest = worldDistancePositionList[i];
@@ -152,8 +152,8 @@ export class DistanceWorldPosition extends WorldPosition {
 		return (closest);
 	}
 
-	public static getFarthest(worldDistancePositionList:Array<DistanceWorldPosition>):DistanceWorldPosition {
-		let farthest:DistanceWorldPosition = null;
+	public static getFarthest(worldDistancePositionList:Array<DistanceWorldPosition>):DistanceWorldPosition|null {
+		let farthest:DistanceWorldPosition|null = null;
 		for(let i=0;i<worldDistancePositionList.length;i++)
 		{
 			if(farthest==null) farthest = worldDistancePositionList[i];

@@ -5,12 +5,11 @@ import { BasePolygonShapeWithBorder } from "./basepolygonsahewithborder";
 
 export class RectangleDisplayShape extends BasePolygonShapeWithBorder implements Drawable
 {
-	private rectangleEngineShape:RectangleEngineShape;
+	private rectangleEngineShape!:RectangleEngineShape;
 
 	constructor(drawShapeWithBorderParams:DrawShapeWithBorderParams)
 	{
 		super(drawShapeWithBorderParams);
-		this.rectangleEngineShape = null;
 	}
 
 	public init(rectangleEngineShape:RectangleEngineShape,options:any):void {

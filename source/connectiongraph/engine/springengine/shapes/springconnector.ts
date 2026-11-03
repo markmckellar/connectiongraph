@@ -12,9 +12,9 @@ import { DistanceWorldPosition } from "../../../world/distanceworldposition";
 
 export class SpringConnector extends SpringShape implements EngineConnector
 {
-    private _drawableConnector:DrawableConnector;
-    private _springConnectorDefArray:Array<SpringConnectorDef>;
-    private _connectorShape:EngineShape;
+    private _drawableConnector!:DrawableConnector;
+    private _springConnectorDefArray!:Array<SpringConnectorDef>;
+    private _connectorShape!:EngineShape;
     public springShape:SpringShape;
     public springEngine:SpringEngine;
 

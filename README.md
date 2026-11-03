@@ -1,19 +1,32 @@
 # connectiongraph
 
-1) Install Node.js and gulp
-$ npm -g install gulp
+TypeScript module for animated graphs of connected nodes, with pluggable
+physics engines (`matter`, `spring`, `mock`) and a Vue 3 demo front end.
 
-2) Install dependencies and their type definitions:
-$ npm install
+## Requirements
 
-This code base is in the pre stages of development. 
+Node 20+ (`nvm use` picks up `.nvmrc`).
 
-To build :
-* gulp build_all
-The resulting bundled JS file can be tested by loading the following file into a browser:
-* test/test_all.html
+## Run
 
-* A demo is running [here](https://exp.blackdoge.com/connectiongraph_wiki/test/test_all.html).  Note the above that currently only chrome and firefox have been tested.  
-* Pick the engine and test to run
-* Hit "Play" to start the animation.
+```sh
+npm install
+npm run dev        # http://localhost:5173
+```
 
+Pick an engine and a test, then hit **Run**. Drag nodes on the canvas with the mouse.
+
+## Other scripts
+
+```sh
+npm run build      # typecheck + production build into dist/
+npm run preview    # serve the production build
+npm run typecheck
+```
+
+## Layout
+
+- `source/connectiongraph/` – the engine/world/display library (framework-free TypeScript)
+- `source/pedigree/` – pedigree graph built on top of it
+- `source/connectiongraph/world/tests/` – the demo scenes listed in the UI
+- `src/` – the Vue 3 demo app

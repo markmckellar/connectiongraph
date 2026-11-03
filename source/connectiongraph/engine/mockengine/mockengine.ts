@@ -24,7 +24,7 @@ import { WorldEngineParams } from "../worldengineparams";
 import { WorldEngineBase } from "../worldenginebase";
 
 export class MockEngine extends WorldEngineBase implements WorldEngine {
-  private _mouseAnchor: MockCircle;
+  private _mouseAnchor!: MockCircle;
 
   public constructor(worldEngineParams:WorldEngineParams) {
     super(worldEngineParams);
@@ -158,12 +158,13 @@ export class MockEngine extends WorldEngineBase implements WorldEngine {
     mouseEventHandler: MouseEventHandler
   ): void {
     var newPosition = new WorldPosition(
-      event.x - canvasMouse.offset.x,
-      event.y - canvasMouse.offset.y
+      event.pageX - canvasMouse.offset.x,
+      event.pageY - canvasMouse.offset.y
     );
     this.mouseAnchor.translate(newPosition);
 
-    if (mouseEventHandler.getCurrentWorldObject() != null) {
+    const currentWorldObject = mouseEventHandler.getCurrentWorldObject();
+    if (currentWorldObject != null) {
       var deltaPosition = mouseEventHandler
         .getMouseStatus()
         .startPosition.getDelta(mouseEventHandler.getMouseStatus().position);
@@ -178,9 +179,7 @@ export class MockEngine extends WorldEngineBase implements WorldEngine {
         deltaPosition.y +
         mouseEventHandler.getMouseStatus().clickOffset.y;
 
-      mouseEventHandler
-        .getCurrentWorldObject()
-        .setWorldPosition(new WorldPosition(newX, newY));
+      currentWorldObject.setWorldPosition(new WorldPosition(newX, newY));
     }
   }
 

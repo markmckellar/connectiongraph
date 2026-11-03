@@ -3,8 +3,8 @@ import { MatterShape } from "./mattershape";
 import { MatterEngine } from "../matterengine";
 
 export class MatterConnectorDef extends EngineConnectorDef {
-    private _matterShape:MatterShape;
-    private _matterConstraint:Matter.Constraint;
+    private _matterShape!:MatterShape;
+    private _matterConstraint!:Matter.Constraint;
 
     /*
     constructor(matterShape:MatterShape,length:number,stiffness:number) {
@@ -16,11 +16,11 @@ export class MatterConnectorDef extends EngineConnectorDef {
 
     constructor(matterEngine:MatterEngine,engineConnectorDef:EngineConnectorDef) {
         super(engineConnectorDef.engineShape,engineConnectorDef.connectorPositioner,engineConnectorDef.length,engineConnectorDef.stiffness);
-        if(!matterEngine.matterShapes.has(engineConnectorDef.engineShape.getWorldId()))
+        const matterShape = matterEngine.matterShapes.get(engineConnectorDef.engineShape.getWorldId());
+        if(!matterShape)
             throw new Error("Error creating MatterConnectorDef, matterShape not found.  WorldId is : "+
             engineConnectorDef.engineShape.getWorldId().id);
-        this.matterShape = matterEngine.matterShapes.get(engineConnectorDef.engineShape.getWorldId()); 
-        this.matterConstraint = null;
+        this.matterShape = matterShape;
     }
 
     public init(matterConstraint:Matter.Constraint):void {

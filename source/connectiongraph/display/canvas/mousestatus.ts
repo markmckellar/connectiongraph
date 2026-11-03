@@ -2,12 +2,12 @@ import { WorldPosition } from "../../world/worldposition";
 
 export class MouseStatus
 {
-	private _isDown:boolean;
-	private _startPosition:WorldPosition;
-	private _position:WorldPosition;
+	private _isDown!:boolean;
+	private _startPosition!:WorldPosition;
+	private _position!:WorldPosition;
 	//private _worldObject:WorldObject;
 	//private _objectStartPosition:WorldPosition;
-	private _clickOffset:WorldPosition;
+	private _clickOffset!:WorldPosition;
 	//private _lastWorldObject:WorldObject;
 	
 	

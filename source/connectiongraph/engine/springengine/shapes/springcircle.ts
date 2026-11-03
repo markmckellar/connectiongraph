@@ -8,8 +8,8 @@ import { WorldDisplay } from "../../../display/worlddisplay";
 
 export class SpringCircle extends SpringShape implements CircleEngineShape
 {
-	private _curvePoints:number;
-	private _radius:number;
+	private _curvePoints!:number;
+	private _radius!:number;
 	
 
 	constructor(worldId:WorldId,drawable:Drawable,radius:number,curvePoints:number,position:WorldPosition,options:any,springEngine:SpringEngine)

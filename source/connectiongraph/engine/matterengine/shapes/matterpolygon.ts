@@ -9,9 +9,9 @@ import { MatterTools } from "../mattertools";
 
 export class MatterPolygon extends MatterShape implements PolygonEngineShape
 {
-    private _numberOfSides:number;
-    private _radius:number;
-    private _polygonBody:Matter.Body;
+    private _numberOfSides!:number;
+    private _radius!:number;
+    private _polygonBody!:Matter.Body;
     
 
     constructor(worldId:WorldId,drawable:Drawable,numberOfSides:number,radius:number,position:WorldPosition,options:any,matterEngine:MatterEngine)    

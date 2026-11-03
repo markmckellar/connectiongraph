@@ -6,48 +6,40 @@ import { World } from "../../world/world";
 
 export class CanvasMouse
 {
-	private _offset:WorldPosition;
 	private canvasholderHTML:CanvasHolderHTML;
-	private _mouseEventHandler:MouseEventHandler;
+	private _mouseEventHandler!:MouseEventHandler;
 	
+
+	private listeners:Array<[string,(e:PointerEvent)=>void]> = [];
 
 	constructor(world:World,canvasholderHTML:CanvasHolderHTML,mouseEventHandler:MouseEventHandler)
 	{
 		this.canvasholderHTML = canvasholderHTML;
 		this.mouseEventHandler = mouseEventHandler;
-		if(canvasholderHTML.isCanvasVisable()) 
+		if(canvasholderHTML.isCanvasVisable())
 		{
-			//this.offset = NodeCanvasMouse.getCanvasOffset(this.canvasholder.canvas);
-			this.offset = this.getCanvasOffset();		
-			var self = this;
-			this.canvasholderHTML.canvas.addEventListener("pointerdown", function(event) { self.pointerDownEvent(world,self,event) }, false);
-			this.canvasholderHTML.canvas.addEventListener("pointermove",function(event) { self.pointerMoveEvent(world,self,event) }, false);
-			this.canvasholderHTML.canvas.addEventListener("pointerup",function(event) { self.pointerUpEvent(world,self,event) }, false);
+			this.listeners = [
+				["pointerdown",(event) => this.pointerDownEvent(world,this,event)],
+				["pointermove",(event) => this.pointerMoveEvent(world,this,event)],
+				["pointerup",(event) => this.pointerUpEvent(world,this,event)],
+			];
+			for(const [type,fn] of this.listeners)
+				this.canvasholderHTML.canvas.addEventListener(type,fn as EventListener,false);
 		}
 	}
 
+	/** Remove the pointer listeners so a re-run doesn't stack handlers on the same canvas. */
+	public dispose():void {
+		for(const [type,fn] of this.listeners)
+			this.canvasholderHTML.canvas.removeEventListener(type,fn as EventListener,false);
+		this.listeners = [];
+	}
+
+	/** Page-space position of the canvas's top-left corner (computed live, so scrolling/layout changes are fine). */
 	private getCanvasOffset():WorldPosition
 	{
-	    let offsetLeft = 0;
-		let offsetTop = 0;
-		let object:HTMLElement = this.canvasholderHTML.canvas;
-	    do
-	    {
-	      if (!isNaN(object.offsetLeft))
-	      {
-	          offsetLeft += object.offsetLeft;
-	      }
-	      if (!isNaN(object.offsetTop))
-	      {
-	          offsetTop += object.offsetTop;
-		  }   
-		 let element:any = object.offsetParent;
-		 if(element.hasOwnProperty("offsetParent")) object = element;
-		 else object = null;
-	    }
-	    while(object);
-	    
-	    return( new WorldPosition(offsetLeft,offsetTop) );
+		const rect = this.canvasholderHTML.canvas.getBoundingClientRect();
+		return( new WorldPosition(rect.left + window.scrollX, rect.top + window.scrollY) );
 	}
 
 
@@ -70,11 +62,7 @@ export class CanvasMouse
 
 	
 	public get offset(): WorldPosition {
-		return this._offset;
-	}
-
-	public set offset(value: WorldPosition) {
-		this._offset = value;
+		return this.getCanvasOffset();
 	}
 
 	public get mouseEventHandler(): MouseEventHandler {

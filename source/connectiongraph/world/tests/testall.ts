@@ -17,10 +17,10 @@ import { ContainerTest } from "./containertest";
 import { PedTest2 } from "./pedtest2";
 
 export class TestAll {
-    public worldEngine:WorldEngine;
-    public world:World;
-    public canvasHolder:CanvasHolderHTML;
-    public test:BaseTest;
+    public worldEngine!:WorldEngine;
+    public world!:World;
+    public canvasHolder?:CanvasHolderHTML;
+    public test?:BaseTest;
     public registeredTests = 
     [
         {
@@ -71,19 +71,29 @@ export class TestAll {
     constructor() {
     }
 
-    public runTest(engineName:string,testName:string,canvasName:string,updateFunction: (world: World) => void,engineRefreshInterval:number):void {
+    public static readonly engineNames = ['matter','mock','spring'] as const;
 
-        console.log("runTest:engineName="+engineName+":testName="+testName+":canvasName="+canvasName);
+    public runTest(engineName:string,testName:string,canvas:string|HTMLCanvasElement,updateFunction: (world: World) => void,engineRefreshInterval:number):void {
 
-        if(this.test) this.test.stopCurrent();
+        console.log("runTest:engineName="+engineName+":testName="+testName);
+
+        this.stop();
 
         this.worldEngine = this.getEngineFromName(engineName,updateFunction,engineRefreshInterval);
         this.world = new WorldOfWorldObjects(this.worldEngine);
-        this.canvasHolder = new CanvasHolderHTML(canvasName,this.world);
+        this.canvasHolder = new CanvasHolderHTML(canvas,this.world);
         this.test = this.getTestFromName(testName,this.worldEngine,this.world,this.canvasHolder);
 
 
         this.test.runTests();
+    }
+
+    /** Stop the running engine/draw loop and detach canvas listeners. */
+    public stop():void {
+        if(this.test) this.test.stopCurrent();
+        if(this.canvasHolder) this.canvasHolder.dispose();
+        this.test = undefined;
+        this.canvasHolder = undefined;
     }
 
     public getEngineFromName(engineName:string,updateFunction: (world: World) => void,engineRefreshInterval:number):WorldEngine {
@@ -113,4 +123,3 @@ export class TestAll {
 }
 
 
-window['testAll'] = new TestAll();

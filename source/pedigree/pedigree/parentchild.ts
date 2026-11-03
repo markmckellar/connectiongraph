@@ -3,9 +3,9 @@ import { Male } from "./person/male";
 import { Person } from "./person/person";
 
 export class ParentChild {
-    public mother:Female;
-    public father:Male;
-    public child:Person;
+    public mother!:Female;
+    public father!:Male;
+    public child!:Person;
 
     constructor(mother:Female,ather:Male,child:Person) {
     }
@@ -18,7 +18,7 @@ export class ParentChild {
         )
     }
 
-    public static getParentChildFromList(parentChild:ParentChild,parentChildList:Array<ParentChild>):ParentChild {
+    public static getParentChildFromList(parentChild:ParentChild,parentChildList:Array<ParentChild>):ParentChild|null {
         for(let i=-0;i<parentChildList.length;i++) {
             if(parentChild.equalsParentChild(parentChildList[i])) return(parentChildList[i]);
         }
@@ -26,7 +26,7 @@ export class ParentChild {
     }
 
     public static doesParentChildExistInList(parentChild:ParentChild,parentChildList:Array<ParentChild>):boolean {
-        return(ParentChild.getParentChildFromList(parentChild,parentChildList)==null);
+        return(ParentChild.getParentChildFromList(parentChild,parentChildList)!=null);
     }
     
 

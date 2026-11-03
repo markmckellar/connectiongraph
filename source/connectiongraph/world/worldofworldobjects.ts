@@ -8,7 +8,7 @@ import { WorldId } from "./worldid";
 
 export class WorldOfWorldObjects extends World{
 
-    private _worldObjectArray:Array<WorldObject>;
+    private _worldObjectArray!:Array<WorldObject>;
 
     constructor(worldEngine:WorldEngine){
         super(worldEngine);
@@ -32,8 +32,8 @@ export class WorldOfWorldObjects extends World{
     }
 
 
-    public getWorldObjectMatchingWorldId(worldId:WorldId):WorldObject {
-        let foundObject:WorldObject = null;
+    public getWorldObjectMatchingWorldId(worldId:WorldId):WorldObject|null {
+        let foundObject:WorldObject|null = null;
         for(let i=0;i<this.worldObjectArray.length;i++) {
             ////console.log("this.worldObjectArray.length="+this.worldObjectArray.length+":i="+i);
             let worldObject:WorldObject = this.worldObjectArray[i];
@@ -92,8 +92,8 @@ export class WorldOfWorldObjects extends World{
      * 
      * 
     */
-    public getWorldObjectContainingPosition(worldPosition:WorldPosition):WorldObject {
-        let foundObject:WorldObject = null;
+    public getWorldObjectContainingPosition(worldPosition:WorldPosition):WorldObject|null {
+        let foundObject:WorldObject|null = null;
         for(let i=0;i<this.worldObjectArray.length;i++) {
             ////console.log("this.worldObjectArray.length="+this.worldObjectArray.length+":i="+i);
             let worldObject:WorldObject = this.worldObjectArray[i];

@@ -1,3 +1,4 @@
+import { DebugMessages } from "../util/debugmessages";
 import { WorldEngineParams } from "./worldengineparams";
 import { EngineConnector } from "./connectors/engineconnector";
 import { AreaRuleObject } from "./arearule/arearuleobject/arearuleobject";
@@ -32,16 +33,16 @@ export abstract class WorldEngineBase {
             function() 
             { 
 
-                document.getElementById("messages3").innerHTML = "START updates";
+                DebugMessages.set(3, "START updates");
                 let startTime = new Date().getTime();
-                document.getElementById("messages3").innerHTML = "START updates:US-";
+                DebugMessages.set(3, "START updates:US-");
                 self.updateFunction();
-                document.getElementById("messages3").innerHTML = "START updates:US-US:R-";
+                DebugMessages.set(3, "START updates:US-US:R-");
                 self.processAreaRuleObjectArray();
-                document.getElementById("messages3").innerHTML = "START updates:US-US:R-R:C-";
+                DebugMessages.set(3, "START updates:US-US:R-R:C-");
                 self.processConnectorPositionerArray();                                
                 let endTime = new Date().getTime()-startTime;
-                document.getElementById("messages3").innerHTML = "START updates:US-US:R-R:C-C:endTime="+endTime;
+                DebugMessages.set(3, "START updates:US-US:R-R:C-C:endTime="+endTime);
             },
             self.worldEngineParams.updateInterval
         );

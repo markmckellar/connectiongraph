@@ -1,6 +1,6 @@
 
 export class WorldId {
-    private _id:string;
+    private _id!:string;
 
     public constructor(woldObjectId:string) {
         this.id = woldObjectId;

@@ -7,26 +7,32 @@ import { WorldDisplay } from "../worlddisplay";
 
 export class CanvasHolderHTML implements CanvasHolder
 {
-	private _isVisable:boolean;
-	private _isDrawable:boolean;
-	private _canvasName:string;
-	private _canvas:HTMLCanvasElement;
-	private _context:CanvasRenderingContext2D;
-	private _canvasMouse:CanvasMouse;
+	private _isVisable!:boolean;
+	private _isDrawable!:boolean;
+	private _canvasName!:string;
+	private _canvas!:HTMLCanvasElement;
+	private _context!:CanvasRenderingContext2D;
+	private _canvasMouse!:CanvasMouse;
 	
-	constructor(canvasName:string,world:World)
+	constructor(canvas:string|HTMLCanvasElement,world:World)
 	{
-		this.canvasName = canvasName;
+		this.canvas = typeof canvas === "string" ? <HTMLCanvasElement>document.getElementById(canvas) : canvas;
+		this.canvasName = this.canvas.id;
 		this.isVisable = true;
 		this.isDrawable = true;
-		this.canvas = <HTMLCanvasElement>document.getElementById(this.canvasName);			
-		this.context = this.canvas.getContext("2d");
+		const context = this.canvas.getContext("2d");
+		if(!context) throw new Error("CanvasHolderHTML: 2d context unavailable");
+		this.context = context;
 		this.canvasMouse = new CanvasMouse(world,this,new MouseEventHandlerWorldObject());
 		/*if (typeof document !== 'undefined')
 		{
 			this.canvas = document.getElementById(this.canvasName);			
 			this.context = this.canvas.getContext('2d');
 		}*/
+	}
+
+	public dispose():void {
+		this.canvasMouse.dispose();
 	}
 
 	public clearCanvas():void {

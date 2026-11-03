@@ -11,9 +11,9 @@ import { WorldObject } from "../../../world/worldobject";
 
 export class MockConnector extends MockShape implements EngineConnector
 {
-    private _drawableConnector:DrawableConnector;
-    private _mockConnectorDefArray:Array<MockConnectorDef>;
-	private _connectorShape:EngineShape;
+    private _drawableConnector!:DrawableConnector;
+    private _mockConnectorDefArray!:Array<MockConnectorDef>;
+	private _connectorShape!:EngineShape;
 
     constructor(
         worldId:WorldId,

@@ -3,10 +3,10 @@ import { CanvasHolder } from "./canvasholder";
 
 export class CanvasHolderVirtual implements CanvasHolder
 {
-	private _virtualWidth:number;
-	private _virtualHeight:number;
-	private _isVisable:boolean;
-	private _isDrawable:boolean;
+	private _virtualWidth!:number;
+	private _virtualHeight!:number;
+	private _isVisable!:boolean;
+	private _isDrawable!:boolean;
 
 	constructor(width:number,height:number,isCanvasVisable:boolean,isCanvasDrawable:boolean)
 	{

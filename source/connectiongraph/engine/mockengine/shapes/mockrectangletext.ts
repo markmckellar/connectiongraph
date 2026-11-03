@@ -7,7 +7,7 @@ import { DrawableText } from "../../../display/drawableshapes/drawabletext";
 
 export class MockRectangleText extends MockRectangle implements TextEngineShape
 {
-    private _drawableText:DrawableText;
+    private _drawableText!:DrawableText;
 
 
 	constructor(worldId:WorldId,drawableText:DrawableText,width:number,height:number,position:WorldPosition,options:any,mockEngine:MockEngine)

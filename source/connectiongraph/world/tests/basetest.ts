@@ -6,7 +6,7 @@ export abstract class BaseTest {
     worldEngine:WorldEngine;
     world:World;
     canvasHolder:CanvasHolderHTML;
-    private intervalId:any;
+    private animationFrameId:number|null = null;
 
     
     constructor(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML) {
@@ -17,8 +17,8 @@ export abstract class BaseTest {
 
     public stopCurrent():void {
      if(this.worldEngine) this.worldEngine.stopEngine();
-     console.log("BaseTest:clearing for:"+this.intervalId);
-     clearInterval(this.intervalId);
+     if(this.animationFrameId!==null) cancelAnimationFrame(this.animationFrameId);
+     this.animationFrameId = null;
     }
 
     public abstract buildTest():void;
@@ -32,14 +32,14 @@ export abstract class BaseTest {
         let canvasHolder = this.canvasHolder;
 
         worldEngine.createBounds(canvasHolder.getWidth(),canvasHolder.getHeight(),{restitution:0.9});
-        let interval = worldEngine.worldEngineParams.updateInterval;
-        console.log("drawing every : "+interval+"ms");
-        this.intervalId =  setInterval(doDraw,interval);
-        
         worldEngine.startEngine();
-        function doDraw()
-        {
-            world.drawWorld(canvasHolder);	
-        }
+
+        // Draw in step with the display's refresh rate; the engine's own
+        // updateInterval still governs simulation ticks.
+        const doDraw = () => {
+            world.drawWorld(canvasHolder);
+            this.animationFrameId = requestAnimationFrame(doDraw);
+        };
+        this.animationFrameId = requestAnimationFrame(doDraw);
     }
 }

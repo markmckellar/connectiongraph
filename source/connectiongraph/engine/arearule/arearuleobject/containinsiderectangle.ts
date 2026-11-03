@@ -1,3 +1,4 @@
+import { DebugMessages } from "../../../util/debugmessages";
 import { AreaRuleObject } from "./arearuleobject";
 import { WorldEngine } from "../../worldengine";
 import { EngineShape } from "../../shapes/engineshape";
@@ -24,8 +25,7 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                         self.rectangleEngineShape.stopRotation();
 
                         if(shape.isSelected()) return;               
-                        document.getElementById("messages1").innerHTML = "START stay in rec";
-
+                        DebugMessages.set(1, "START stay in rec");
                         let shapePoints = shape.getShapePoints();
                         let moves = new Array<WorldPosition>();
                         let rect = self.rectangleEngineShape;
@@ -66,7 +66,7 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                         distance:distance,
                         averagePos:averagePos
                        };
-                       document.getElementById("messages2").innerHTML = JSON.stringify(JSON.stringify(message));
+                       DebugMessages.set(2, JSON.stringify(JSON.stringify(message)));
                        */
                       if(averagePos.x>1000||averagePos.x<-1000||averagePos.y>1000||averagePos.y<-1000) {
                         console.log("ObjectIsOutsideTrigger:"+JSON.stringify(
@@ -82,8 +82,7 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                     }
                     else
                        shape.translate(averagePos);    
-                       document.getElementById("messages1").innerHTML = "DONE stay in rec";
-           
+                       DebugMessages.set(1, "DONE stay in rec");
                     }           
                     ));
 
@@ -95,8 +94,7 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                                     self.rectangleEngineShape.stopRotation();
                                     if(!shape.isSelected())
                                     {
-                                        //document.getElementById("messages2").innerHTML = "START moving to same Y";
-
+                                        //DebugMessages.set(2, "START moving to same Y");
                                         let wantPos = new WorldPosition(shape.getWorldPosition().x,areaRuleObject.areaEngineShape.getWorldPosition().y);
                                         //let moveList = new Array<any>();   
                                         // we need to look at all of the other shapes to see if we are "hung up" on one of them...
@@ -161,7 +159,7 @@ export  class ContainInsideRectangle extends AreaRuleObject {
                                        shape.translate(movePos);               
 
                                         //shape.translate(wantPos);               
-                                       // document.getElementById("messages2").innerHTML = "DONE moving to same Y";
+                                       // DebugMessages.set(2, "DONE moving to same Y");
                                     }
                                 }
                             )

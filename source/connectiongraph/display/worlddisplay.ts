@@ -5,8 +5,8 @@ import { CanvasMouse } from "./canvas/canvasmouse";
 import { WorldObject } from "../world/worldobject";
 
 export class Size {
-	private _width:number;
-	private _height:number;
+	private _width!:number;
+	private _height!:number;
 
 	constructor(width:number,height:number)
 	{

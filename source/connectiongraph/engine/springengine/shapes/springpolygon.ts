@@ -9,9 +9,9 @@ import { WorldDisplay } from "../../../display/worlddisplay";
 
 export class SpringPolygon extends SpringShape implements PolygonEngineShape
 {
-    private _polygonPointArray:Array<WorldPosition>;
-    private _numberOfSides:number;
-    private _radius:number;
+    private _polygonPointArray!:Array<WorldPosition>;
+    private _numberOfSides!:number;
+    private _radius!:number;
     
 
     constructor(worldId:WorldId,drawable:Drawable,numberOfSides:number,radius:number,worldPosition:WorldPosition,options:any,springEngine:SpringEngine)    

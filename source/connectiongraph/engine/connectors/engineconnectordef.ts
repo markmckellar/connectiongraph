@@ -3,11 +3,11 @@ import { ConnectorPositioner } from "./connectorpositioners/connectorpositioner"
 import { WorldPosition } from "../../world/worldposition";
 
 export class EngineConnectorDef {
-    private _engineShape:EngineShape;
-    private _length:number;
-    private _stiffness:number;    
+    private _engineShape!:EngineShape;
+    private _length!:number;
+    private _stiffness!:number;    
 
-    private _connectorPositioner:ConnectorPositioner;
+    private _connectorPositioner!:ConnectorPositioner;
 
     constructor(engineShape:EngineShape,connectorPositioner:ConnectorPositioner,length:number,stiffness:number) {
         this.engineShape = engineShape;

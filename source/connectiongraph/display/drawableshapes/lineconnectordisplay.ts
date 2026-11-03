@@ -5,12 +5,11 @@ import { EngineConnector } from "../../engine/connectors/engineconnector";
 
 export class LineConnectorDisplay implements DrawableConnector
 {
-    private _engineConnector:EngineConnector;
+    private _engineConnector!:EngineConnector;
 
 
 	constructor()
 	{
-		this.engineConnector = null;
 	}
 
 	public init(engineConnector:EngineConnector,options:any):void {

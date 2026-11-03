@@ -3,7 +3,7 @@ import { Person } from "./person/person";
 
 export class Pedigree {
     public trips:Array<ParentChild>;
-    public proband:Person;
+    public proband!:Person;
     private people:Array<Person>;
     private personIdMap:Map<number,Person>;
 
@@ -25,9 +25,9 @@ export class Pedigree {
         }
         if(this.doesParentChildExist(parentChild)) throw new Error("parentChild already exists");
 
-        if(this.doesPersonExist(parentChild.mother)) this.addPerson(parentChild.mother);
-        if(this.doesPersonExist(parentChild.father)) this.addPerson(parentChild.father);
-        if(this.doesPersonExist(parentChild.child)) this.addPerson(parentChild.child);
+        if(!this.doesPersonExist(parentChild.mother)) this.addPerson(parentChild.mother);
+        if(!this.doesPersonExist(parentChild.father)) this.addPerson(parentChild.father);
+        if(!this.doesPersonExist(parentChild.child)) this.addPerson(parentChild.child);
         this.trips.push(parentChild);
     }
 
@@ -53,7 +53,7 @@ export class Pedigree {
     }
 
     public doesPersonExist(person:Person):boolean {
-        return( this.getPersonById(person.personId) == null);
+        return( this.getPersonById(person.personId) != null);
     }
 
     public getPeople():Array<Person> {

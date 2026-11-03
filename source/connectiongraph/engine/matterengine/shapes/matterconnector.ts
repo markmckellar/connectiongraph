@@ -14,10 +14,10 @@ import { WorldObject } from "../../../world/worldobject";
 
 export class MatterConnector extends MatterShape implements EngineConnector
 {
-    private _drawableConnector:DrawableConnector;
-    private _matterConnectorDefArray:Array<MatterConnectorDef>;
-    private _connectorShape:EngineShape;
-    private _matterShape:MatterShape;
+    private _drawableConnector!:DrawableConnector;
+    private _matterConnectorDefArray!:Array<MatterConnectorDef>;
+    private _connectorShape!:EngineShape;
+    private _matterShape!:MatterShape;
 
 
 	
@@ -35,9 +35,10 @@ export class MatterConnector extends MatterShape implements EngineConnector
 
        this.connectorShape = connectorShape;
 
-       if(!matterEngine.matterShapes.has(connectorShape.getWorldId()))
+       const matterShape = matterEngine.matterShapes.get(connectorShape.getWorldId());
+       if(!matterShape)
             throw new Error("Error creating MatterConnectorDef, matterShape not found.  WorldId is : "+connectorShape.getWorldId().id);
-       this.matterShape = matterEngine.matterShapes.get(connectorShape.getWorldId()); 
+       this.matterShape = matterShape;
 
 
   	
