@@ -60,6 +60,8 @@ export class SpringConnector extends SpringShape implements EngineConnector
     public processConection() {
         for(let i=0;i<this.springConnectorDefArray.length;i++) {
             let conectorDef = this.springConnectorDefArray[i];
+            // stiffness <= 0 means "no spring, the positioner does it all"
+            if(conectorDef.stiffness<=0) continue;
             let otherSpringShape = conectorDef.springShape;
 
             let shapePos = this.springShape.getWorldPosition();

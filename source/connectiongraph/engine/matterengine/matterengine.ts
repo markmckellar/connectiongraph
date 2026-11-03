@@ -147,13 +147,17 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
     }
 
     public addMatterConnector(matterConnector:MatterConnector):void {
-      this.addMatterShape(matterConnector);
-      //Matter.World.add(this.engine.world,[matterConnector.getBody()]);
+      // The connector wraps an existing shape's body, which is already in the
+      // world. Register the connector's id, but don't add the body a second
+      // time (Matter doesn't de-dupe, so it would be integrated twice per step).
+      this.matterShapes.set(matterConnector.worldId,matterConnector);
 
       for(let i=0;i<matterConnector.matterConnectorDefArray.length;i++) {
         let connectorDef:MatterConnectorDef = matterConnector.matterConnectorDefArray[i];
-        //Matter.World.add(this.engine.world,[connectorDef.matterConstraint]);
-        Matter.World.addConstraint(this.engine.world, connectorDef.matterConstraint)
+        // stiffness <= 0 means "no physical spring, the positioner does it all".
+        // (Matter would otherwise turn 0 into its default of 1: a rigid rod.)
+        if(connectorDef.stiffness>0)
+          Matter.World.addConstraint(this.engine.world, connectorDef.matterConstraint)
 
       }
 

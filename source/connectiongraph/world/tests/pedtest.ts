@@ -1,125 +1,30 @@
 import { CanvasHolderHTML } from "../../display/canvas/canvasholderhtml";
-import { WorldPosition } from "../worldposition";
-import { WorldId } from "../worldid";
 import { WorldEngine } from "../../engine/worldengine";
 import { World } from "../world";
+import { WorldPosition } from "../worldposition";
 import { BaseTest } from "./basetest";
-import { RectangleEngineShape } from "../../engine/shapes/rectangleengineshape";
-import { RectangleDisplayShape } from "../../display/drawableshapes/rectangledisplayshape";
-import { ContainInsideRectangle } from "../../engine/arearule/arearuleobject/containinsiderectangle";
+import { PedigreeBuilder } from "./pedbuilder";
+
+/**
+ * Nested containment only, no connectors: two generation boxes, each holding
+ * a row of families, plus one loose family.
+ */
 export class PedTest extends BaseTest {
 
     constructor(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML)  {
       super(worldEngine,world,canvasHolder);
     }
-  
+
     public buildTest() {
-      console.log("building PedTest");
-      let world = this.world;
-      
-      let c1 = this.buildContainedRects(3,6,30);
-      let c2 = this.buildContainedRects(3,2,30);
-      let c3 = this.buildContainedRects(1,2,30);
+      const b = new PedigreeBuilder(this.world);
+      const w = this.canvasHolder.getWidth();
 
-      let all1 = this.buildContainrsAroundContainers("all1",c1);
-      let all2 = this.buildContainrsAroundContainers("all2",c2);
+      const gen1 = b.familyRow("gen1.family",3,6,new WorldPosition(w/2,120));
+      const gen2 = b.familyRow("gen2.family",3,2,new WorldPosition(w/2,280));
+      b.family("loose.family",2,new WorldPosition(w/2,440));
 
-      // want to keep the visiual that you get a return value for these calls
-      if(c3&&all1&&all2) {};
-
-      world.addWorldObject(world.worldEngine.getMouseAnchor());
+      b.generation("gen1",gen1);
+      b.generation("gen2",gen2);
+      b.commit();
     }
-
-    public buildContainrsAroundContainers(containerName:string,toAdd:Array<ContainInsideRectangle>):ContainInsideRectangle {
-      let  drawShapeParams =  {
-        fillStyle:"0000ff4f",
-        strokeStyle:"0000ffff",
-        lineWidth:2
-      };
-      // make the shape to hold our list of containers
-      let containerShape:RectangleEngineShape = 
-        this.world.worldEngine.createRectangle(
-          new WorldId(containerName),
-          new RectangleDisplayShape(drawShapeParams),
-          //rectSize*(rects.length)+rectSize/2,rectSize+rectSize/2,
-          1,1,
-          new WorldPosition(300,100),
-          {}
-        );    
-      // if we wanted them to collide...
-      //containerShape.addToCollissionTags("ContainerShapeCollissionTagOuter");
-      
-      // make the container that will hold the list of containers
-      let container = new ContainInsideRectangle(this.world.worldEngine,containerShape);      
-      container.areaEngineShape.stopRotation();
-      this.world.addWorldObject(containerShape);
-
-      // add in the list to the container
-      for(let i=0;i<toAdd.length;i++) {
-        console.log("Adding "+toAdd[i].areaEngineShape.getWorldId().id+" to "+container.areaEngineShape.getWorldId().id);
-        container.addToAffectedShapeList(toAdd[i].areaEngineShape);
-      }
-
-      // tell the world to watch this containers rules
-      this.world.worldEngine.areaRuleObjectArray.push(container);
-      return(container);
-    }
-
-    
-    public buildContainedRects(      
-      numbContainers:number,
-      numbRectsInContainer:number,
-      rectSize:number):Array<ContainInsideRectangle> {
-      let containers = new Array<ContainInsideRectangle>();
-
-      
-      let  drawShapeParams =  {
-        fillStyle:"00ff004f",
-        strokeStyle:"0000ffff",
-        lineWidth:2
-      };
-
-      for(let r=0;r<numbContainers;r++)
-      {        
-        let rects = new Array<RectangleEngineShape>();
-
-        // build all the engine shapes for the rectangles we will be adding to containers
-        for(let i=0;i<numbRectsInContainer;i++) rects.push(
-          this.world.worldEngine.createRectangle(
-            new WorldId("rect_"+r+"."+i),
-            new RectangleDisplayShape(drawShapeParams),
-            rectSize,rectSize,
-            new WorldPosition(100+rectSize*i,100),
-            {}
-          ));
-
-          // build all the shape which will be the containers holding the above rectangles
-        let containerShape:RectangleEngineShape = 
-        this.world.worldEngine.createRectangle(
-            new WorldId("containerInsideShape"+r),
-            new RectangleDisplayShape(drawShapeParams),
-            //rectSize*(rects.length)+rectSize/2,rectSize+rectSize/2,
-            1,1,
-            new WorldPosition(300,100),
-            {}
-          );    
-        // these containers will collide with other ContainerShapeCollissionTag
-        containerShape.addToCollissionTags("ContainerShapeCollissionTag");
-
-        // make our new container and add our rectangles to it
-        let container = new ContainInsideRectangle(this.world.worldEngine,containerShape);
-        containers.push(container);
-        container.addListToAffectedShapeList(rects);
-        for(let i=0;i<rects.length;i++) rects[i].stopRotation();
-        container.areaEngineShape.stopRotation();
-        this.world.addWorldObject(containerShape);
-        for(let i=0;i<rects.length;i++) this.world.addWorldObject(rects[i]);
-
-        // tell the world to watch this containers rules
-
-        this.world.worldEngine.areaRuleObjectArray.push(container);
-      }
-      return(containers);
-    } 
-
 }
