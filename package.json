@@ -20,6 +20,7 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "jspdf": "^4.2.1",
     "matter-js": "^0.20.0",
     "poly-decomp": "^0.3.0",
     "vue": "^3.5.44"

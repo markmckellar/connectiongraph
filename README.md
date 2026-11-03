@@ -31,6 +31,8 @@ The pedigree editor is built on the library:
   lists everyone by generation, and shows the underlying triplets with
   JSON export/import.
 - Drag people to rearrange them; **Re-layout** tidies everything up.
+- **Save as PDF** (sidebar, or right-click the background) downloads the
+  chart with a title, summary and symbol legend, plus a table of everyone.
 
 ### Pedigree data model
 

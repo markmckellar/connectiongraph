@@ -7,9 +7,10 @@ import { WorldOfWorldObjects } from "../../connectiongraph/world/worldofworldobj
 import { CanvasHolderHTML } from "../../connectiongraph/display/canvas/canvasholderhtml";
 import { WorldId } from "../../connectiongraph/world/worldid";
 import { WorldPosition } from "../../connectiongraph/world/worldposition";
+import { PedigreeLayoutOptions } from "./pedigreelayout";
 import { EngineShape } from "../../connectiongraph/engine/shapes/engineshape";
 import { Pedigree } from "../pedigree";
-import { NullDrawable, PersonDisplay } from "./persondisplay";
+import { labelWidth, NullDrawable, PersonDisplay } from "./persondisplay";
 import { PedigreeLayout } from "./pedigreelayout";
 import { orderRows } from "./roworder";
 
@@ -29,6 +30,8 @@ export class PedigreeScene {
     private canvasHolder?: CanvasHolderHTML;
     private layout?: PedigreeLayout;
     private shapes = new Map<string, EngineShape>();
+    private generations = new Map<string, number>();
+    private layoutOptions?: PedigreeLayoutOptions;
     private frame: number | null = null;
 
     constructor(private canvas: HTMLCanvasElement, private pedigree: Pedigree, public engineName: EngineName = "matter") {
@@ -72,9 +75,9 @@ export class PedigreeScene {
             }
         }
 
-        const layout = new PedigreeLayout(this.pedigree, this.shapes, generations, rowOrder, {
-            width: this.canvas.width, size: this.size, rowTop: 60, rowSpacing: 130,
-        });
+        this.generations = generations;
+        this.layoutOptions = { width: this.canvas.width, size: this.size, rowTop: 60, rowSpacing: 130 };
+        const layout = new PedigreeLayout(this.pedigree, this.shapes, generations, rowOrder, this.layoutOptions);
         this.layout = layout;
 
         for (const person of this.pedigree.people) {
@@ -113,6 +116,76 @@ export class PedigreeScene {
         this.shapes = new Map();
     }
 
+    /**
+     * Draw the pedigree onto a fresh canvas, cropped to the people (plus
+     * generation numerals), at `scale`x resolution and with no selection
+     * highlight. Returns null when there's no one to draw.
+     *
+     * The layout is first run to completion off-screen, starting from where
+     * everyone is now and with no canvas walls, so the picture is the settled
+     * chart even if it's still animating or is wider than the screen.
+     */
+    public snapshot(scale = 3): { canvas: HTMLCanvasElement; width: number; height: number } | null {
+        if (!this.layout || !this.layoutOptions || this.shapes.size === 0) return null;
+        const h = this.size / 2;
+
+        const points = new Map<string, EngineShape>();
+        for (const [id, shape] of this.shapes) {
+            const p = shape.getWorldPosition();
+            points.set(id, new FreePoint(p.x, p.y) as unknown as EngineShape);
+        }
+        const rowOrder = new Map([...this.layout.rowOrder].map(([g, ids]) => [g, [...ids]]));
+        // start each row spread out in its order (around where it is now), so the
+        // layout only has to fine-tune rather than untangle a crowded canvas
+        for (const ids of rowOrder.values()) {
+            const present = ids.filter(id => points.has(id));
+            if (!present.length) continue;
+            const centre = present.reduce((t, id) => t + points.get(id)!.getWorldPosition().x, 0) / present.length;
+            const step = this.size + 60;
+            present.forEach((id, i) => {
+                const p = points.get(id)!.getWorldPosition();
+                points.get(id)!.translate(new WorldPosition(centre + (i - (present.length - 1) / 2) * step, p.y));
+            });
+        }
+        const layout = new PedigreeLayout(this.pedigree, points, this.generations, rowOrder, this.layoutOptions);
+        for (let i = 0; i < 600; i++) layout.processAllRules();
+        const displays = [...points].map(([id, point]) => {
+            const d = new PersonDisplay(() => this.pedigree.find(id), () => false, this.size);
+            d.init(point, {});
+            return d;
+        });
+
+        let left = Infinity, right = -Infinity, top = Infinity, bottom = -Infinity;
+        for (const [id, point] of points) {
+            const p = point.getWorldPosition();
+            const halfWidth = Math.max(h + 4, labelWidth(this.pedigree.find(id)) / 2);
+            left = Math.min(left, p.x - halfWidth - 26);   // room for a proband arrow
+            right = Math.max(right, p.x + halfWidth);
+            top = Math.min(top, p.y - h - 6);
+            bottom = Math.max(bottom, p.y + h + 40);       // name and age underneath
+        }
+        const numeralWidth = 34, pad = 12;
+        left -= numeralWidth + pad;
+        right += pad;
+        top -= pad;
+        bottom += pad;
+        const width = Math.ceil(right - left), height = Math.ceil(bottom - top);
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width * scale;
+        canvas.height = height * scale;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return null;
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.scale(scale, scale);
+        ctx.translate(-left, -top);
+
+        layout.drawBackground(ctx, left + pad);
+        for (const display of displays) display.draw(ctx);
+        return { canvas, width, height };
+    }
+
     public positions(): Map<string, { x: number, y: number }> {
         const out = new Map<string, { x: number, y: number }>();
         for (const [id, shape] of this.shapes) {
@@ -146,4 +219,13 @@ export class PedigreeScene {
         const x = relatives.length ? relatives.reduce((t, p) => t + p.x, 0) / relatives.length : this.canvas.width / 2;
         return { x: x + jitter, y: rowY };
     }
+}
+
+/** Just enough of an engine shape for the layout and person drawing to move and read. */
+class FreePoint {
+    private position: WorldPosition;
+    constructor(x: number, y: number) { this.position = new WorldPosition(x, y); }
+    public getWorldPosition(): WorldPosition { return this.position; }
+    public translate(p: WorldPosition): void { this.position = new WorldPosition(p.x, p.y); }
+    public isSelected(): boolean { return false; }
 }

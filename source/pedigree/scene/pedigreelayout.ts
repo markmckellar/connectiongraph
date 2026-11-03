@@ -131,7 +131,7 @@ export class PedigreeLayout implements TickRule {
     }
 
     /** Generation labels and relationship lines, drawn underneath the people. */
-    public drawBackground(ctx: CanvasRenderingContext2D): void {
+    public drawBackground(ctx: CanvasRenderingContext2D, numeralX = 12): void {
         const s = this.opts.size, h = s / 2;
         const P = (id: string) => this.shapes.get(id)?.getWorldPosition();
 
@@ -141,7 +141,7 @@ export class PedigreeLayout implements TickRule {
         ctx.font = "bold 14px Georgia, serif";
         ctx.textAlign = "left";
         ctx.textBaseline = "middle";
-        for (const g of gens) ctx.fillText(roman(g + 1), 12, this.rowY(g));
+        for (const g of gens) ctx.fillText(roman(g + 1), numeralX, this.rowY(g));
 
         ctx.strokeStyle = PEDIGREE_COLORS.line;
         ctx.lineWidth = 1.5;

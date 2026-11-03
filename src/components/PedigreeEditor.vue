@@ -3,6 +3,7 @@ import { computed, markRaw, nextTick, onBeforeUnmount, onMounted, reactive, ref,
 import { Pedigree, type Person, type Sex } from "../../source/pedigree/pedigree";
 import { PedigreeScene, type EngineName } from "../../source/pedigree/scene/pedigreescene";
 import SidePanel from "./SidePanel.vue";
+import { savePedigreePdf } from "../../source/pedigree/export/pedigreepdf";
 
 type Pos = { x: number; y: number };
 
@@ -115,6 +116,19 @@ function clearAll() {
   scene?.rebuild(false);
 }
 const relayout = () => scene?.rebuild(false);
+
+const savingPdf = ref(false);
+async function savePdf() {
+  if (!scene || savingPdf.value) return;
+  savingPdf.value = true;
+  try {
+    notify("Saved " + (await savePedigreePdf(scene, pedigree)));
+  } catch (e) {
+    notify((e as Error).message);
+  } finally {
+    savingPdf.value = false;
+  }
+}
 
 function focusName() {
   personPanel.value?.expand();
@@ -268,12 +282,19 @@ onBeforeUnmount(() => {
     <aside class="sidebar">
       <!-- Pedigree-wide actions -->
       <SidePanel id="pedigree.actions" title="Pedigree">
+        <label class="field">
+          Title
+          <input v-model="pedigree.title" type="text" placeholder="e.g. Smith family" maxlength="80" />
+        </label>
         <div class="button-row">
           <button class="primary" @click="addPerson()">+ Add person</button>
           <button @click="relayout">Re-layout</button>
           <button @click="loadExample">Example</button>
           <button class="danger-text" @click="clearAll">Clear</button>
         </div>
+        <button class="save-pdf" :disabled="savingPdf || !pedigree.people.length" @click="savePdf">
+          {{ savingPdf ? "Saving…" : "Save as PDF" }}
+        </button>
         <label class="engine">
           Animation engine
           <select v-model="engineName">
@@ -455,6 +476,8 @@ onBeforeUnmount(() => {
         <button role="menuitem" @click="pick(() => addPerson(menu!.at))">Add person here</button>
         <button role="menuitem" @click="pick(relayout)">Re-layout</button>
         <button role="menuitem" @click="pick(loadExample)">Load example</button>
+        <hr />
+        <button role="menuitem" :disabled="!pedigree.people.length" @click="pick(savePdf)">Save as PDF</button>
       </template>
     </div>
 
@@ -463,6 +486,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+.save-pdf { align-self: flex-start; }
 .engine { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #57606a; }
 
 h3 { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin: 6px 0 4px; }

@@ -24,6 +24,7 @@ export interface Trio {
 }
 
 export interface PedigreeData {
+    title?: string;
     people: Person[];
     trios: Trio[];
 }
@@ -35,6 +36,7 @@ export interface Couple {
 }
 
 export class Pedigree {
+    public title = "";
     public people: Person[] = [];
     public trios: Trio[] = [];
     private nextId = 1;
@@ -184,6 +186,7 @@ export class Pedigree {
     }
 
     public clear(): void {
+        this.title = "";
         this.people = [];
         this.trios = [];
         this.nextId = 1;
@@ -202,7 +205,7 @@ export class Pedigree {
     // ---- serialisation ---------------------------------------------------
 
     public toJSON(): PedigreeData {
-        return { people: this.people.map(p => ({ ...p })), trios: this.trios.map(t => ({ ...t })) };
+        return { title: this.title, people: this.people.map(p => ({ ...p })), trios: this.trios.map(t => ({ ...t })) };
     }
 
     public load(data: PedigreeData): void {
@@ -210,6 +213,7 @@ export class Pedigree {
         for (const t of data.trios)
             for (const id of [t.childId, t.motherId, t.fatherId])
                 if (!ids.has(id)) throw new Error("Trio refers to unknown person " + id);
+        this.title = data.title ?? "";
         this.people = data.people.map(p => ({ ...p }));
         this.trios = data.trios.map(t => ({ ...t }));
         this.nextId = 1 + Math.max(0, ...this.people.map(p => Number(p.id.replace(/\D/g, "")) || 0));
@@ -218,6 +222,7 @@ export class Pedigree {
     /** A small three-generation family to start from. */
     public loadExample(): void {
         this.clear();
+        this.title = "Example family";
         const add = (name: string, sex: Sex, age: number, deceased = false) => this.addPerson({ name, sex, age, deceased });
         const gf = add("George", "male", 88, true), gm = add("Edith", "female", 84);
         const mf = add("Walter", "male", 79, true), mm = add("Ruth", "female", 77, true);
