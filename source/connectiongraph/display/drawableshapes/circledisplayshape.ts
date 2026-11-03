@@ -1,3 +1,5 @@
+import { GraphTheme } from "../theme";
+import { DrawShapeWithBorderParams } from "../drawshapewithborderparams";
 import { Drawable } from "../drawable";
 import { WorldPosition } from "../../world/worldposition";
 //import { WalkerWorld } from "../../walkers/walkerworld/walkerworld";
@@ -10,7 +12,7 @@ export class CircleDisplayShape implements Drawable
 {
 	private _circleEngineShape!:CircleEngineShape;
 
-	constructor()
+	constructor(private style:DrawShapeWithBorderParams = GraphTheme.node)
 	{
 	}
 
@@ -38,15 +40,15 @@ export class CircleDisplayShape implements Drawable
 		*/
 		//console.log("CircleDisplayShape.drawShape");
 
-		context.fillStyle = WorldDisplay.getColorFromString("ff0000ff");
-		context.strokeStyle = WorldDisplay.getColorFromString("0000ffff");
+		context.fillStyle = WorldDisplay.getColorFromString(this.style.fillStyle);
+		context.strokeStyle = WorldDisplay.getColorFromString(this.style.strokeStyle);
 		let position:WorldPosition = this.circleEngineShape.getWorldPosition();
 		
 	    context.beginPath();
 	    context.arc(position.x,position.y,this.circleEngineShape.getRadius(),0,Math.PI * 2, false);
 	    context.closePath();
 	    context.fill();
-	    context.lineWidth = 2;
+	    context.lineWidth = this.style.lineWidth;
 		context.stroke();
 	}
 }

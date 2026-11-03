@@ -1,3 +1,4 @@
+import { GraphTheme } from "../theme";
 import { WorldDisplay, Size } from "../worlddisplay";
 import { RectangleEngineShape } from "../../engine/shapes/rectangleengineshape";
 import { RectangleDisplayShape } from "./rectangledisplayshape";
@@ -150,10 +151,10 @@ export class TextDisplayShape implements DrawableText
 			
 			if(needsARedraw)
 			{
-				let hPadding:number = 5;
-				let vPadding:number = 5;	
-				let fontPixelHeight:number = 15;
-				this.setContextFont(context,"bold","Arial",15,"000000ff");
+				let hPadding:number = 8;
+				let vPadding:number = 6;
+				let fontPixelHeight:number = 14;
+				this.setContextFont(context,"600","system-ui, sans-serif",fontPixelHeight,GraphTheme.text);
 
 				let textSize:Size = WorldDisplay.metricsTextMutipleLines(context,
 					this.displayText,
@@ -166,7 +167,7 @@ export class TextDisplayShape implements DrawableText
 				this.rectangleDisplayShape.draw(context);
 
 				// the rectangle may have reset our color
-				this.setContextFont(context,"bold","Arial",15,"000000ff");
+				this.setContextFont(context,"600","system-ui, sans-serif",fontPixelHeight,GraphTheme.text);
 
 				WorldDisplay.drawTextMutipleLines(context,
 					this.displayText,

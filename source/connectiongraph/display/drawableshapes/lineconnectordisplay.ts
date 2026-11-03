@@ -1,3 +1,4 @@
+import { GraphTheme } from "../theme";
 import { WorldDisplay } from "../worlddisplay";
 import { DrawableConnector } from "./drawableconnector";
 import { EngineConnector } from "../../engine/connectors/engineconnector";
@@ -19,10 +20,7 @@ export class LineConnectorDisplay implements DrawableConnector
 	
 	public draw(context:CanvasRenderingContext2D):void
 	{
-        context.fillStyle = WorldDisplay.getColorFromString("ff0000ff");
-		context.strokeStyle = WorldDisplay.getColorFromString("0000ffff");
-
-
+		context.strokeStyle = WorldDisplay.getColorFromString(GraphTheme.line);
         context.lineWidth = 2;
         for(let i=0;i<this.engineConnector.getEngineConnectorDefArray().length;i++)
         {

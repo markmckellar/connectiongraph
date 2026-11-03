@@ -28,7 +28,6 @@ export class Test3 extends BaseTest {
     }
 
     public buildTest() {
-      console.log("building Test2");
       let world = this.world;
        let circle1a:CircleEngineShape = world.worldEngine.createCircle(
           new WorldId("circle1a"),

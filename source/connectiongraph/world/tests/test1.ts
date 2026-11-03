@@ -18,6 +18,7 @@ import { PositionerLockX } from "../../../connectiongraph/engine/connectors/conn
 import { PositionerLockY } from "../../engine/connectors/connectorpositioners/positionerlocky";
 import { ShapeAndText } from "../../../connectiongraph/engine/shapes/shapeandtext";
 import { BaseTest } from "./basetest";
+import { GraphTheme } from "../../display/theme";
 export class Test1 extends BaseTest {
 
     constructor(worldEngine:WorldEngine,world:World,canvasHolder:CanvasHolderHTML)  {
@@ -25,13 +26,9 @@ export class Test1 extends BaseTest {
     }
 
     public buildTest() {
-      console.log("building Test1");
 
-      let  drawShapeParams =  {
-        fillStyle:"ff0000ff",
-        strokeStyle:"0000ffff",
-        lineWidth:2
-    }
+      let drawShapeParams = GraphTheme.node;
+      let textParams = GraphTheme.box;
 
       let world = this.world;
        let circle1:CircleEngineShape = world.worldEngine.createCircle(
@@ -71,8 +68,8 @@ export class Test1 extends BaseTest {
       let textBox1:TextEngineShape = world.worldEngine.createTextBox(
         new WorldId("textbox1"),
         new TextDisplayShape(
-          new RectangleDisplayShape(drawShapeParams),
-          "SomeText Mg\nAnd more text Mg"),
+          new RectangleDisplayShape(textParams),
+          "Follows the hub\nleft and right"),
         100,100,
         new WorldPosition(550,550),
         {}
@@ -83,8 +80,8 @@ export class Test1 extends BaseTest {
       let textBox2:TextEngineShape = world.worldEngine.createTextBox(
         new WorldId("textbox2"),
         new TextDisplayShape(
-          new RectangleDisplayShape(drawShapeParams),
-          "hey there friend Mg"),
+          new RectangleDisplayShape(textParams),
+          "Follows the hub up and down"),
         //80,20,
         100,100,
         new WorldPosition(150,350),
@@ -94,8 +91,8 @@ export class Test1 extends BaseTest {
       let textBox3:TextEngineShape = world.worldEngine.createTextBox(
         new WorldId("textbox3"),
         new TextDisplayShape(
-          new RectangleDisplayShape(drawShapeParams),
-          "SomeText Mg\nAnd more text Mg\nSomeText Mg\nAnd more text Mg\nSomeText Mg\nAnd more text Mg\nSomeText Mg\nAnd MOOORE text Mg"),
+          new RectangleDisplayShape(textParams),
+          "A label tied to\nthe big circle.\nDrag either one\nand the other\nfollows."),
           100,100,
           new WorldPosition(550,250),
         {}
@@ -106,7 +103,7 @@ export class Test1 extends BaseTest {
 
       let c1Circle:CircleEngineShape = world.worldEngine.createCircle(
         new WorldId("c1Circle"),
-        new CircleDisplayShape(),
+        new CircleDisplayShape(GraphTheme.hub),
         40,8,
         new WorldPosition(300,300),
         {restitution:0.9}

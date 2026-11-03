@@ -2,6 +2,7 @@
 import { computed, markRaw, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
 import { Pedigree, type Person, type Sex } from "../../source/pedigree/pedigree";
 import { PedigreeScene, type EngineName } from "../../source/pedigree/scene/pedigreescene";
+import SidePanel from "./SidePanel.vue";
 
 type Pos = { x: number; y: number };
 
@@ -10,6 +11,7 @@ pedigree.loadExample();
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const nameInput = ref<HTMLInputElement | null>(null);
+const personPanel = ref<InstanceType<typeof SidePanel> | null>(null);
 const menuEl = ref<HTMLElement | null>(null);
 let scene: PedigreeScene | null = null;
 
@@ -115,6 +117,7 @@ function clearAll() {
 const relayout = () => scene?.rebuild(false);
 
 function focusName() {
+  personPanel.value?.expand();
   nextTick(() => {
     nameInput.value?.focus();
     nameInput.value?.select();
@@ -125,6 +128,7 @@ function focusName() {
 const childPartner = ref<string>("new");
 watch(selectedId, (id) => {
   if (scene) scene.selectedId = id;
+  if (id) personPanel.value?.expand();
   childPartner.value = id ? pedigree.partnersOf(id)[0] ?? "new" : "new";
 });
 watch(engineName, (name) => {
@@ -136,7 +140,6 @@ watch(engineName, (name) => {
 // ---- data (triplets) ------------------------------------------------------
 
 const jsonText = ref("");
-const showData = ref(false);
 function exportJson() {
   jsonText.value = JSON.stringify(pedigree.toJSON(), null, 2);
   navigator.clipboard?.writeText(jsonText.value).then(
@@ -247,7 +250,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="editor">
+  <div class="workspace">
     <section class="stage">
       <canvas
         ref="canvas"
@@ -264,111 +267,108 @@ onBeforeUnmount(() => {
 
     <aside class="sidebar">
       <!-- Pedigree-wide actions -->
-      <section class="card">
-        <div class="card-head">
-          <h2>Pedigree</h2>
-          <label class="engine">
-            Engine
-            <select v-model="engineName">
-              <option value="matter">matter</option>
-              <option value="spring">spring</option>
-              <option value="mock">mock</option>
-            </select>
-          </label>
-        </div>
+      <SidePanel id="pedigree.actions" title="Pedigree">
         <div class="button-row">
           <button class="primary" @click="addPerson()">+ Add person</button>
           <button @click="relayout">Re-layout</button>
           <button @click="loadExample">Example</button>
           <button class="danger-text" @click="clearAll">Clear</button>
         </div>
-      </section>
+        <label class="engine">
+          Animation engine
+          <select v-model="engineName">
+            <option value="matter">Matter (physics)</option>
+            <option value="spring">Spring</option>
+            <option value="mock">Mock (no physics)</option>
+          </select>
+        </label>
+      </SidePanel>
 
       <!-- Selected person -->
-      <section v-if="selected && relations" class="card person-card">
-        <div class="card-head">
-          <h2>Person</h2>
-          <button class="link" @click="selectedId = null">Close</button>
-        </div>
-
-        <label class="field">
-          Name
-          <input ref="nameInput" v-model.trim="selected.name" type="text" placeholder="Name" maxlength="40" />
-        </label>
-
-        <fieldset class="field">
-          <legend>Sex</legend>
-          <div class="segmented">
-            <label v-for="s in SEXES" :key="s.value" :class="{ on: selected.sex === s.value }">
-              <input type="radio" name="sex" :value="s.value" :checked="selected.sex === s.value" @change="setSex(selected.id, s.value)" />
-              <span class="sym" :class="s.value" aria-hidden="true" />{{ s.label }}
-            </label>
-          </div>
-        </fieldset>
-
-        <div class="field-row">
-          <label class="field age">
-            Age
-            <input type="number" min="0" max="130" :value="selected.age ?? ''" placeholder="—" @input="setAge(selected, ($event.target as HTMLInputElement).value)" />
+      <SidePanel id="pedigree.person" ref="personPanel" :title="selected ? label(selected.id) : 'Person'">
+        <template v-if="selected" #actions>
+          <button class="link" @click="selectedId = null">Deselect</button>
+        </template>
+        <p v-if="!selected || !relations" class="help">Select someone on the chart or in the list below to edit them.</p>
+        <template v-else>
+          <label class="field">
+            Name
+            <input ref="nameInput" v-model.trim="selected.name" type="text" placeholder="Name" maxlength="40" />
           </label>
-          <label class="check">
-            <input type="checkbox" v-model="selected.deceased" />
-            Deceased
-          </label>
-          <label class="check">
-            <input type="checkbox" :checked="selected.proband" @change="toggleProband(selected.id)" />
-            Proband
-          </label>
-        </div>
 
-        <dl class="relations">
-          <template v-for="[title, ids] in ([['Parents', relations.parents], ['Partners', relations.partners], ['Siblings', relations.siblings], ['Children', relations.children]] as const)" :key="title">
-            <dt>{{ title }}</dt>
-            <dd>
-              <button v-for="id in ids" :key="id" class="chip" @click="selectedId = id">
-                <span class="sym" :class="[pedigree.find(id)?.sex, { deceased: pedigree.find(id)?.deceased }]" aria-hidden="true" />{{ label(id) }}
-              </button>
-              <span v-if="!ids.length" class="none">none</span>
-            </dd>
-          </template>
-        </dl>
-
-        <div class="actions">
-          <button :disabled="!!relations.parents.length" @click="addParents(selected.id)">Add parents</button>
-          <div class="button-row">
-            <button @click="addSibling(selected.id, 'male')">+ Brother</button>
-            <button @click="addSibling(selected.id, 'female')">+ Sister</button>
-          </div>
-          <div class="child-row">
-            <label>
-              Child with
-              <select v-model="childPartner">
-                <option v-for="id in relations.partners" :key="id" :value="id">{{ label(id) }}</option>
-                <option value="new">a new partner</option>
-              </select>
-            </label>
-            <div class="button-row">
-              <button @click="addChild(selected.id, childPartner === 'new' ? null : childPartner, 'male')">+ Son</button>
-              <button @click="addChild(selected.id, childPartner === 'new' ? null : childPartner, 'female')">+ Daughter</button>
+          <fieldset class="field">
+            <legend>Sex</legend>
+            <div class="segmented">
+              <label v-for="s in SEXES" :key="s.value" :class="{ on: selected.sex === s.value }">
+                <input type="radio" name="sex" :value="s.value" :checked="selected.sex === s.value" @change="setSex(selected.id, s.value)" />
+                <span class="sym" :class="s.value" aria-hidden="true" />{{ s.label }}
+              </label>
             </div>
+          </fieldset>
+
+          <div class="field-row">
+            <label class="field age">
+              Age
+              <input type="number" min="0" max="130" :value="selected.age ?? ''" placeholder="—" @input="setAge(selected, ($event.target as HTMLInputElement).value)" />
+            </label>
+            <label class="check">
+              <input v-model="selected.deceased" type="checkbox" />
+              Deceased
+            </label>
+            <label class="check">
+              <input type="checkbox" :checked="selected.proband" @change="toggleProband(selected.id)" />
+              Proband
+            </label>
           </div>
-          <button
-            class="danger"
-            :disabled="!!relations.children.length"
-            :title="relations.children.length ? 'Remove their children first' : ''"
-            @click="removePerson(selected.id)"
-          >
-            Delete person
-          </button>
-        </div>
-      </section>
+
+          <dl class="relations">
+            <template v-for="[title, ids] in ([['Parents', relations.parents], ['Partners', relations.partners], ['Siblings', relations.siblings], ['Children', relations.children]] as const)" :key="title">
+              <dt>{{ title }}</dt>
+              <dd>
+                <button v-for="id in ids" :key="id" class="chip" @click="selectedId = id">
+                  <span class="sym" :class="[pedigree.find(id)?.sex, { deceased: pedigree.find(id)?.deceased }]" aria-hidden="true" />{{ label(id) }}
+                </button>
+                <span v-if="!ids.length" class="none">none</span>
+              </dd>
+            </template>
+          </dl>
+
+          <div class="actions">
+            <h3>Add relatives</h3>
+            <div class="button-row">
+              <button :disabled="!!relations.parents.length" @click="addParents(selected.id)">Parents</button>
+              <button @click="addSibling(selected.id, 'male')">Brother</button>
+              <button @click="addSibling(selected.id, 'female')">Sister</button>
+            </div>
+            <div class="child-row">
+              <label>
+                Child with
+                <select v-model="childPartner">
+                  <option v-for="id in relations.partners" :key="id" :value="id">{{ label(id) }}</option>
+                  <option value="new">a new partner</option>
+                </select>
+              </label>
+              <div class="button-row">
+                <button @click="addChild(selected.id, childPartner === 'new' ? null : childPartner, 'male')">Son</button>
+                <button @click="addChild(selected.id, childPartner === 'new' ? null : childPartner, 'female')">Daughter</button>
+              </div>
+            </div>
+            <button
+              class="danger"
+              :disabled="!!relations.children.length"
+              :title="relations.children.length ? 'Remove their children first' : ''"
+              @click="removePerson(selected.id)"
+            >
+              Delete {{ label(selected.id) }}
+            </button>
+            <p v-if="relations.children.length" class="help">People with children can't be deleted; remove the children first.</p>
+          </div>
+        </template>
+      </SidePanel>
 
       <!-- Everyone, by generation -->
-      <section class="card">
-        <div class="card-head">
-          <h2>People <span class="count">{{ pedigree.people.length }}</span></h2>
-        </div>
-        <p v-if="!pedigree.people.length" class="none">No one yet. Add a person to start.</p>
+      <SidePanel id="pedigree.people" title="People" :count="pedigree.people.length">
+        <p v-if="!pedigree.people.length" class="help">No one yet. Add a person to start.</p>
         <div v-for="[gen, people] in generationGroups" :key="gen" class="gen">
           <h3>Generation {{ roman(gen + 1) }}</h3>
           <ul>
@@ -381,28 +381,22 @@ onBeforeUnmount(() => {
             </li>
           </ul>
         </div>
-      </section>
+      </SidePanel>
 
       <!-- The underlying triplets -->
-      <section class="card">
-        <button class="card-head toggle" :aria-expanded="showData" @click="showData = !showData">
-          <h2>Triplets <span class="count">{{ pedigree.trios.length }}</span></h2>
-          <span aria-hidden="true">{{ showData ? "▾" : "▸" }}</span>
-        </button>
-        <template v-if="showData">
-          <p class="help">Each triplet is one child with their mother and father. Couples and sibships are worked out from these.</p>
-          <ol class="trios">
-            <li v-for="t in pedigree.trios" :key="t.childId">
-              <b>{{ label(t.childId) }}</b> ← {{ label(t.motherId) }} + {{ label(t.fatherId) }}
-            </li>
-          </ol>
-          <textarea v-model="jsonText" rows="6" spellcheck="false" placeholder="Export to see the JSON, or paste some here and Import." />
-          <div class="button-row">
-            <button @click="exportJson">Export</button>
-            <button :disabled="!jsonText.trim()" @click="importJson">Import</button>
-          </div>
-        </template>
-      </section>
+      <SidePanel id="pedigree.trios" title="Triplets" :count="pedigree.trios.length" :default-open="false">
+        <p class="help">Each triplet is one child with their mother and father. Couples and sibships are worked out from these.</p>
+        <ol class="trios">
+          <li v-for="t in pedigree.trios" :key="t.childId">
+            <b>{{ label(t.childId) }}</b> ← {{ label(t.motherId) }} + {{ label(t.fatherId) }}
+          </li>
+        </ol>
+        <textarea v-model="jsonText" rows="6" spellcheck="false" placeholder="Export to see the JSON, or paste some here and Import." />
+        <div class="button-row">
+          <button @click="exportJson">Export</button>
+          <button :disabled="!jsonText.trim()" @click="importJson">Import</button>
+        </div>
+      </SidePanel>
     </aside>
 
     <!-- Right-click menu -->
@@ -469,85 +463,13 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.editor {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: 16px;
-  padding: 16px;
-  align-items: start;
-}
-@media (max-width: 1100px) {
-  .editor { grid-template-columns: minmax(0, 1fr); }
-}
+.engine { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #57606a; }
 
-.stage { overflow-x: auto; }
-canvas {
-  display: block;
-  background: #fff;
-  border: 1px solid #d0d7de;
-  border-radius: 8px;
-  touch-action: none;
-  max-width: none;
-}
-.hint { color: #6b7280; font-size: 12px; margin: 6px 2px 0; }
+h3 { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin: 6px 0 4px; }
 
-.sidebar { display: flex; flex-direction: column; gap: 12px; }
-.card {
-  background: #fff;
-  border: 1px solid #d0d7de;
-  border-radius: 8px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.card-head.toggle { background: none; border: 0; padding: 0; font: inherit; cursor: pointer; color: inherit; text-align: left; }
-h2 { font-size: 0.95rem; margin: 0; }
-h3 { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: #6b7280; margin: 6px 0 4px; }
-.count { font-weight: 500; color: #6b7280; font-size: 0.8rem; margin-left: 4px; }
-
-button, select, input, textarea { font: inherit; font-size: 13px; }
-button {
-  border: 1px solid #d0d7de;
-  background: #f6f8fa;
-  border-radius: 6px;
-  padding: 5px 10px;
-  cursor: pointer;
-  color: #1f2328;
-}
-button:hover:not(:disabled) { background: #eef1f4; }
-button:disabled { opacity: 0.45; cursor: not-allowed; }
-button.primary { background: #2563eb; border-color: #2563eb; color: #fff; }
-button.primary:hover { background: #1d4ed8; }
-button.danger { color: #b91c1c; border-color: #fca5a5; background: #fff; }
-button.danger:hover:not(:disabled) { background: #fef2f2; }
-.danger-text { color: #b91c1c; }
-button.link { border: 0; background: none; color: #2563eb; padding: 0; }
-button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #2563eb; outline-offset: 1px; }
-
-.button-row { display: flex; flex-wrap: wrap; gap: 6px; }
-.engine { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #6b7280; }
-.engine select { padding: 2px 4px; }
-
-.field { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #57606a; border: 0; padding: 0; margin: 0; }
-.field legend { padding: 0; margin-bottom: 4px; }
-.field input[type="text"], .field input[type="number"] {
-  border: 1px solid #d0d7de; border-radius: 6px; padding: 6px 8px; color: #1f2328;
-}
 .field-row { display: flex; align-items: end; gap: 14px; flex-wrap: wrap; }
 .age input { width: 5.5em; }
 .check { display: flex; align-items: center; gap: 6px; font-size: 13px; padding-bottom: 7px; cursor: pointer; }
-
-.segmented { display: flex; border: 1px solid #d0d7de; border-radius: 6px; overflow: hidden; }
-.segmented label {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
-  padding: 6px 4px; font-size: 13px; color: #1f2328; cursor: pointer; background: #fff;
-}
-.segmented label + label { border-left: 1px solid #d0d7de; }
-.segmented label.on { background: #eef2ff; color: #1d4ed8; font-weight: 600; }
-.segmented input { position: absolute; opacity: 0; pointer-events: none; }
-.segmented label:focus-within { outline: 2px solid #2563eb; outline-offset: -2px; }
 
 /* pedigree symbols in the UI */
 .sym { display: inline-block; width: 10px; height: 10px; border: 1.5px solid #1f2937; background: #fff; flex: none; position: relative; }
@@ -558,32 +480,29 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 
 .relations { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; margin: 0; font-size: 12px; }
-.relations dt { color: #6b7280; padding-top: 3px; }
+.relations dt { color: var(--muted); padding-top: 3px; }
 .relations dd { margin: 0; display: flex; flex-wrap: wrap; gap: 4px; }
-.chip { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px; background: #fff; font-size: 12px; }
-.none { color: #9ca3af; font-size: 12px; margin: 0; padding-top: 3px; }
+.workspace .chip { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px; background: #fff; font-size: 12px; }
+.none { color: #9ca3af; font-size: 12px; padding-top: 3px; }
 
-.actions { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #eaeef2; padding-top: 10px; }
+.actions { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #eaeef2; padding-top: 4px; }
+.actions h3 { margin-bottom: 0; }
 .child-row { display: flex; flex-direction: column; gap: 6px; }
 .child-row label { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #57606a; }
 .child-row select { flex: 1; min-width: 0; }
 
 .gen ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
-.gen li button {
+.workspace .gen li button {
   width: 100%; display: flex; align-items: center; gap: 8px; text-align: left;
   border: 0; background: none; padding: 5px 6px; border-radius: 6px;
 }
-.gen li button:hover { background: #f3f4f6; }
-.gen li button.current { background: #eef2ff; }
+.workspace .gen li button:hover { background: var(--hover); }
+.workspace .gen li button.current { background: var(--accent-soft); }
 .gen .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.gen .meta { color: #6b7280; font-size: 12px; }
+.gen .meta { color: var(--muted); font-size: 12px; }
 
-.help { font-size: 12px; color: #6b7280; margin: 0; }
 .trios { margin: 0; padding-left: 20px; font-size: 12px; display: flex; flex-direction: column; gap: 2px; }
-textarea {
-  width: 100%; box-sizing: border-box; font: 12px ui-monospace, monospace;
-  border: 1px solid #d0d7de; border-radius: 6px; padding: 6px;
-}
+textarea { width: 100%; box-sizing: border-box; font: 12px ui-monospace, monospace !important; }
 
 /* context menu */
 .ctx, .ctx-menu {

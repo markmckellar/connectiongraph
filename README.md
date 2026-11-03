@@ -18,8 +18,8 @@ The app has two demos, as tabs at the top:
 
 **Pedigree** (the default page, `#pedigree`) is described below.
 
-**Connection graph** (`#graph`) – the library's own scenes: shapes joined by
-connectors, animated by a physics engine. Pick an engine and a scene; drag
+**Graph tests** (`#tests`) – the library's own scenes: shapes joined by
+connectors, animated by a physics engine. Pick a scene and an engine in the sidebar; drag
 shapes with the mouse.
 
 The pedigree editor is built on the library:

@@ -22,10 +22,10 @@ export class WorldOfWorldObjects extends World{
         let context = canvasHolder.getContext();
         canvasHolder.clearCanvas();
         for(const drawBackground of this.backgroundDrawers) drawBackground(context);
-        for(let i=0;i<this.worldObjectArray.length;i++) {
-            let worldObject:WorldObject = this.worldObjectArray[i];
-            worldObject.getDrawable().draw(context);
-        }
+        // connector lines first, so they sit underneath the shapes they join
+        const isConnector = (o:WorldObject) => typeof (o as any).getEngineConnectorDefArray === "function";
+        for(const worldObject of this.worldObjectArray) if(isConnector(worldObject)) worldObject.getDrawable().draw(context);
+        for(const worldObject of this.worldObjectArray) if(!isConnector(worldObject)) worldObject.getDrawable().draw(context);
         this.worldEngine.worldEngineParams.updateFunction(this);
         //this.worldEngine.getMouseAnchor().getWorldPosition().x;
     }

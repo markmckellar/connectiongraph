@@ -1,3 +1,5 @@
+import { GraphTheme } from "../theme";
+import { DrawShapeWithBorderParams } from "../drawshapewithborderparams";
 import { Drawable } from "../drawable";
 import { PolygonEngineShape } from "../../engine/shapes/polygonengineshape";
 import { WorldDisplay } from "../worlddisplay";
@@ -6,7 +8,7 @@ export class PolygonDisplayShape implements Drawable
 {
 	private _polygonEngineShape!:PolygonEngineShape;
 
-	constructor()
+	constructor(private style:DrawShapeWithBorderParams = GraphTheme.node)
 	{
 	}
 
@@ -28,9 +30,9 @@ export class PolygonDisplayShape implements Drawable
 	{
 		if(!this.polygonEngineShape) throw Error("PolygonDisplayShape:PolygonEngineShape is not set, was init called?")
 
-		context.fillStyle = WorldDisplay.getColorFromString("ff0000ff");
-		context.strokeStyle = WorldDisplay.getColorFromString("0000ffff");
-        context.lineWidth = 2;
+		context.fillStyle = WorldDisplay.getColorFromString(this.style.fillStyle);
+		context.strokeStyle = WorldDisplay.getColorFromString(this.style.strokeStyle);
+        context.lineWidth = this.style.lineWidth;
         
         WorldDisplay.drawOutlinedShape(context,this.polygonEngineShape.getPolygonPoints());
 		

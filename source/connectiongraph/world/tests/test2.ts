@@ -20,6 +20,7 @@ import { PolygonEngineShape } from "../../../connectiongraph/engine/shapes/polyg
 import { TextEngineShape } from "../../../connectiongraph/engine/shapes/textengineshape";
 */
 import { BaseTest } from "./basetest";
+import { GraphTheme } from "../../display/theme";
 import { PositionerFree } from "../../engine/connectors/connectorpositioners/positionerfree";
 export class Test2 extends BaseTest {
 
@@ -28,7 +29,6 @@ export class Test2 extends BaseTest {
     }
 
     public buildTest() {
-      console.log("building Test2");
       let world = this.world;
        let circle1a:CircleEngineShape = world.worldEngine.createCircle(
           new WorldId("circle1a"),
@@ -40,7 +40,7 @@ export class Test2 extends BaseTest {
         
       let circle1b:CircleEngineShape = world.worldEngine.createCircle(
         new WorldId("circle1b"),
-        new CircleDisplayShape(),
+        new CircleDisplayShape(GraphTheme.hub),
         40,8,
         new WorldPosition(300,300),
         {restitution:0.9}
@@ -56,7 +56,7 @@ export class Test2 extends BaseTest {
       
     let circle2b:CircleEngineShape = world.worldEngine.createCircle(
       new WorldId("circle2b"),
-      new CircleDisplayShape(),
+      new CircleDisplayShape(GraphTheme.hub),
       40,8,
       new WorldPosition(550,550),
       {restitution:0.9}
@@ -72,7 +72,7 @@ export class Test2 extends BaseTest {
     
   let circle3b:CircleEngineShape = world.worldEngine.createCircle(
     new WorldId("circle3b"),
-    new CircleDisplayShape(),
+    new CircleDisplayShape(GraphTheme.hub),
     40,8,
     new WorldPosition(150,150),
     {restitution:0.9}

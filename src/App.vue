@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { onBeforeUnmount, ref } from "vue";
-import ConnectionGraphDemo from "./components/ConnectionGraphDemo.vue";
+import GraphTests from "./components/GraphTests.vue";
 import PedigreeEditor from "./components/PedigreeEditor.vue";
 
-type Page = "graph" | "pedigree";
-const pageFromHash = (): Page => (location.hash === "#graph" ? "graph" : "pedigree");
+type Page = "pedigree" | "tests";
+// "#graph" was the old name for the tests tab; keep those links working
+const pageFromHash = (): Page => (location.hash === "#tests" || location.hash === "#graph" ? "tests" : "pedigree");
 const page = ref<Page>(pageFromHash());
 
 function go(p: Page) {
@@ -21,18 +22,23 @@ onBeforeUnmount(() => window.removeEventListener("hashchange", onHashChange));
     <header class="topbar">
       <nav role="tablist" aria-label="Demos">
         <button role="tab" :aria-selected="page === 'pedigree'" :class="{ active: page === 'pedigree' }" @click="go('pedigree')">Pedigree</button>
-        <button role="tab" :aria-selected="page === 'graph'" :class="{ active: page === 'graph' }" @click="go('graph')">Connection graph</button>
+        <button role="tab" :aria-selected="page === 'tests'" :class="{ active: page === 'tests' }" @click="go('tests')">Graph tests</button>
       </nav>
     </header>
-    <ConnectionGraphDemo v-if="page === 'graph'" />
-    <PedigreeEditor v-else />
+    <main class="page">
+      <GraphTests v-if="page === 'tests'" />
+      <PedigreeEditor v-else />
+    </main>
   </div>
 </template>
 
 <style scoped>
-.topbar { display: flex; align-items: center; gap: 24px; padding: 8px 16px; background: #fff; border-bottom: 1px solid #d0d7de; }
+.app { height: 100%; display: flex; flex-direction: column; }
+.topbar { flex: none; display: flex; align-items: center; padding: 6px 12px; background: var(--surface); border-bottom: 1px solid var(--border); }
 nav { display: flex; gap: 4px; }
-nav button { font: inherit; border: 0; background: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; color: #57606a; }
-nav button:hover { background: #f3f4f6; }
-nav button.active { background: #eef2ff; color: #1d4ed8; font-weight: 600; }
+nav button { font: inherit; font-size: 14px; border: 0; background: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; color: #57606a; }
+nav button:hover { background: var(--hover); }
+nav button.active { background: var(--accent-soft); color: #1d4ed8; font-weight: 600; }
+nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.page { flex: 1; min-height: 0; }
 </style>

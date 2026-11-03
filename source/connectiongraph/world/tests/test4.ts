@@ -9,6 +9,7 @@ import { EngineConnector } from "../../../connectiongraph/engine/connectors/engi
 import { EngineConnectorDef } from "../../../connectiongraph/engine/connectors/engineconnectordef";
 import { LineConnectorDisplay } from "../../../connectiongraph/display/drawableshapes/lineconnectordisplay";
 import { BaseTest } from "./basetest";
+import { GraphTheme } from "../../display/theme";
 import { PositionerCenterConnectorShape } from "../../engine/connectors/connectorpositioners/positionercenterconnectorshape";
 export class Test4 extends BaseTest {
 
@@ -17,7 +18,6 @@ export class Test4 extends BaseTest {
     }
 
     public buildTest() {
-      console.log("building Test2");
       let world = this.world;
       let restitution = 0.0;
       let density = 0.0;
@@ -54,7 +54,7 @@ export class Test4 extends BaseTest {
           circle1c.addToCollissionTags("COLLIDE");          
       let connectorCircle:CircleEngineShape = world.worldEngine.createCircle(
         new WorldId("connectorCircle"),
-        new CircleDisplayShape(),
+        new CircleDisplayShape(GraphTheme.hub),
         10,8,
         //new WorldPosition(200+Math.sqrt(2)*100,200+Math.sqrt(2)*100),
         new WorldPosition(410,210),
