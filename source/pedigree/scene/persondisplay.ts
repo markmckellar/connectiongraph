@@ -1,6 +1,6 @@
 import { Drawable } from "../../connectiongraph/display/drawable";
 import { EngineShape } from "../../connectiongraph/engine/shapes/engineshape";
-import { Person } from "../pedigree";
+import { carriedBy, conditionsOf, Person } from "../pedigree";
 
 export const PEDIGREE_COLORS = {
     line: "#374151",
@@ -20,6 +20,10 @@ export function labelWidth(person: Person | undefined): number {
 /**
  * Standard pedigree symbol: square = male, circle = female, diamond = unknown,
  * diagonal slash = deceased, arrow = proband. Name and age go underneath.
+ * An affected person's symbol is filled like a pie chart, one equal slice per
+ * condition in that condition's colour (all one colour for a single condition).
+ * A carrier gets a dot in the centre in the condition's colour (side by side
+ * when someone carries more than one).
  */
 export class PersonDisplay implements Drawable {
     private shape!: EngineShape;
@@ -46,12 +50,52 @@ export class PersonDisplay implements Drawable {
         ctx.strokeStyle = selected ? PEDIGREE_COLORS.selectedStroke : PEDIGREE_COLORS.stroke;
         ctx.fillStyle = selected ? PEDIGREE_COLORS.selectedFill : PEDIGREE_COLORS.fill;
 
-        ctx.beginPath();
-        if (person.sex === "male") ctx.rect(x - h, y - h, s, s);
-        else if (person.sex === "female") ctx.arc(x, y, h, 0, Math.PI * 2);
-        else { ctx.moveTo(x, y - h * 1.15); ctx.lineTo(x + h * 1.15, y); ctx.lineTo(x, y + h * 1.15); ctx.lineTo(x - h * 1.15, y); ctx.closePath(); }
+        const conditions = conditionsOf(person);
+        const outline = () => {
+            ctx.beginPath();
+            if (person.sex === "male") ctx.rect(x - h, y - h, s, s);
+            else if (person.sex === "female") ctx.arc(x, y, h, 0, Math.PI * 2);
+            else { ctx.moveTo(x, y - h * 1.15); ctx.lineTo(x + h * 1.15, y); ctx.lineTo(x, y + h * 1.15); ctx.lineTo(x - h * 1.15, y); ctx.closePath(); }
+        };
+        outline();
         ctx.fill();
+        if (conditions.length) {
+            ctx.save();
+            outline();
+            ctx.clip();
+            const r = s; // reaches past every corner; the clip trims it to the symbol
+            const slice = (Math.PI * 2) / conditions.length;
+            conditions.forEach((c, i) => {
+                ctx.fillStyle = c.color;
+                ctx.beginPath();
+                if (conditions.length === 1) ctx.rect(x - r, y - r, r * 2, r * 2);
+                else {
+                    const start = -Math.PI / 2 + i * slice; // first slice starts at 12 o'clock
+                    ctx.moveTo(x, y);
+                    ctx.arc(x, y, r, start, start + slice);
+                    ctx.closePath();
+                }
+                ctx.fill();
+            });
+            ctx.restore();
+        }
+        outline();
         ctx.stroke();
+
+        const carried = carriedBy(person);
+        if (carried.length) {
+            const r = s * 0.14, step = r * 2.5;
+            carried.forEach((c, i) => {
+                const cx = x + (i - (carried.length - 1) / 2) * step;
+                ctx.beginPath();
+                ctx.arc(cx, y, r, 0, Math.PI * 2);
+                ctx.fillStyle = c.color;
+                ctx.fill();
+                ctx.lineWidth = 1.5;
+                ctx.strokeStyle = PEDIGREE_COLORS.stroke;
+                ctx.stroke();
+            });
+        }
 
         ctx.strokeStyle = PEDIGREE_COLORS.stroke;
         ctx.lineWidth = 2;

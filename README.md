@@ -24,14 +24,18 @@ as you add relatives.
 - **Automatic layout that stays out of your way.** Rows are ordered so partners are adjacent, siblings stay
   together and each family sits under its parents; someone who married in goes on the outside so they never
   split their partner's siblings. Drag people to rearrange, or press **Re-layout** to tidy everything.
-- **Person details.** Name, sex, age, deceased and proband, edited in the sidebar, with each person's parents,
-  partners, siblings and children one click away.
-- **Save as PDF.** A print-ready chart with title, summary and symbol legend, followed by a table of everyone
-  (generation, name, sex, age, status, parents). [See an example](docs/example-pedigree.pdf).
+- **Genetic conditions and carriers.** Mark people as affected by, or carriers of, cystic fibrosis, sickle cell
+  disease, Huntington's disease or hemophilia A. Affected symbols are filled in each condition's colour (split
+  when someone has more than one), carriers get the standard centre dot, and a key lists what's in use. The
+  example family shows all three inheritance patterns: dominant, recessive and X-linked.
+- **Person details.** Name, sex, age, deceased, proband and conditions, edited in the sidebar, with each
+  person's parents, partners, siblings and children one click away.
+- **Save as PDF.** A print-ready chart with title, summary, conditions key and symbol legend, followed by a table
+  of everyone (generation, name, sex, age, status, conditions, parents). [See an example](docs/example-pedigree.pdf).
 - **Plain data underneath.** Export and import the whole pedigree as JSON.
 - **Works on desktop and phone.** Sharp on high-resolution screens; the chart scales to fit a phone.
 
-<img src="docs/images/pedigree-context-menu.png" alt="Right-click menu on a person: change sex, mark as deceased or proband, add parents, siblings or children" width="560">
+<img src="docs/images/pedigree-context-menu.png" alt="Right-click menu on a person, with the Conditions submenu open: affected by or carrier of each condition" width="560">
 
 <img src="docs/images/pedigree-pdf.png" alt="Page one of the saved PDF: title, summary line, the chart and a symbol legend" width="640">
 
@@ -62,9 +66,10 @@ engines.
 {
   "title": "Example family",
   "people": [
-    { "id": "p1", "name": "George", "sex": "male",   "age": 88, "deceased": true },
-    { "id": "p2", "name": "Edith",  "sex": "female", "age": 84, "deceased": false },
-    { "id": "p5", "name": "Tom",    "sex": "male",   "age": 56, "deceased": false }
+    { "id": "p1", "name": "George", "sex": "male",   "age": 88, "deceased": true,  "conditions": ["hd"] },
+    { "id": "p2", "name": "Edith",  "sex": "female", "age": 84, "deceased": false, "conditions": [] },
+    { "id": "p5", "name": "Tom",    "sex": "male",   "age": 56, "deceased": false, "conditions": ["hd"],
+      "carrierOf": ["cf"] }
   ],
   "trios": [
     { "childId": "p5", "motherId": "p2", "fatherId": "p1" }
@@ -72,7 +77,8 @@ engines.
 }
 ```
 
-Everything else is derived from the trios: couples, sibships, half-siblings (the same parent with different
+Each person lists the conditions they're affected by and those they carry. Everything else is derived from
+the trios: couples, sibships, half-siblings (the same parent with different
 partners) and each person's generation. Generations are found by pushing children below their lower parent and
 keeping partners on the same row until nothing changes.
 

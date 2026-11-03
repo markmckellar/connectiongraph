@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { computed, markRaw, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
-import { Pedigree, type Person, type Sex } from "../../source/pedigree/pedigree";
+import {
+  carriedBy,
+  CONDITIONS,
+  conditionsOf,
+  conditionStatus,
+  Pedigree,
+  type ConditionStatus,
+  type Person,
+  type Sex,
+} from "../../source/pedigree/pedigree";
 import { PedigreeScene, type EngineName } from "../../source/pedigree/scene/pedigreescene";
 import SidePanel from "./SidePanel.vue";
 import { savePedigreePdf } from "../../source/pedigree/export/pedigreepdf";
@@ -39,6 +48,33 @@ function notify(text: string) {
 // ---- derived views ----------------------------------------------------------
 
 const label = (id: string) => pedigree.label(id);
+
+/** The chart's key: only the conditions someone actually has. */
+const conditionsInUse = computed(() => pedigree.conditionsInUse());
+
+/** Fill for the small symbols in the sidebar: a pie of the person's conditions and a carrier dot, like the chart. */
+function symFill(id: string | Person | undefined): Record<string, string> {
+  const person = typeof id === "string" ? pedigree.find(id) : id;
+  const cs = conditionsOf(person);
+  const carried = carriedBy(person);
+  const layers: string[] = [];
+  if (carried.length) layers.push(`radial-gradient(circle, ${carried[0].color} 0 2px, #1f2937 2px 2.8px, transparent 3px)`);
+  if (cs.length === 1) layers.push(`linear-gradient(${cs[0].color}, ${cs[0].color})`);
+  else if (cs.length > 1) {
+    const step = 360 / cs.length;
+    layers.push(`conic-gradient(${cs.map((c, i) => `${c.color} ${i * step}deg ${(i + 1) * step}deg`).join(", ")})`);
+  }
+  return layers.length ? { background: layers.join(", ") } : {};
+}
+
+const hasCarriers = computed(() => pedigree.hasCarriers());
+const STATUSES: Array<{ value: ConditionStatus; label: string }> = [
+  { value: "none", label: "Not affected" },
+  { value: "carrier", label: "Carrier" },
+  { value: "affected", label: "Affected" },
+];
+const setConditionStatus = (id: string, conditionId: string, status: ConditionStatus) =>
+  pedigree.setConditionStatus(id, conditionId, status);
 
 const generationGroups = computed(() => {
   const gens = pedigree.generations();
@@ -297,6 +333,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="workspace">
     <section class="stage">
+      <div class="chart">
       <canvas
         ref="canvas"
         width="900"
@@ -309,6 +346,16 @@ onBeforeUnmount(() => {
         @dblclick="onDoubleClick"
         @contextmenu="onContextMenu"
       />
+      <div v-if="conditionsInUse.length" class="key" aria-label="Key">
+        <div class="key-title">Key</div>
+        <div v-for="c in conditionsInUse" :key="c.id" class="key-row">
+          <span class="swatch" :style="{ background: c.color }" aria-hidden="true" />{{ c.name }}
+        </div>
+        <div v-if="hasCarriers" class="key-row">
+          <span class="swatch carrier-swatch" aria-hidden="true" />Carrier (unaffected)
+        </div>
+      </div>
+      </div>
       <p class="hint">
         <span class="mouse">Drag to rearrange · right-click a person or the background for options · double-click empty space to add someone</span>
         <span class="touch">Drag to rearrange · press and hold a person or the background for options</span>
@@ -378,12 +425,28 @@ onBeforeUnmount(() => {
             </label>
           </div>
 
+          <fieldset class="field conditions">
+            <legend>Conditions</legend>
+            <div v-for="c in CONDITIONS" :key="c.id" class="condition-row">
+              <span class="swatch" :style="{ background: c.color }" aria-hidden="true" />
+              <label :for="'status-' + c.id" class="condition-name">{{ c.name }} <span class="inherit">{{ c.inheritance }}</span></label>
+              <select
+                :id="'status-' + c.id"
+                :value="conditionStatus(selected, c.id)"
+                :class="'status-' + conditionStatus(selected, c.id)"
+                @change="setConditionStatus(selected.id, c.id, ($event.target as HTMLSelectElement).value as ConditionStatus)"
+              >
+                <option v-for="st in STATUSES" :key="st.value" :value="st.value">{{ st.label }}</option>
+              </select>
+            </div>
+          </fieldset>
+
           <dl class="relations">
             <template v-for="[title, ids] in ([['Parents', relations.parents], ['Partners', relations.partners], ['Siblings', relations.siblings], ['Children', relations.children]] as const)" :key="title">
               <dt>{{ title }}</dt>
               <dd>
                 <button v-for="id in ids" :key="id" class="chip" @click="selectedId = id">
-                  <span class="sym" :class="[pedigree.find(id)?.sex, { deceased: pedigree.find(id)?.deceased }]" aria-hidden="true" />{{ label(id) }}
+                  <span class="sym" :class="[pedigree.find(id)?.sex, { deceased: pedigree.find(id)?.deceased }]" :style="symFill(id)" aria-hidden="true" />{{ label(id) }}
                 </button>
                 <span v-if="!ids.length" class="none">none</span>
               </dd>
@@ -431,7 +494,7 @@ onBeforeUnmount(() => {
           <ul>
             <li v-for="p in people" :key="p.id">
               <button :class="{ current: p.id === selectedId }" @click="selectedId = p.id">
-                <span class="sym" :class="[p.sex, { deceased: p.deceased }]" aria-hidden="true" />
+                <span class="sym" :class="[p.sex, { deceased: p.deceased }]" :style="symFill(p)" aria-hidden="true" />
                 <span class="name">{{ label(p.id) }}</span>
                 <span class="meta">{{ p.proband ? "proband · " : "" }}{{ p.deceased ? "d. " : "" }}{{ p.age != null ? p.age + "y" : "" }}</span>
               </button>
@@ -483,6 +546,24 @@ onBeforeUnmount(() => {
         <button role="menuitemcheckbox" :aria-checked="menuPerson.proband" @click="pick(() => toggleProband(menuPerson!.id))">
           <span class="tick">{{ menuPerson.proband ? "✓" : "" }}</span>Proband
         </button>
+        <div class="ctx-sub">
+          <button role="menuitem" aria-haspopup="true">Conditions <span class="arrow">▸</span></button>
+          <div class="ctx-menu" role="menu">
+            <template v-for="st in (['affected', 'carrier'] as const)" :key="st">
+              <div class="ctx-label">{{ st === "affected" ? "Affected by" : "Carrier of" }}</div>
+              <button
+                v-for="c in CONDITIONS"
+                :key="st + c.id"
+                role="menuitemcheckbox"
+                :aria-checked="conditionStatus(menuPerson, c.id) === st"
+                @click="pick(() => setConditionStatus(menuPerson!.id, c.id, conditionStatus(menuPerson!, c.id) === st ? 'none' : st))"
+              >
+                <span class="tick">{{ conditionStatus(menuPerson, c.id) === st ? "✓" : "" }}</span>
+                <span class="swatch" :class="{ 'carrier-swatch': st === 'carrier' }" :style="st === 'affected' ? { background: c.color } : { '--dot': c.color }" aria-hidden="true" />{{ c.name }}
+              </button>
+            </template>
+          </div>
+        </div>
         <hr />
         <button role="menuitem" :disabled="!!pedigree.parentsOf(menuPerson.id)" @click="pick(() => addParents(menuPerson!.id))">Add parents</button>
         <button role="menuitem" @click="pick(() => addSibling(menuPerson!.id, 'male'))">Add brother</button>
@@ -522,6 +603,28 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+/* the chart and its key (the key sits in the chart's top-right corner) */
+.chart { position: relative; flex: none; max-width: 100%; }
+.key {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border); border-radius: 8px;
+  padding: 6px 10px; font-size: 12px; display: flex; flex-direction: column; gap: 3px;
+  pointer-events: none;
+}
+.key-title { font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+.key-row { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.swatch { display: inline-block; width: 11px; height: 11px; border: 1.5px solid #1f2937; flex: none; }
+
+.conditions { display: flex; flex-direction: column; gap: 6px; }
+.condition-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; font-size: 13px; color: var(--text); }
+.condition-name { line-height: 1.25; }
+.condition-row select { font-size: 12px; padding: 3px 4px; }
+.condition-row select.status-affected { border-color: #1f2937; font-weight: 600; }
+.condition-row select.status-carrier { border-style: dashed; border-color: #1f2937; }
+/* white square with a centre dot: how carriers look on the chart */
+.carrier-swatch { background: radial-gradient(circle, var(--dot, #1f2937) 0 2.2px, transparent 2.8px) #fff; }
+.inherit { display: block; font-size: 11px; color: var(--muted); }
+
 .save-pdf { align-self: flex-start; }
 .engine { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: #57606a; }
 

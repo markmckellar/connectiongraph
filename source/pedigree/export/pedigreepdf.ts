@@ -1,5 +1,5 @@
 import type { jsPDF } from "jspdf";
-import { Pedigree, Person } from "../pedigree";
+import { carriedBy, Condition, conditionsOf, inheritanceInline, Pedigree, Person } from "../pedigree";
 import { PedigreeScene } from "../scene/pedigreescene";
 
 export interface PedigreePdfOptions {
@@ -14,6 +14,7 @@ const RULE: [number, number, number] = [216, 222, 228];
 /**
  * Save the pedigree as a PDF and download it:
  *  page 1 - title, summary, the chart as currently laid out, symbol legend
+ *           and a key to the conditions in use
  *  page 2+ - a table of everyone (generation, name, sex, age, status, parents)
  * Returns the file name it saved to.
  */
@@ -48,12 +49,16 @@ export async function savePedigreePdf(scene: PedigreeScene, pedigree: Pedigree, 
     doc.setDrawColor(...RULE).setLineWidth(0.3).line(M, M + 15, W - M, M + 15);
 
     // fit the chart between the header and the legend, never larger than ~print size
-    const areaTop = M + 20, areaBottom = H - M - 12;
+    const conditions = pedigree.conditionsInUse();
+    const keyLines = conditions.length ? layoutConditionKey(doc, conditions, pedigree.hasCarriers(), M, W - M) : [];
+    const keyLineH = 5;
+    const areaTop = M + 20, areaBottom = H - M - 12 - keyLines.length * keyLineH - (keyLines.length ? 2 : 0);
     const areaW = W - 2 * M, areaH = areaBottom - areaTop;
     const mmPerPx = Math.min(areaW / snap.width, areaH / snap.height, 0.42);
     const imgW = snap.width * mmPerPx, imgH = snap.height * mmPerPx;
     doc.addImage(snap.canvas.toDataURL("image/png"), "PNG", (W - imgW) / 2, areaTop + (areaH - imgH) / 2, imgW, imgH, undefined, "FAST");
 
+    keyLines.forEach((line, i) => drawKeyLine(doc, line, H - M - 10 - (keyLines.length - 1 - i) * keyLineH));
     drawLegend(doc, M, H - M - 3);
 
     // ---- page 2+: people table ----------------------------------------------
@@ -93,13 +98,78 @@ function drawLegend(doc: jsPDF, x: number, baseline: number): void {
     doc.setFillColor(255, 255, 255);
 }
 
+type KeyItem =
+    | { kind: "heading"; text: string; x: number }
+    | { kind: "condition"; condition: Condition; text: string; x: number }
+    | { kind: "carrier"; text: string; x: number };
+
+const KEY_SWATCH = 3.4, KEY_GAP = 2.5, KEY_SPACING = 7;
+
+/**
+ * Lay out "Conditions:", a swatch and name for each condition in use and,
+ * if anyone is a carrier, what the centre dot means; wrapping onto more
+ * lines rather than running off the page.
+ */
+function layoutConditionKey(doc: jsPDF, conditions: Condition[], hasCarriers: boolean, left: number, right: number): KeyItem[][] {
+    doc.setFontSize(8.5);
+    const items: Array<{ item: KeyItem; width: number }> = [];
+    doc.setFont("helvetica", "bold");
+    items.push({ item: { kind: "heading", text: "Conditions:", x: 0 }, width: doc.getTextWidth("Conditions:") });
+    doc.setFont("helvetica", "normal");
+    for (const c of conditions) {
+        const text = pdfText(c.name + " (" + inheritanceInline(c) + ")");
+        items.push({ item: { kind: "condition", condition: c, text, x: 0 }, width: KEY_SWATCH + KEY_GAP + doc.getTextWidth(text) });
+    }
+    if (hasCarriers) {
+        const text = "Carrier (unaffected)";
+        items.push({ item: { kind: "carrier", text, x: 0 }, width: KEY_SWATCH + KEY_GAP + doc.getTextWidth(text) });
+    }
+
+    const lines: KeyItem[][] = [[]];
+    let x = left;
+    for (const { item, width } of items) {
+        if (x > left && x + width > right) { lines.push([]); x = left + 4; }
+        lines[lines.length - 1].push({ ...item, x });
+        x += width + (item.kind === "heading" ? 4 : KEY_SPACING);
+    }
+    return lines;
+}
+
+function drawKeyLine(doc: jsPDF, line: KeyItem[], baseline: number): void {
+    const s = KEY_SWATCH, y = baseline - 1.1;
+    doc.setFontSize(8.5).setTextColor(...INK).setDrawColor(...INK).setLineWidth(0.35);
+    for (const item of line) {
+        if (item.kind === "heading") {
+            doc.setFont("helvetica", "bold").text(item.text, item.x, baseline);
+            continue;
+        }
+        doc.setFont("helvetica", "normal");
+        if (item.kind === "condition") {
+            doc.setFillColor(...rgb(item.condition.color));
+            doc.rect(item.x, y - s / 2, s, s, "FD");
+        } else {
+            // an outlined square with a centre dot, as drawn on the chart
+            doc.setFillColor(255, 255, 255).rect(item.x, y - s / 2, s, s, "FD");
+            doc.setFillColor(...INK).circle(item.x + s / 2, y, s * 0.17, "F");
+        }
+        doc.text(item.text, item.x + s + KEY_GAP, baseline);
+    }
+    doc.setFillColor(255, 255, 255);
+}
+
+function rgb(hex: string): [number, number, number] {
+    const n = parseInt(hex.replace("#", ""), 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
 function drawPeopleTable(doc: jsPDF, pedigree: Pedigree, people: Person[], generations: Map<string, number>, W: number, H: number, M: number): void {
     const cols = [
         { title: "Gen.", w: 14 },
-        { title: "Name", w: 58 },
+        { title: "Name", w: 48 },
         { title: "Sex", w: 22 },
         { title: "Age", w: 16 },
         { title: "Status", w: 22 },
+        { title: "Conditions", w: 62 },
         { title: "Parents", w: 0 },
     ];
     cols[cols.length - 1].w = W - 2 * M - cols.reduce((t, c) => t + c.w, 0);
@@ -126,6 +196,7 @@ function drawPeopleTable(doc: jsPDF, pedigree: Pedigree, people: Person[], gener
             p.sex === "male" ? "Male" : p.sex === "female" ? "Female" : "Unknown",
             p.age != null ? String(p.age) : "",
             p.deceased ? "Deceased" : "Living",
+            [...conditionsOf(p).map(c => c.name), ...carriedBy(p).map(c => "carrier: " + c.name)].join(", "),
             trio ? pedigree.label(trio.motherId) + " & " + pedigree.label(trio.fatherId) : "",
         ];
         doc.setFont("helvetica", "normal").setFontSize(9);

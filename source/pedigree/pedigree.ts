@@ -8,6 +8,52 @@
 
 export type Sex = "male" | "female" | "unknown";
 
+/** A condition (genetic disorder or trait) that people in the pedigree can have. */
+export interface Condition {
+    id: string;
+    name: string;
+    inheritance: string;
+    /** Fill colour for affected people's symbols and the key. */
+    color: string;
+}
+
+/**
+ * The conditions the editor offers: textbook examples, one or two of each
+ * main inheritance pattern. Colours are from the Okabe-Ito palette, which
+ * stays distinguishable for colour-blind readers.
+ */
+export const CONDITIONS: Condition[] = [
+    { id: "cf", name: "Cystic fibrosis", inheritance: "Autosomal recessive", color: "#0072B2" },
+    { id: "scd", name: "Sickle cell disease", inheritance: "Autosomal recessive", color: "#D55E00" },
+    { id: "hd", name: "Huntington's disease", inheritance: "Autosomal dominant", color: "#009E73" },
+    { id: "hema", name: "Hemophilia A", inheritance: "X-linked recessive", color: "#E69F00" },
+];
+
+/** A person's conditions in the standard order (the order of CONDITIONS), unknown ids dropped. */
+export function conditionsOf(person: Person | undefined): Condition[] {
+    if (!person?.conditions?.length) return [];
+    return CONDITIONS.filter(c => person.conditions.includes(c.id));
+}
+
+/** The conditions a person carries (unaffected carrier), in the standard order. */
+export function carriedBy(person: Person | undefined): Condition[] {
+    if (!person?.carrierOf?.length) return [];
+    return CONDITIONS.filter(c => person.carrierOf.includes(c.id));
+}
+
+/** How a person relates to one condition. */
+export type ConditionStatus = "none" | "carrier" | "affected";
+
+export function conditionStatus(person: Person, conditionId: string): ConditionStatus {
+    return person.conditions.includes(conditionId) ? "affected"
+        : person.carrierOf?.includes(conditionId) ? "carrier" : "none";
+}
+
+/** "Autosomal recessive" -> "autosomal recessive", but "X-linked recessive" keeps its capital X. */
+export function inheritanceInline(c: Condition): string {
+    return /^[A-Z]-/.test(c.inheritance) ? c.inheritance : c.inheritance.charAt(0).toLowerCase() + c.inheritance.slice(1);
+}
+
 export interface Person {
     id: string;
     name: string;
@@ -15,6 +61,10 @@ export interface Person {
     age: number | null;
     deceased: boolean;
     proband: boolean;
+    /** Ids from CONDITIONS that this person is affected by. */
+    conditions: string[];
+    /** Ids from CONDITIONS that this person carries without being affected (drawn as a centre dot). */
+    carrierOf: string[];
 }
 
 export interface Trio {
@@ -128,6 +178,8 @@ export class Pedigree {
             age: fields.age ?? null,
             deceased: fields.deceased ?? false,
             proband: false,
+            conditions: [...(fields.conditions ?? [])],
+            carrierOf: [...(fields.carrierOf ?? [])],
         };
         this.people.push(person);
         if (fields.proband) this.setProband(person.id);
@@ -181,6 +233,32 @@ export class Pedigree {
         }
     }
 
+    /** Turn "affected" on or off for one condition. */
+    public toggleCondition(id: string, conditionId: string): void {
+        const p = this.get(id);
+        this.setConditionStatus(id, conditionId, p.conditions.includes(conditionId) ? "none" : "affected");
+    }
+
+    /** Set someone to not affected, carrier, or affected for one condition (carrier and affected are exclusive). */
+    public setConditionStatus(id: string, conditionId: string, status: ConditionStatus): void {
+        const p = this.get(id);
+        p.conditions = p.conditions.filter(c => c !== conditionId);
+        p.carrierOf = (p.carrierOf ?? []).filter(c => c !== conditionId);
+        if (status === "affected") p.conditions = [...p.conditions, conditionId];
+        if (status === "carrier") p.carrierOf = [...p.carrierOf, conditionId];
+    }
+
+    /** The conditions anyone in the pedigree has or carries, in the standard order (for the key). */
+    /** Whether anyone is marked as a carrier (the key then explains the dot). */
+    public hasCarriers(): boolean {
+        return this.people.some(p => p.carrierOf?.length);
+    }
+
+    public conditionsInUse(): Condition[] {
+        const used = new Set(this.people.flatMap(p => [...(p.conditions ?? []), ...(p.carrierOf ?? [])]));
+        return CONDITIONS.filter(c => used.has(c.id));
+    }
+
     public setProband(id: string | null): void {
         for (const p of this.people) p.proband = p.id === id;
     }
@@ -205,7 +283,11 @@ export class Pedigree {
     // ---- serialisation ---------------------------------------------------
 
     public toJSON(): PedigreeData {
-        return { title: this.title, people: this.people.map(p => ({ ...p })), trios: this.trios.map(t => ({ ...t })) };
+        return {
+            title: this.title,
+            people: this.people.map(p => ({ ...p, conditions: [...p.conditions], carrierOf: [...(p.carrierOf ?? [])] })),
+            trios: this.trios.map(t => ({ ...t })),
+        };
     }
 
     public load(data: PedigreeData): void {
@@ -214,7 +296,12 @@ export class Pedigree {
             for (const id of [t.childId, t.motherId, t.fatherId])
                 if (!ids.has(id)) throw new Error("Trio refers to unknown person " + id);
         this.title = data.title ?? "";
-        this.people = data.people.map(p => ({ ...p }));
+        // files saved before conditions existed have none
+        this.people = data.people.map(p => ({
+            ...p,
+            conditions: Array.isArray(p.conditions) ? [...p.conditions] : [],
+            carrierOf: Array.isArray(p.carrierOf) ? [...p.carrierOf] : [],
+        }));
         this.trios = data.trios.map(t => ({ ...t }));
         this.nextId = 1 + Math.max(0, ...this.people.map(p => Number(p.id.replace(/\D/g, "")) || 0));
     }
@@ -223,12 +310,18 @@ export class Pedigree {
     public loadExample(): void {
         this.clear();
         this.title = "Example family";
-        const add = (name: string, sex: Sex, age: number, deceased = false) => this.addPerson({ name, sex, age, deceased });
-        const gf = add("George", "male", 88, true), gm = add("Edith", "female", 84);
-        const mf = add("Walter", "male", 79, true), mm = add("Ruth", "female", 77, true);
-        const dad = add("Tom", "male", 56), aunt = add("Anne", "female", 52), mum = add("Mary", "female", 54);
+        const add = (name: string, sex: Sex, age: number, deceased = false, conditions: string[] = []) =>
+            this.addPerson({ name, sex, age, deceased, conditions });
+        // Huntington's down the father's side (dominant: every generation),
+        // hemophilia A from Walter to his grandson Ben through Mary (X-linked),
+        // and cystic fibrosis in Sam (recessive: unaffected parents).
+        // The centre dots mark obligate carriers: people who must carry it given their children.
+        const gf = add("George", "male", 88, true, ["hd"]), gm = add("Edith", "female", 84);
+        const mf = add("Walter", "male", 79, true, ["hema"]), mm = add("Ruth", "female", 77, true);
+        const dad = add("Tom", "male", 56, false, ["hd"]), aunt = add("Anne", "female", 52), mum = add("Mary", "female", 54);
         const uncle = add("Paul", "male", 50);
-        const me = add("Sam", "female", 28), bro = add("Ben", "male", 25), cousin = add("Lucy", "female", 19);
+        const me = add("Sam", "female", 28, false, ["cf", "hd"]), bro = add("Ben", "male", 25, false, ["hema"]);
+        const cousin = add("Lucy", "female", 19, false, ["scd"]);
         const trio = (c: Person, m: Person, f: Person) => this.trios.push({ childId: c.id, motherId: m.id, fatherId: f.id });
         trio(dad, gm, gf); trio(aunt, gm, gf);
         trio(mum, mm, mf); trio(uncle, mm, mf);
@@ -236,5 +329,10 @@ export class Pedigree {
         const auntsHusband = add("Mark", "male", 53);
         trio(cousin, aunt, auntsHusband);
         this.setProband(me.id);
+        this.setConditionStatus(mum.id, "hema", "carrier");      // Walter's daughter, Ben's mother
+        this.setConditionStatus(mum.id, "cf", "carrier");        // Sam's parents both carry CF
+        this.setConditionStatus(dad.id, "cf", "carrier");
+        this.setConditionStatus(aunt.id, "scd", "carrier");      // Lucy's parents both carry sickle cell
+        this.setConditionStatus(auntsHusband.id, "scd", "carrier");
     }
 }
