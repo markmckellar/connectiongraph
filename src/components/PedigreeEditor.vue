@@ -177,7 +177,9 @@ function importJson() {
 function canvasPos(e: MouseEvent): Pos {
   const c = canvas.value!;
   const r = c.getBoundingClientRect();
-  return { x: ((e.clientX - r.left) * c.width) / r.width, y: ((e.clientY - r.top) * c.height) / r.height };
+  // the canvas's drawing size (its backing store can be larger on high-DPI screens)
+  const w = Number(c.dataset.logicalWidth || c.width), h = Number(c.dataset.logicalHeight || c.height);
+  return { x: ((e.clientX - r.left) * w) / r.width, y: ((e.clientY - r.top) * h) / r.height };
 }
 
 function onPointerDown(e: PointerEvent) {
@@ -185,9 +187,31 @@ function onPointerDown(e: PointerEvent) {
   closeMenu();
   const p = canvasPos(e);
   selectedId.value = scene.personAt(p.x, p.y);
+  if (e.pointerType !== "mouse") startLongPress(e);
+}
+
+// Touch screens have no right-click: press and hold opens the same menu.
+// (Android also fires contextmenu on a long press; opening it twice is harmless.)
+let longPress: { timer: number; x: number; y: number } | null = null;
+function startLongPress(e: PointerEvent) {
+  cancelLongPress();
+  const { clientX, clientY } = e;
+  longPress = {
+    x: clientX,
+    y: clientY,
+    timer: window.setTimeout(() => {
+      longPress = null;
+      onContextMenu({ clientX, clientY, preventDefault() {} } as MouseEvent);
+    }, 550),
+  };
+}
+function cancelLongPress() {
+  if (longPress) clearTimeout(longPress.timer);
+  longPress = null;
 }
 
 function onPointerMove(e: PointerEvent) {
+  if (longPress && Math.hypot(e.clientX - longPress.x, e.clientY - longPress.y) > 10) cancelLongPress();
   if (!scene || !canvas.value) return;
   const p = canvasPos(e);
   canvas.value.style.cursor = scene.personAt(p.x, p.y) ? "grab" : "default";
@@ -246,7 +270,13 @@ function onKeyDown(e: KeyboardEvent) {
 // ---- lifecycle ------------------------------------------------------------
 
 onMounted(() => {
-  scene = markRaw(new PedigreeScene(canvas.value!, pedigree, engineName.value));
+  // On narrow screens draw on a narrower canvas, so the chart isn't shrunk as much to fit.
+  const c = canvas.value!;
+  if ((c.parentElement?.clientWidth ?? 1000) < 700) {
+    c.width = 560;
+    c.height = 500;
+  }
+  scene = markRaw(new PedigreeScene(c, pedigree, engineName.value));
   scene.selectedId = selectedId.value;
   scene.rebuild(false);
   window.addEventListener("pointerdown", onWindowPointerDown, true);
@@ -255,6 +285,7 @@ onMounted(() => {
   window.addEventListener("blur", closeMenu);
 });
 onBeforeUnmount(() => {
+  cancelLongPress();
   scene?.stop();
   window.removeEventListener("pointerdown", onWindowPointerDown, true);
   window.removeEventListener("keydown", onKeyDown);
@@ -273,10 +304,15 @@ onBeforeUnmount(() => {
         aria-label="Pedigree chart. Drag people to rearrange; right-click for options."
         @pointerdown="onPointerDown"
         @pointermove="onPointerMove"
+        @pointerup="cancelLongPress"
+        @pointercancel="cancelLongPress"
         @dblclick="onDoubleClick"
         @contextmenu="onContextMenu"
       />
-      <p class="hint">Drag to rearrange · right-click a person or the background for options · double-click empty space to add someone</p>
+      <p class="hint">
+        <span class="mouse">Drag to rearrange · right-click a person or the background for options · double-click empty space to add someone</span>
+        <span class="touch">Drag to rearrange · press and hold a person or the background for options</span>
+      </p>
     </section>
 
     <aside class="sidebar">

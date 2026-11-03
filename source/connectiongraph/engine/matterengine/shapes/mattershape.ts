@@ -30,7 +30,7 @@ export abstract class MatterShape  extends EngineShapeBase implements WorldObjec
 	public 	createMouseEventHandler():WorldObjectEventHandler {
 	 	let woe:WorldObjectEventHandler = 
 		{
-			pointerDownEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {console.log("ZZZZZZZZZZ HAHA  HEY FELLA XXXXXXX")},
+			pointerDownEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {},
 			pointerMoveEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {},
 			pointerUpEvent : function (world:World,canvasMouse:CanvasMouse,event:MouseEvent):void {}
 		}

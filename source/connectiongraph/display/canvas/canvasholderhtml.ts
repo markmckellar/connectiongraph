@@ -13,14 +13,42 @@ export class CanvasHolderHTML implements CanvasHolder
 	private _canvas!:HTMLCanvasElement;
 	private _context!:CanvasRenderingContext2D;
 	private _canvasMouse!:CanvasMouse;
-	
-	constructor(canvas:string|HTMLCanvasElement,world:World)
+	/** Drawing size in CSS pixels; everything in the world is laid out in these units. */
+	private logicalWidth:number;
+	private logicalHeight:number;
+	/** Backing-store pixels per CSS pixel (2-3 on Retina screens and phones when hiDpi is on). */
+	private pixelRatio:number;
+
+	/**
+	 * @param options.hiDpi draw at the screen's full pixel density so lines and
+	 *        text stay sharp on high-resolution displays
+	 */
+	constructor(canvas:string|HTMLCanvasElement,world:World,options:{hiDpi?:boolean} = {})
 	{
 		this.canvas = typeof canvas === "string" ? <HTMLCanvasElement>document.getElementById(canvas) : canvas;
+		// remember the canvas's designed size the first time we see it, so
+		// re-creating the holder (or a resized backing store) doesn't change it
+		const c = this.canvas;
+		if(!c.dataset.logicalWidth) {
+			c.dataset.logicalWidth = String(c.width);
+			c.dataset.logicalHeight = String(c.height);
+		}
+		this.logicalWidth = Number(c.dataset.logicalWidth);
+		this.logicalHeight = Number(c.dataset.logicalHeight);
+		this.pixelRatio = options.hiDpi ? Math.min(3, Math.max(1, window.devicePixelRatio || 1)) : 1;
+		const backingWidth = Math.round(this.logicalWidth*this.pixelRatio);
+		const backingHeight = Math.round(this.logicalHeight*this.pixelRatio);
+		if(c.width!==backingWidth || c.height!==backingHeight) {
+			c.width = backingWidth;
+			c.height = backingHeight;
+		}
+		c.style.width = this.logicalWidth+"px";
 		this.canvasName = this.canvas.id;
 		this.isVisable = true;
 		this.isDrawable = true;
-		const context = this.canvas.getContext("2d");
+		// Without hiDpi this is used by scenes whose text boxes read pixels back
+		// (getImageData), which the browser handles better when told up front.
+		const context = this.canvas.getContext("2d", options.hiDpi ? undefined : { willReadFrequently: true });
 		if(!context) throw new Error("CanvasHolderHTML: 2d context unavailable");
 		this.context = context;
 		this.canvasMouse = new CanvasMouse(world,this,new MouseEventHandlerWorldObject());
@@ -38,6 +66,7 @@ export class CanvasHolderHTML implements CanvasHolder
 	public clearCanvas():void {
 		if(this.isVisable && this.isDrawable)
 		{
+			this.context.setTransform(this.pixelRatio,0,0,this.pixelRatio,0,0);
 			this.context.clearRect(0, 0, this.getWidth(), this.getHeight());
 			this.context.fillStyle = WorldDisplay.getColorFromString("ffffff"+"ff");
 			this.context.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -54,12 +83,12 @@ export class CanvasHolderHTML implements CanvasHolder
 	
 	public getWidth():number
 	{
-		return(this.canvas.width);
+		return(this.logicalWidth);
 	}
 	
 	public getHeight():number
 	{
-		return(this.canvas.height);
+		return(this.logicalHeight);
 	}
 
 	public isCanvasVisable(): boolean {
@@ -179,7 +208,6 @@ export class CanvasHolderHTML implements CanvasHolder
 			foundConnectorDef = true;
 		}
 		if(!foundConnectorDef) console.trace("CanvasHolder:getConnectorDef:connectorDefKey=\""+connectorDefKey+ "\" was not found using generic");
-		else console.log("found connector display :"+connectorDefKey);
 		connectorDef.connectorDefKey = connectorDefKey;
 		return(connectorDef);
 	}

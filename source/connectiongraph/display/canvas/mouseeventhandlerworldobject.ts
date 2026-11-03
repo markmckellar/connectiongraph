@@ -48,7 +48,6 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 		//console.log("pointerDownEvent:"+JSON.stringify(event));;
 		var eventPosition:WorldPosition = WorldDisplay.getWorldPositionFromMouseEvent(world,canvasMouse,event);
 		//this.hideCurrentNodeInfo();
-		console.log("pointerDownEvent:"+JSON.stringify(eventPosition));;
 
 		this.mouseStatus.isDown = true;
 		this.mouseStatus.startPosition = eventPosition;
@@ -64,7 +63,6 @@ export class MouseEventHandlerWorldObject implements MouseEventHandler {
 	
 		if(clickWorldObject!=null && clickWorldObject!=this.lastWorldObject)
 		{
-			console.log("pointerDownEvent:clickWorldObject="+clickWorldObject.getWorldId().id);
 
 			this.currentWorldObject = clickWorldObject;
 

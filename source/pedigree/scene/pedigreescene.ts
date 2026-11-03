@@ -50,7 +50,7 @@ export class PedigreeScene {
         const engine: WorldEngine = this.engineName === "spring" ? new SpringEngine(params)
             : this.engineName === "mock" ? new MockEngine(params) : new MatterEngine(params);
         const world = new WorldOfWorldObjects(engine);
-        const canvasHolder = new CanvasHolderHTML(this.canvas, world);
+        const canvasHolder = new CanvasHolderHTML(this.canvas, world, { hiDpi: true });
         this.engine = engine;
         this.canvasHolder = canvasHolder;
 
@@ -71,12 +71,12 @@ export class PedigreeScene {
             rowOrder = orderRows(this.pedigree, generations);
             for (const [g, ids] of rowOrder) {
                 const step = this.size + 60;
-                ids.forEach((id, i) => placed.set(id, { x: this.canvas.width / 2 + (i - (ids.length - 1) / 2) * step, y: rowY(g) }));
+                ids.forEach((id, i) => placed.set(id, { x: this.width / 2 + (i - (ids.length - 1) / 2) * step, y: rowY(g) }));
             }
         }
 
         this.generations = generations;
-        this.layoutOptions = { width: this.canvas.width, size: this.size, rowTop: 60, rowSpacing: 130 };
+        this.layoutOptions = { width: this.width, size: this.size, rowTop: 60, rowSpacing: 130 };
         const layout = new PedigreeLayout(this.pedigree, this.shapes, generations, rowOrder, this.layoutOptions);
         this.layout = layout;
 
@@ -96,7 +96,7 @@ export class PedigreeScene {
 
         engine.areaRuleObjectArray.push(layout);
         world.backgroundDrawers.push(ctx => layout.drawBackground(ctx));
-        engine.createBounds(this.canvas.width, this.canvas.height, { restitution: 0.2 });
+        engine.createBounds(this.width, this.height, { restitution: 0.2 });
         engine.startEngine();
 
         const draw = () => {
@@ -105,6 +105,10 @@ export class PedigreeScene {
         };
         this.frame = requestAnimationFrame(draw);
     }
+
+    /** Chart size in CSS pixels (the canvas's backing store may be larger on high-DPI screens). */
+    private get width(): number { return this.canvasHolder?.getWidth() ?? this.canvas.width; }
+    private get height(): number { return this.canvasHolder?.getHeight() ?? this.canvas.height; }
 
     public stop(): void {
         if (this.frame !== null) cancelAnimationFrame(this.frame);
@@ -216,7 +220,7 @@ export class PedigreeScene {
             ...ped.siblingsOf(id),
         ].map(r => placed.get(r)).filter((p): p is { x: number, y: number } => !!p);
         const jitter = (Math.random() - 0.5) * 40;
-        const x = relatives.length ? relatives.reduce((t, p) => t + p.x, 0) / relatives.length : this.canvas.width / 2;
+        const x = relatives.length ? relatives.reduce((t, p) => t + p.x, 0) / relatives.length : this.width / 2;
         return { x: x + jitter, y: rowY };
     }
 }

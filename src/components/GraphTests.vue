@@ -66,7 +66,10 @@ onBeforeUnmount(() => {
   <div class="workspace">
     <section class="stage">
       <canvas ref="canvas" width="800" height="600" :aria-label="current.title + ' scene. Drag shapes with the mouse.'" />
-      <p class="hint">Drag any shape with the mouse · pick a different scene or engine on the right</p>
+      <p class="hint">
+        <span class="mouse">Drag any shape with the mouse · pick a different scene or engine on the right</span>
+        <span class="touch">Drag any shape · pick a different scene or engine below</span>
+      </p>
     </section>
 
     <aside class="sidebar">

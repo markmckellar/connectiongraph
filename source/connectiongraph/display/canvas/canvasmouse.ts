@@ -63,6 +63,19 @@ export class CanvasMouse
 	
 
 	
+	/**
+	 * Where an event happened, in canvas pixels. Accounts for the canvas being
+	 * scrolled, and for it being drawn smaller or larger than its pixel size
+	 * (e.g. shrunk to fit a phone screen).
+	 */
+	public toCanvasPosition(event:{clientX:number,clientY:number}):WorldPosition {
+		const holder = this.canvasholderHTML;
+		const r = holder.canvas.getBoundingClientRect();
+		return new WorldPosition(
+			(event.clientX - r.left) * holder.getWidth() / (r.width || holder.getWidth()),
+			(event.clientY - r.top) * holder.getHeight() / (r.height || holder.getHeight()));
+	}
+
 	public get offset(): WorldPosition {
 		return this.getCanvasOffset();
 	}

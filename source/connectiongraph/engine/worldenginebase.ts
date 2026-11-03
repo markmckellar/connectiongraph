@@ -17,7 +17,6 @@ export abstract class WorldEngineBase {
     }
 
     public stopEngine():void {
-        console.log("clearing for:"+this.intervalId);
         clearInterval(this.intervalId);
       }
 

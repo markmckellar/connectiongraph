@@ -38,6 +38,17 @@ body { overflow: hidden; }
   border-radius: 10px;
   box-shadow: 0 1px 2px rgba(31, 35, 40, 0.06);
   touch-action: none;
+  /* shrink to fit narrow screens; the canvas keeps its pixel size and aspect */
+  max-width: 100%;
+  height: auto;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+/* hints: mouse wording by default, touch wording on touch screens */
+.workspace .hint .touch { display: none; }
+@media (pointer: coarse) {
+  .workspace .hint .mouse { display: none; }
+  .workspace .hint .touch { display: inline; }
 }
 .workspace .hint { color: var(--muted); font-size: 12px; margin: 8px 0 0; text-align: center; }
 .workspace .sidebar {

@@ -165,7 +165,7 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
     }
 
     public updateMouseConstraint(world:World,canvasMouse:CanvasMouse,event:MouseEvent,mouseEventHandler:MouseEventHandler):void {
-      var newPosition = new WorldPosition(event.pageX- canvasMouse.offset.x,event.pageY- canvasMouse.offset.y);
+      var newPosition = canvasMouse.toCanvasPosition(event);
       this.mouseAnchor.translate(newPosition);
 
       const currentWorldObject = mouseEventHandler.getCurrentWorldObject();
@@ -313,7 +313,6 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
 
     public registerCompositeEvent(name:string,eventType:MatterEvent,event:MatterCompositeEvent):void {
       this.compositeEventHandlers.set(this.getCompositeEventMapId(name,eventType),event);    
-      console.log("MatterEngine:registerCompositeEvent:.keys.length="+this.compositeEventHandlers.keys.length);
     }
 
     public deregisterCompositeEvent(name:string,eventType:MatterEvent,event:MatterCompositeEvent):void {
@@ -323,7 +322,6 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
 
     public registerTimestampedEvent(name:string,eventType:MatterEvent,event:MatterTimestampedEvent):void {
       this.timestampEventHandlers.set(this.geTimestampedEventMapId(name,eventType),event);    
-      console.log("MatterEngine:registerTimestampedEvent:.keys.length="+this.timestampEventHandlers.keys.length);
     }
 
     public deregisterTimestampedEvent(name:string,eventType:MatterEvent,event:MatterTimestampedEvent):void {
@@ -422,7 +420,6 @@ export  class MatterEngine extends WorldEngineBase implements WorldEngine {
       }
   
     public enableEvents():void {
-      console.log("World:event:enableEvents")
       let me:MatterEngine = this;
 
       Matter.Events.on(this.engine,MatterEvent.collisionStart,

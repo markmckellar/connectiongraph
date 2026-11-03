@@ -34,7 +34,6 @@ export class WorldDisplay  {
     static world(render:Matter.Render) {
 
         Matter.Render.world(render);
-        console.log("doing some redering...");
     }
     */    
 
@@ -108,8 +107,7 @@ export class WorldDisplay  {
 	}
 
 	public static getWorldPositionFromMouseEvent(world:World,canvasMouse:CanvasMouse,event:MouseEvent):WorldPosition {
-		var eventPosition:WorldPosition = new WorldPosition(event.pageX-canvasMouse.offset.x,event.pageY-canvasMouse.offset.y);
-		return(eventPosition);
+		return(canvasMouse.toCanvasPosition(event));
 	}
 
 

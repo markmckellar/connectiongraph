@@ -16,8 +16,9 @@ as you add relatives.
 
 ### Pedigree editor
 
-- **Build a family by clicking.** Right-click anyone to add parents, a brother or sister, or a son or daughter
-  (with an existing partner or a new one). Right-click empty space to add an unconnected person.
+- **Build a family by clicking.** Right-click anyone (or press and hold on a phone) to add parents, a brother or
+  sister, or a son or daughter (with an existing partner or a new one). Right-click empty space to add an
+  unconnected person.
 - **Standard pedigree notation.** Male, female and unknown-sex symbols, deceased slash, proband arrow,
   generation numerals (I, II, III...), partner lines and sibship lines.
 - **Automatic layout that stays out of your way.** Rows are ordered so partners are adjacent, siblings stay
@@ -28,8 +29,9 @@ as you add relatives.
 - **Save as PDF.** A print-ready chart with title, summary and symbol legend, followed by a table of everyone
   (generation, name, sex, age, status, parents). [See an example](docs/example-pedigree.pdf).
 - **Plain data underneath.** Export and import the whole pedigree as JSON.
+- **Works on desktop and phone.** Sharp on high-resolution screens; the chart scales to fit a phone.
 
-![Right-click menu on a person: change sex, mark as deceased or proband, add parents, siblings or children](docs/images/pedigree-context-menu.png)
+<img src="docs/images/pedigree-context-menu.png" alt="Right-click menu on a person: change sex, mark as deceased or proband, add parents, siblings or children" width="560">
 
 <img src="docs/images/pedigree-pdf.png" alt="Page one of the saved PDF: title, summary line, the chart and a symbol legend" width="640">
 
@@ -60,9 +62,9 @@ engines.
 {
   "title": "Example family",
   "people": [
-    { "id": "p1", "name": "George", "sex": "male",   "age": 88, "deceased": true,  "proband": false },
-    { "id": "p2", "name": "Edith",  "sex": "female", "age": 84, "deceased": false, "proband": false },
-    { "id": "p5", "name": "Tom",    "sex": "male",   "age": 56, "deceased": false, "proband": false }
+    { "id": "p1", "name": "George", "sex": "male",   "age": 88, "deceased": true },
+    { "id": "p2", "name": "Edith",  "sex": "female", "age": 84, "deceased": false },
+    { "id": "p5", "name": "Tom",    "sex": "male",   "age": 56, "deceased": false }
   ],
   "trios": [
     { "childId": "p5", "motherId": "p2", "fatherId": "p1" }

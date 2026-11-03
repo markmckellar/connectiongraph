@@ -157,10 +157,7 @@ export class MockEngine extends WorldEngineBase implements WorldEngine {
     event: MouseEvent,
     mouseEventHandler: MouseEventHandler
   ): void {
-    var newPosition = new WorldPosition(
-      event.pageX - canvasMouse.offset.x,
-      event.pageY - canvasMouse.offset.y
-    );
+    var newPosition = canvasMouse.toCanvasPosition(event);
     this.mouseAnchor.translate(newPosition);
 
     const currentWorldObject = mouseEventHandler.getCurrentWorldObject();
