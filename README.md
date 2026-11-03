@@ -16,11 +16,13 @@ npm run dev        # http://localhost:5173
 
 The app has two demos, as tabs at the top:
 
+**Pedigree** (the default page, `#pedigree`) is described below.
+
 **Connection graph** (`#graph`) – the library's own scenes: shapes joined by
 connectors, animated by a physics engine. Pick an engine and a scene; drag
 shapes with the mouse.
 
-**Pedigree** (`#pedigree`) – a pedigree editor built on the library:
+The pedigree editor is built on the library:
 
 - Right-click a person for sex / deceased / proband, add parents, siblings,
   sons or daughters (with an existing or new partner), or delete.
