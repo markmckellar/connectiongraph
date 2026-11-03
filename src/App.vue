@@ -14,7 +14,8 @@ onBeforeUnmount(() => window.removeEventListener("hashchange", onHashChange));
 <template>
   <div class="app">
     <header class="topbar">
-      <h1>{{ showTests ? "Engine tests" : "Pedigree editor" }}</h1>
+      <h1>Connection Graph</h1>
+      <span v-if="showTests" class="sub">Engine tests</span>
     </header>
     <EngineTests v-if="showTests" />
     <PedigreeEditor v-else />
@@ -24,4 +25,5 @@ onBeforeUnmount(() => window.removeEventListener("hashchange", onHashChange));
 <style scoped>
 .topbar { display: flex; align-items: center; gap: 24px; padding: 10px 16px; background: #fff; border-bottom: 1px solid #d0d7de; }
 h1 { font-size: 1.1rem; margin: 0; }
+.sub { color: #57606a; font-size: 0.9rem; }
 </style>
