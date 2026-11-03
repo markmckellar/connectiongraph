@@ -24,7 +24,8 @@ The app opens on the **Pedigree editor**:
   JSON export/import.
 - Drag people to rearrange them; **Re-layout** tidies everything up.
 
-The **Engine tests** tab has the original demo scenes: pick an engine and a
+The original engine demo scenes are hidden from the UI; open the app with
+`#engine-tests` on the URL (e.g. http://localhost:5173/#engine-tests), pick an engine and a
 test, then hit **Run**.
 
 ### Pedigree data model
