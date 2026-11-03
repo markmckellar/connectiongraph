@@ -14,7 +14,13 @@ npm install
 npm run dev        # http://localhost:5173
 ```
 
-The app opens on the **Pedigree editor**:
+The app has two demos, as tabs at the top:
+
+**Connection graph** (`#graph`) – the library's own scenes: shapes joined by
+connectors, animated by a physics engine. Pick an engine and a scene; drag
+shapes with the mouse.
+
+**Pedigree** (`#pedigree`) – a pedigree editor built on the library:
 
 - Right-click a person for sex / deceased / proband, add parents, siblings,
   sons or daughters (with an existing or new partner), or delete.
@@ -23,10 +29,6 @@ The app opens on the **Pedigree editor**:
   lists everyone by generation, and shows the underlying triplets with
   JSON export/import.
 - Drag people to rearrange them; **Re-layout** tidies everything up.
-
-The original engine demo scenes are hidden from the UI; open the app with
-`#engine-tests` on the URL (e.g. http://localhost:5173/#engine-tests), pick an engine and a
-test, then hit **Run**.
 
 ### Pedigree data model
 

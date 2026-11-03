@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, reactive, ref, shallowRef } from "vue";
+import { onBeforeUnmount, onMounted, reactive, ref, shallowRef, watch } from "vue";
 import { TestAll } from "../../source/connectiongraph/world/tests/testall";
 import type { World } from "../../source/connectiongraph/world/world";
 import { DebugMessages } from "../../source/connectiongraph/util/debugmessages";
@@ -9,7 +9,10 @@ import { DebugMessages } from "../../source/connectiongraph/util/debugmessages";
 const runner = shallowRef(new TestAll());
 
 const engineNames = TestAll.engineNames;
-const testNames = runner.value.registeredTests.map((t) => t.name);
+// The ped/ped2 scenes were early pedigree prototypes; the pedigree editor
+// replaces them, so they're left out of this list (the code is still there).
+const PEDIGREE_PROTOTYPES = ["ped", "ped2"];
+const testNames = runner.value.registeredTests.map((t) => t.name).filter((n) => !PEDIGREE_PROTOTYPES.includes(n));
 
 const engine = ref<string>(engineNames[0]);
 const test = ref<string>(testNames[0]);
@@ -40,7 +43,10 @@ function stop() {
 let unsubscribe: (() => void) | undefined;
 onMounted(() => {
   unsubscribe = DebugMessages.subscribe((slot, text) => (messages[slot] = text));
+  run();
 });
+// switching engine or scene restarts it straight away
+watch([engine, test], () => run());
 onBeforeUnmount(() => {
   unsubscribe?.();
   runner.value.stop();
