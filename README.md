@@ -8,6 +8,8 @@ centred on (the proband). connectiongraph lets you build one by clicking, and la
 line up in rows, partners sit together, each family hangs under its parents, and everything glides into place
 as you add relatives.
 
+**[Try the live demo](https://markmckellar.github.io/connectiongraph/)** in your browser; nothing to install.
+
 ![The pedigree editor: a three-generation family laid out automatically, with the selected person's details in the sidebar](docs/images/pedigree-editor.png)
 
 ## What it does
@@ -130,7 +132,8 @@ npm run dev        # http://localhost:5173
 | `npm run preview` | Serve the built site |
 | `npm run typecheck` | Type-check only |
 
-The built site is static files only, so it can be hosted anywhere (GitHub Pages, S3, any web server).
+The built site is static files only, so it can be hosted anywhere. The live demo is built and published to
+GitHub Pages automatically on every push to `master` (`.github/workflows/pages.yml`).
 
 ## Project layout
 
