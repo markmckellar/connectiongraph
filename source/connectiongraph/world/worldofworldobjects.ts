@@ -9,6 +9,8 @@ import { WorldId } from "./worldid";
 export class WorldOfWorldObjects extends World{
 
     private _worldObjectArray!:Array<WorldObject>;
+    /** Drawn after clearing, before any world objects (e.g. lines that sit underneath shapes). */
+    public backgroundDrawers:Array<(context:CanvasRenderingContext2D)=>void> = [];
 
     constructor(worldEngine:WorldEngine){
         super(worldEngine);
@@ -19,6 +21,7 @@ export class WorldOfWorldObjects extends World{
 	public drawWorld(canvasHolder:CanvasHolder):void {
         let context = canvasHolder.getContext();
         canvasHolder.clearCanvas();
+        for(const drawBackground of this.backgroundDrawers) drawBackground(context);
         for(let i=0;i<this.worldObjectArray.length;i++) {
             let worldObject:WorldObject = this.worldObjectArray[i];
             worldObject.getDrawable().draw(context);

@@ -1,19 +1,19 @@
 import { DebugMessages } from "../util/debugmessages";
 import { WorldEngineParams } from "./worldengineparams";
 import { EngineConnector } from "./connectors/engineconnector";
-import { AreaRuleObject } from "./arearule/arearuleobject/arearuleobject";
+import { TickRule } from "./tickrule";
 import { EngineShapeBase } from "./shapes/engineshapebase";
 
 export abstract class WorldEngineBase {    
     public intervalId:any;
     public worldEngineParams:WorldEngineParams;
     public connectorArray:Array<EngineConnector>;
-    public areaRuleObjectArray:Array<AreaRuleObject>;
+    public areaRuleObjectArray:Array<TickRule>;
 
     public constructor(worldEngineParams:WorldEngineParams) {
         this.worldEngineParams = worldEngineParams;
         this.connectorArray = new Array<EngineConnector>();
-        this.areaRuleObjectArray = new Array<AreaRuleObject>();
+        this.areaRuleObjectArray = new Array<TickRule>();
     }
 
     public stopEngine():void {

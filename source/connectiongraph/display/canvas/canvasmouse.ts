@@ -44,6 +44,8 @@ export class CanvasMouse
 
 
 	public pointerDownEvent(world:World,canvasMouse:CanvasMouse,event:UIEvent) {
+		// only the primary button drags; leave right-click free for context menus
+		if((event as PointerEvent).button!==0) return;
 		event.preventDefault();
 		this.mouseEventHandler.pointerDownEvent(world,canvasMouse,event);
 	}
