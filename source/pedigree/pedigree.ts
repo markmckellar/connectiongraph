@@ -134,6 +134,59 @@ export class Pedigree {
             .map(t => t.childId);
     }
 
+    /** Everyone this person is descended from. */
+    public ancestorsOf(id: string): Set<string> {
+        const out = new Set<string>();
+        const todo = [id];
+        while (todo.length) {
+            const t = this.parentsOf(todo.pop()!);
+            if (!t) continue;
+            for (const p of [t.motherId, t.fatherId])
+                if (!out.has(p)) { out.add(p); todo.push(p); }
+        }
+        return out;
+    }
+
+    /** Everyone descended from this person. */
+    public descendantsOf(id: string): Set<string> {
+        const out = new Set<string>();
+        const todo = [id];
+        while (todo.length)
+            for (const c of this.childrenOf(todo.pop()!))
+                if (!out.has(c)) { out.add(c); todo.push(c); }
+        return out;
+    }
+
+    /** Whether two people share an ancestor (a consanguineous couple). */
+    public related(a: string, b: string): boolean {
+        const mine = this.ancestorsOf(a);
+        for (const x of this.ancestorsOf(b)) if (mine.has(x)) return true;
+        return false;
+    }
+
+    /**
+     * Why `a` and `b` can't have a child together, or null if they can.
+     * Ancestors and descendants are ruled out (the chart has no way to draw
+     * that), as are two people of the same recorded sex.
+     */
+    public whyNotCoParents(a: string, b: string): string | null {
+        if (a === b) return "Someone can't have a child with themselves";
+        const pa = this.get(a), pb = this.get(b);
+        if (pa.sex !== "unknown" && pa.sex === pb.sex)
+            return `${this.label(a)} and ${this.label(b)} are both ${pa.sex}; set one to unknown sex first`;
+        if (this.ancestorsOf(a).has(b) || this.descendantsOf(a).has(b))
+            return `${this.label(a)} and ${this.label(b)} are in a direct line of descent`;
+        return null;
+    }
+
+    /** People already on the chart who could be the other parent of a new child of `id` (not counting current partners). */
+    public possibleCoParents(id: string): string[] {
+        const partners = new Set(this.partnersOf(id));
+        return this.people
+            .filter(p => !partners.has(p.id) && !this.whyNotCoParents(id, p.id))
+            .map(p => p.id);
+    }
+
     /** Each mother/father pair that appears in a trio, with their children. */
     public couples(): Couple[] {
         const byKey = new Map<string, Couple>();
@@ -202,6 +255,8 @@ export class Pedigree {
      */
     public addChild(parentId: string, partnerId: string | null, sex: Sex): Person {
         const parent = this.get(parentId);
+        const why = partnerId ? this.whyNotCoParents(parentId, partnerId) : null;
+        if (why) throw new Error(why);
         const partner = partnerId ? this.get(partnerId)
             : this.addPerson({ sex: parent.sex === "male" ? "female" : parent.sex === "female" ? "male" : "unknown" });
         const child = this.addPerson({ sex });

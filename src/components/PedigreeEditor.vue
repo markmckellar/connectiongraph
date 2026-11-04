@@ -201,8 +201,24 @@ function focusName() {
   });
 }
 
-// "Add child" in the sidebar: which partner
+// "Add child" in the sidebar: which partner (or anyone else on the chart)
 const childPartner = ref<string>("new");
+const childPartnerSelect = ref<HTMLSelectElement | null>(null);
+const otherCoParents = computed(() => {
+  const id = selectedId.value;
+  return id && pedigree.find(id) ? pedigree.possibleCoParents(id) : [];
+});
+/** "Add son/daughter with someone else…" from the chart menu: open the person's panel at the partner picker. */
+function chooseOtherCoParent(id: string) {
+  selectedId.value = id;
+  nextTick(() => {
+    const sel = childPartnerSelect.value;
+    if (!sel) return;
+    sel.scrollIntoView({ block: "nearest" });
+    sel.focus();
+    try { sel.showPicker(); } catch { /* not supported everywhere */ }
+  });
+}
 watch(selectedId, (id) => {
   if (!id) selectedIds.value = [];
   else if (!selectedIds.value.includes(id)) selectedIds.value = [id];
@@ -799,11 +815,14 @@ onBeforeUnmount(() => {
           <div class="add-row child">
             <button @click="addChild(selected.id, childPartner === 'new' ? null : childPartner, 'male')">Son</button>
             <button @click="addChild(selected.id, childPartner === 'new' ? null : childPartner, 'female')">Daughter</button>
-            <label v-if="relations.partners.length" class="child-with">
+            <label class="child-with">
               with
-              <select v-model="childPartner">
+              <select ref="childPartnerSelect" v-model="childPartner" title="The child's other parent: a partner, a new person, or anyone else already on the chart">
                 <option v-for="id in relations.partners" :key="id" :value="id">{{ label(id) }}</option>
                 <option value="new">a new partner</option>
+                <optgroup v-if="otherCoParents.length" label="Someone else on the chart">
+                  <option v-for="id in otherCoParents" :key="id" :value="id">{{ label(id) }}{{ pedigree.related(selected.id, id) ? " (related)" : "" }}</option>
+                </optgroup>
               </select>
             </label>
           </div>
@@ -901,6 +920,7 @@ onBeforeUnmount(() => {
               {{ label(pid) }}
             </button>
             <button role="menuitem" @click="pick(() => addChild(menuPerson!.id, null, sex))">a new partner</button>
+            <button v-if="pedigree.possibleCoParents(menuPerson.id).length" role="menuitem" @click="pick(() => chooseOtherCoParent(menuPerson!.id))">someone else…</button>
           </div>
         </div>
         <hr />

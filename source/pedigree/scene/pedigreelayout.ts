@@ -11,6 +11,8 @@ export interface LineSegment {
     family: number;
     /** People this line is meant to touch (it may run into their symbols). */
     ends: string[];
+    /** Drawn as a double line: a couple who are blood relatives. */
+    double?: boolean;
 }
 
 /** Something wrong with how the lines are drawn, to point out on the chart. */
@@ -191,7 +193,8 @@ export class PedigreeLayout implements TickRule {
             const a = P(c.motherId), b = P(c.fatherId);
             if (!a || !b) return;
             const [l, r] = a.x <= b.x ? [a, b] : [b, a];
-            out.push({ x1: l.x + h, y1: l.y, x2: r.x - h, y2: r.y, family, ends: [c.motherId, c.fatherId] });
+            const double = this.pedigree.related(c.motherId, c.fatherId);
+            out.push({ x1: l.x + h, y1: l.y, x2: r.x - h, y2: r.y, family, ends: [c.motherId, c.fatherId], double });
             const kids = c.childIds.flatMap(id => { const p = P(id); return p ? [{ id, x: p.x, y: p.y }] : []; });
             if (!kids.length) return;
             const midX = (l.x + r.x) / 2;
@@ -288,6 +291,16 @@ export class PedigreeLayout implements TickRule {
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         for (const s of this.segments()) {
+            if (s.double) {
+                // two lines either side of the centre line
+                const len = Math.hypot(s.x2 - s.x1, s.y2 - s.y1) || 1;
+                const nx = -(s.y2 - s.y1) / len * 2.5, ny = (s.x2 - s.x1) / len * 2.5;
+                for (const k of [-1, 1]) {
+                    ctx.moveTo(s.x1 + nx * k, s.y1 + ny * k);
+                    ctx.lineTo(s.x2 + nx * k, s.y2 + ny * k);
+                }
+                continue;
+            }
             ctx.moveTo(s.x1, s.y1);
             ctx.lineTo(s.x2, s.y2);
         }
