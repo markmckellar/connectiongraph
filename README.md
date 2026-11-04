@@ -17,13 +17,23 @@ as you add relatives.
 ### Pedigree editor
 
 - **Build a family by clicking.** Right-click anyone (or press and hold on a phone) to add parents, a brother or
-  sister, or a son or daughter (with an existing partner or a new one). Right-click empty space to add an
+  sister, or a son or daughter. The other parent can be an existing partner, a new person, or anyone already on
+  the chart, so second families and cousin marriages can be recorded. Right-click empty space to add an
   unconnected person.
 - **Standard pedigree notation.** Male, female and unknown-sex symbols, deceased slash, proband arrow,
-  generation numerals (I, II, III...), partner lines and sibship lines.
+  generation numerals (I, II, III...), partner lines and sibship lines, and a double partner line for a couple
+  who are blood relatives.
 - **Automatic layout that stays out of your way.** Rows are ordered so partners are adjacent, siblings stay
-  together and each family sits under its parents; someone who married in goes on the outside so they never
-  split their partner's siblings. Drag people to rearrange, or press **Re-layout** to tidy everything.
+  together, each family sits under its parents and lines cross as little as possible; someone who married in
+  goes on the outside so they never split their partner's siblings. Drag people to rearrange, or press
+  **Re-layout** to tidy everything.
+- **Warnings about misleading lines.** Lines that cross, lie on top of each other or run through someone are
+  circled in red, live while you drag and again once the chart settles, and **Tidy up** re-orders the rows to
+  remove them where the family allows it (see [Avoiding crossed lines](#avoiding-crossed-lines)).
+- **Move part of the tree.** Drag across empty space to lasso a group, or shift-click people, then drag one of
+  them to move them all.
+- **Zoom and fit.** Zoom buttons, Ctrl+scroll or a trackpad pinch, and a fit-to-window button. The chart opens
+  centred and fitted, and scrolls when you zoom in.
 - **Genetic conditions and carriers.** Mark people as affected by, or carriers of, cystic fibrosis, sickle cell
   disease, Huntington's disease or hemophilia A. Affected symbols are filled in each condition's colour (split
   when someone has more than one), carriers get the standard centre dot, and a key lists what's in use. The
@@ -32,7 +42,8 @@ as you add relatives.
   person's parents, partners, siblings and children one click away.
 - **Save as PDF.** A print-ready chart with title, summary, conditions key and symbol legend, followed by a table
   of everyone (generation, name, sex, age, status, conditions, parents). [See an example](docs/example-pedigree.pdf).
-- **Plain data underneath.** Export and import the whole pedigree as JSON.
+- **Plain data underneath.** Save the whole pedigree to a JSON file and open it again (or drop the file on the
+  chart).
 - **Works on desktop and phone.** Sharp on high-resolution screens; the chart scales to fit a phone.
 
 <img src="docs/images/pedigree-context-menu.png" alt="Right-click menu on a person, with the Conditions submenu open: affected by or carrier of each condition" width="560">
@@ -95,6 +106,44 @@ keeping partners on the same row until nothing changes.
 For the PDF, the same rules are run to completion off-screen, without the canvas edges. The saved chart is the
 fully settled layout even if it's mid-animation or wider than the screen.
 
+### Avoiding crossed lines
+
+In a pedigree a crossed or overlapping line is worse than ugly: it can make someone look like the child of the
+wrong couple. Graph theory gives a few standard ways to deal with this, and the editor uses them in three
+stages.
+
+**1. Order each row well (prevent).** Laying out a pedigree is a *layered graph* problem: every generation is a
+layer, and lines only run between neighbouring layers. Finding the order with the fewest crossings is NP-hard,
+so the usual approach (the Sugiyama framework) is to use heuristics:
+
+- **Barycentre sweeps.** Go down the rows, sorting each person by the average position of their parents in the
+  row above; then go back up, sorting by the average position of their children. A few passes pull each family
+  under its parents. Partners are kept together as one block, so a couple never gets split.
+- **Local search on an explicit cost.** The sweeps get close but aren't optimal, so a second pass tries swapping
+  neighbouring blocks (each family below moves with its parents) and swapping partners within a block, and
+  keeps any change that lowers a cost. The cost counts three things: pairs of parent-to-child lines that cross
+  (an inversion count between two rows), people stuck between two partners (the couple line would run through
+  them), and outsiders standing inside a sibship (they'd look like one of the children).
+- **Lanes for sibship lines.** When two families' sibship bars would sit at the same height and overlap, they
+  are stacked in separate lanes, so two horizontal lines are never drawn on top of each other.
+
+**2. Check what's actually drawn (detect).** The order is only a plan; positions are continuous and you can drag
+people anywhere. So the drawn lines themselves are checked as straight segments: a horizontal and a vertical
+from different families that cross, two parallel segments lying on top of each other, or a segment passing
+through someone's symbol who isn't one of its ends. The check runs every few frames while you drag, so you see a
+problem before you let go, and again once the layout has settled; it's skipped while people are still gliding
+into place, when lines cross for a moment. Each problem is circled in red and counted in a badge.
+
+**3. Fix it (repair).** **Tidy up** re-runs the row ordering starting from where everyone is now, so it stays
+close to your arrangement and only moves what it has to. Dragging works with the same idea: a person you drag
+slides past the people in their row instead of pushing them along, and once past someone's middle the row
+re-orders around them. Selecting a branch and dragging it lets you move a whole subtree, which is often what a
+crossing needs.
+
+Some families can't be drawn in a plane without a crossing: when cousins marry, the two lines of descent have to
+meet, and loops like that make the graph non-planar. In those cases the editor finds the best order it can and
+says so, rather than claiming a perfect chart.
+
 ## Architecture
 
 ```mermaid
@@ -102,7 +151,7 @@ flowchart TD
     UI["Vue 3 UI<br/>Pedigree editor · Graph tests"]
     Scene["PedigreeScene<br/>rebuilds the world from the model, keeps positions"]
     Model["Pedigree model<br/>people + trios (triplets)"]
-    Layout["PedigreeLayout (tick rule)<br/>row order · relaxation · line drawing"]
+    Layout["PedigreeLayout (tick rule)<br/>row order · relaxation · lines · crossing checks"]
     PDF["PDF export (jsPDF)<br/>chart + people table"]
     World["World + canvas display<br/>shapes, connectors, drawing, mouse"]
     Engines["Motion engines<br/>Matter.js physics · Spring · Mock"]
@@ -154,7 +203,7 @@ source/
   pedigree/
     pedigree.ts           the data model: people + trios
     scene/                layout, row ordering, pedigree symbols, the scene
-    export/               PDF export
+    export/               PDF export, JSON file save/open
 src/                      the Vue app (App.vue, components/)
 docs/                     screenshots and an example PDF
 ```
