@@ -221,7 +221,7 @@ function plural(n: number, one: string, many = one + "s"): string {
     return n + " " + (n === 1 ? one : many);
 }
 
-function slug(s: string): string {
+export function slug(s: string): string {
     return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "pedigree";
 }
 

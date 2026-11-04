@@ -12,11 +12,11 @@ export class CanvasMouse
 
 	private listeners:Array<[string,(e:PointerEvent)=>void]> = [];
 
-	constructor(world:World,canvasholderHTML:CanvasHolderHTML,mouseEventHandler:MouseEventHandler)
+	constructor(world:World,canvasholderHTML:CanvasHolderHTML,mouseEventHandler:MouseEventHandler,listen:boolean = true)
 	{
 		this.canvasholderHTML = canvasholderHTML;
 		this.mouseEventHandler = mouseEventHandler;
-		if(canvasholderHTML.isCanvasVisable())
+		if(listen && canvasholderHTML.isCanvasVisable())
 		{
 			this.listeners = [
 				["pointerdown",(event) => this.pointerDownEvent(world,this,event)],
@@ -64,16 +64,17 @@ export class CanvasMouse
 
 	
 	/**
-	 * Where an event happened, in canvas pixels. Accounts for the canvas being
-	 * scrolled, and for it being drawn smaller or larger than its pixel size
-	 * (e.g. shrunk to fit a phone screen).
+	 * Where an event happened, in world coordinates. Accounts for the canvas
+	 * being scrolled, for it being drawn smaller or larger than its pixel size
+	 * (e.g. shrunk to fit a phone screen), and for the holder's pan and zoom.
 	 */
 	public toCanvasPosition(event:{clientX:number,clientY:number}):WorldPosition {
 		const holder = this.canvasholderHTML;
 		const r = holder.canvas.getBoundingClientRect();
-		return new WorldPosition(
+		const w = holder.toWorld(
 			(event.clientX - r.left) * holder.getWidth() / (r.width || holder.getWidth()),
 			(event.clientY - r.top) * holder.getHeight() / (r.height || holder.getHeight()));
+		return new WorldPosition(w.x, w.y);
 	}
 
 	public get offset(): WorldPosition {

@@ -25,13 +25,20 @@ watch(open, (v) => {
   }
 });
 
-defineExpose({ expand: () => (open.value = true) });
+/** "opened" fires when the user opens the panel by its header (not when it's opened from code). */
+const emit = defineEmits<{ opened: [] }>();
+function toggle() {
+  open.value = !open.value;
+  if (open.value) emit("opened");
+}
+
+defineExpose({ expand: () => (open.value = true), collapse: () => (open.value = false) });
 </script>
 
 <template>
   <section class="panel" :class="{ open }">
     <header class="panel-head">
-      <button class="panel-toggle" :aria-expanded="open" :aria-controls="'panel-' + id" @click="open = !open">
+      <button class="panel-toggle" :aria-expanded="open" :aria-controls="'panel-' + id" @click="toggle">
         <svg class="chev" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
           <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
         </svg>

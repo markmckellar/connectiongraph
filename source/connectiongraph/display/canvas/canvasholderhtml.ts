@@ -17,13 +17,18 @@ export class CanvasHolderHTML implements CanvasHolder
 	private logicalWidth:number;
 	private logicalHeight:number;
 	/** Backing-store pixels per CSS pixel (2-3 on Retina screens and phones when hiDpi is on). */
-	private pixelRatio:number;
+	private pixelRatio:number = 1;
+	private hiDpi:boolean;
+	/** The view: world point (x, y) is drawn at canvas pixel (x*scale + offsetX, y*scale + offsetY). */
+	private view = { scale: 1, offsetX: 0, offsetY: 0 };
 
 	/**
 	 * @param options.hiDpi draw at the screen's full pixel density so lines and
 	 *        text stay sharp on high-resolution displays
+	 * @param options.mouse attach the built-in drag handling (default true);
+	 *        turn it off when the page handles pointer input itself
 	 */
-	constructor(canvas:string|HTMLCanvasElement,world:World,options:{hiDpi?:boolean} = {})
+	constructor(canvas:string|HTMLCanvasElement,world:World,options:{hiDpi?:boolean,mouse?:boolean} = {})
 	{
 		this.canvas = typeof canvas === "string" ? <HTMLCanvasElement>document.getElementById(canvas) : canvas;
 		// remember the canvas's designed size the first time we see it, so
@@ -35,14 +40,9 @@ export class CanvasHolderHTML implements CanvasHolder
 		}
 		this.logicalWidth = Number(c.dataset.logicalWidth);
 		this.logicalHeight = Number(c.dataset.logicalHeight);
-		this.pixelRatio = options.hiDpi ? Math.min(3, Math.max(1, window.devicePixelRatio || 1)) : 1;
-		const backingWidth = Math.round(this.logicalWidth*this.pixelRatio);
-		const backingHeight = Math.round(this.logicalHeight*this.pixelRatio);
-		if(c.width!==backingWidth || c.height!==backingHeight) {
-			c.width = backingWidth;
-			c.height = backingHeight;
-		}
-		c.style.width = this.logicalWidth+"px";
+		this.hiDpi = !!options.hiDpi;
+		this.pixelRatio = this.hiDpi ? Math.min(3, Math.max(1, window.devicePixelRatio || 1)) : 1;
+		this.sizeBackingStore();
 		this.canvasName = this.canvas.id;
 		this.isVisable = true;
 		this.isDrawable = true;
@@ -51,12 +51,44 @@ export class CanvasHolderHTML implements CanvasHolder
 		const context = this.canvas.getContext("2d", options.hiDpi ? undefined : { willReadFrequently: true });
 		if(!context) throw new Error("CanvasHolderHTML: 2d context unavailable");
 		this.context = context;
-		this.canvasMouse = new CanvasMouse(world,this,new MouseEventHandlerWorldObject());
-		/*if (typeof document !== 'undefined')
-		{
-			this.canvas = document.getElementById(this.canvasName);			
-			this.context = this.canvas.getContext('2d');
-		}*/
+		this.canvasMouse = new CanvasMouse(world,this,new MouseEventHandlerWorldObject(),options.mouse ?? true);
+	}
+
+	private sizeBackingStore():void {
+		const c = this.canvas;
+		const backingWidth = Math.round(this.logicalWidth*this.pixelRatio);
+		const backingHeight = Math.round(this.logicalHeight*this.pixelRatio);
+		if(c.width!==backingWidth || c.height!==backingHeight) {
+			c.width = backingWidth;
+			c.height = backingHeight;
+		}
+		c.style.width = this.logicalWidth+"px";
+	}
+
+	/** Change the drawing size (in CSS pixels), e.g. to fill a resized container. */
+	public resize(width:number,height:number):void {
+		width = Math.max(1, Math.round(width));
+		height = Math.max(1, Math.round(height));
+		if(width===this.logicalWidth && height===this.logicalHeight) return;
+		this.logicalWidth = width;
+		this.logicalHeight = height;
+		this.canvas.dataset.logicalWidth = String(width);
+		this.canvas.dataset.logicalHeight = String(height);
+		this.sizeBackingStore();
+	}
+
+	/** Pan and zoom: world point (x, y) is drawn at canvas pixel (x*scale + offsetX, y*scale + offsetY). */
+	public setView(scale:number,offsetX:number,offsetY:number):void {
+		this.view = { scale, offsetX, offsetY };
+	}
+
+	public getView():{ scale:number, offsetX:number, offsetY:number } {
+		return { ...this.view };
+	}
+
+	/** World position of a canvas pixel position. */
+	public toWorld(x:number,y:number):{ x:number, y:number } {
+		return { x: (x-this.view.offsetX)/this.view.scale, y: (y-this.view.offsetY)/this.view.scale };
 	}
 
 	public dispose():void {
@@ -70,6 +102,8 @@ export class CanvasHolderHTML implements CanvasHolder
 			this.context.clearRect(0, 0, this.getWidth(), this.getHeight());
 			this.context.fillStyle = WorldDisplay.getColorFromString("ffffff"+"ff");
 			this.context.fillRect(0, 0, this.getWidth(), this.getHeight());
+			const v = this.view, r = this.pixelRatio;
+			this.context.setTransform(r*v.scale,0,0,r*v.scale,r*v.offsetX,r*v.offsetY);
 		}
 	}
 
